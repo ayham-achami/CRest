@@ -24,7 +24,6 @@
 //  SOFTWARE.
 
 import CFoundation
-import Foundation
 
 /// Любой ответ любого запроса
 public typealias Response = Model & Decodable
@@ -68,6 +67,49 @@ extension CollectionRepresented where Item: Model, Index == Int {
 
     public subscript(_ index: Index) -> Item {
         list[index]
+    }
+}
+
+/// Протокол реализующий логику парсинга дефолтное значение для энематоров
+public protocol RawResponse: Response & RawRepresentable {
+
+    /// Дефолтное значение
+    static var `default`: Self { get }
+
+    /// Инициализация с помощью первоначальнего значения
+    /// если значение не известное возвращается дефолтное значение
+    /// - Parameter rawValue: Значение первоначальное
+    init(try rawValue: RawValue)
+}
+
+// MARK: - RawResponse + Default
+public extension RawResponse {
+
+    init(try rawValue: RawValue) {
+        if let result = Self.init(rawValue: rawValue) {
+            self = result
+        } else {
+            self = .default
+        }
+    }
+
+    init?(_ rawValueOrNil: RawValue?) {
+        guard let rawValueOrNil = rawValueOrNil else { return nil }
+        self.init(rawValue: rawValueOrNil)
+    }
+}
+
+// MARK: - RawResponse + Response
+public extension RawResponse where RawValue: Response {
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(RawValue.self)
+        if let result = Self.init(rawValue: rawValue) {
+            self = result
+        } else {
+            self = .default
+        }
     }
 }
 
