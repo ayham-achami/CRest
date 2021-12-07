@@ -1,25 +1,25 @@
-Pod::Spec.new do |cfc|
-    cfc.name         = "CRest"
-    cfc.version      = "1.0.0"
-    cfc.summary      = "Rest-клиент для iOS"
-    cfc.description  = <<-DESC
+Pod::Spec.new do |spec|
+    spec.name         = "CRest"
+    spec.version      = "1.0.0"
+    spec.summary      = "Rest-клиент для iOS"
+    spec.description  = <<-DESC
     Библиотека содержит rest-клиент для создания iOS приложения
     DESC
     spec.license      = { :type => "MIT", :file => "LICENSE" }
     spec.author       = { "Ayham Hylam" => "Ayham Hylam" }
     spec.homepage     = "https://github.com/ayham-achami/CRest"
 
-    cfc.ios.deployment_target = "11.0"
+    spec.ios.deployment_target = "11.0"
 
-    cfc.source = {
+    spec.source = {
         :git => "git@github.com:ayham-achami/CRest.git",
         :tag => spec.version.to_s
     }
-    cfc.frameworks = "Foundation"
-    cfc.requires_arc = true
-    cfc.swift_versions = ['5.0', '5.1']
-    cfc.pod_target_xcconfig = { "SWIFT_VERSION" => "5" }
-    cfc.source_files = 'Sources/**/*.swift'
-    cfc.dependency "Alamofire"
-    cfc.dependency "CFoundation"
+    spec.frameworks = "Foundation"
+    spec.requires_arc = true
+    spec.swift_versions = ['5.0', '5.1']
+    spec.pod_target_xcconfig = { "SWIFT_VERSION" => "5" }
+    spec.source_files = 'Sources/**/*.swift'
+    spec.dependency "Alamofire"
+    spec.dependency "CFoundation"
 end
