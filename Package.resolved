@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Alamofire",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
+        "state": {
+          "branch": null,
+          "revision": "d120af1e8638c7da36c8481fd61a66c0c08dc4fc",
+          "version": "5.4.4"
+        }
+      },
+      {
+        "package": "CFoundation",
+        "repositoryURL": "https://github.com/ayham-achami/CFoundation.git",
+        "state": {
+          "branch": "mainline",
+          "revision": "1f7e99da4ed4cb0ed95f98b6b6ec4d2b8404a10f",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
