@@ -7,8 +7,8 @@
 //
 
 #if compiler(>=5.5.2) && canImport(_Concurrency)
-
 import Alamofire
+import Foundation
 
 // MARK: - AlamofireRestIO
 
@@ -55,12 +55,23 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
 
     public func perform<Response>(_ request: DynamicRequest,
                                   response: Response.Type) async throws -> Response where Response: CRest.Response {
-        try await dataRequest(for: request)
+        let task = dataRequest(for: request)
+            .onURLRequestCreation(perform: { [weak self] in
+                self?.configuration.informant.log(request: $0)
+            })
             .serializingDecodable(response, decoder: request.decoder)
-            .value
+        let response = await task.response
+        switch response.result {
+        case let .success(modle):
+            configuration.informant.log(response: response)
+             return modle
+        case let .failure(error):
+            configuration.informant.logError(response: response)
+            throw reason(from: error, response.response?.statusCode, responseData: response.data)
+        }
     }
     
-    private func dataRequest(for request: DynamicRequest) async throws -> DataRequest {
+    private func dataRequest(for request: DynamicRequest) -> DataRequest {
         switch request.encoding {
         case let .URL(configuration):
             return session.request(request.url,
@@ -95,15 +106,16 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         downloader.downloadProgress { [weak observer] progress in
             observer?.invoke(progress)
         }.responseData(queue: .main) { [weak observer, weak self] response in
-            self?.configuration.informant.log(response: response)
             switch response.result {
             case .success(let data):
+                self?.configuration.informant.log(response: response)
                 if let model = try? request.decoder.decode(Response.self, from: data) {
                     observer?.invoke(model)
                 } else {
                     observer?.invoke(NetworkError.parsing(data))
                 }
             case .failure(let error):
+                self?.configuration.informant.logError(response: response)
                 observer?.invoke(reason(from: error, response.response?.statusCode, responseData: response.resumeData))
             }
         }
@@ -122,11 +134,12 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         uploader.uploadProgress { [weak observer] progress in
             observer?.invoke(progress)
         }.responseDecodable(of: response, queue: serializationQueue, decoder: request.decoder) { [weak observer, weak self] response in
-            self?.configuration.informant.log(response: response)
             switch response.result {
             case .success(let model):
+                self?.configuration.informant.log(response: response)
                 observer?.invoke(model)
             case .failure(let error):
+                self?.configuration.informant.logError(response: response)
                 observer?.invoke(reason(from: error, response.response?.statusCode, responseData: response.data))
             }
         }

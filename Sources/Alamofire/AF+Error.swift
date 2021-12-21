@@ -31,6 +31,8 @@ import Foundation
 public func reason(from error: AFError, _ statusCode: Int?, responseData: Data? = nil) -> NetworkError {
     if error.isExplicitlyCancelledError {
         return .explicitlyCancelled
+    } else if error.isServerTrustEvaluationError {
+            return .ssl(error.errorDescription ?? "\(String(describing: error.destinationURL))")
     } else if let statusCode = statusCode, !(200..<300).contains(statusCode) {
         return .http(statusCode, data: responseData)
     } else if case let .sessionTaskFailed(error as NSError) = error {
@@ -39,10 +41,8 @@ public func reason(from error: AFError, _ statusCode: Int?, responseData: Data? 
         } else if error.code == NSURLErrorNetworkConnectionLost {
             return .connectionLost
         } else {
-            return .io(error.localizedDescription)
+            return .io(error.asAFError?.errorDescription ?? error.localizedDescription)
         }
-    } else if error.isServerTrustEvaluationError {
-        return .ssl
     } else if let description = error.errorDescription {
         return .io(description)
     } else {

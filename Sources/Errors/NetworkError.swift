@@ -48,7 +48,7 @@ public enum NetworkError: LocalizedError {
     /// Ошибка HTTP клиента, зависит от реализации `RestIO`
     case io(String)
     /// Ошибка проверки подлинности сертификата SSL
-    case ssl
+    case ssl(String)
     /// Ошибка парсинга данных
     case parsing(Data)
     /// Ошибка протокола http
@@ -68,8 +68,8 @@ public enum NetworkError: LocalizedError {
         switch self {
         case .io(let reason):
             return "IO error %@".localized(args: reason)
-        case .ssl:
-            return "SSL error code".localized
+        case .ssl(let reason):
+            return "SSL error: \(reason)".localized
         case .parsing:
             return "Incorrect answer format".localized
         case .http(let code, _):
@@ -93,12 +93,13 @@ extension NetworkError: Equatable {
 
     public static func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
         switch (lhs, rhs) {
-        case (.ssl, .ssl),
-             (.notConnected, .notConnected),
+        case (.notConnected, .notConnected),
              (.connectionLost, .connectionLost),
              (.somethingWrong, .somethingWrong),
              (.explicitlyCancelled, .explicitlyCancelled):
             return true
+        case (.ssl(let lhs), .ssl(let rhs)):
+            return lhs == rhs
         case (.io(let lhs), .io(let rhs)):
             return lhs == rhs
         case (.parsing(let lhs), .parsing(let rhs)):
