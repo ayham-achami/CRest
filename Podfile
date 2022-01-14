@@ -7,7 +7,7 @@ install! 'cocoapods', :warn_for_unused_master_specs_repo => false
 project 'CRest.xcodeproj'
 
 # Uncomment the next line to define a global platform for your project
-platform :ios, '11.0'
+platform :ios, '13.0'
 
 def dependencies_frameworks
   # Networking
