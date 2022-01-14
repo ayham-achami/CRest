@@ -11,8 +11,8 @@ platform :ios, '11.0'
 
 def dependencies_frameworks
   # Networking
-  pod 'CFoundation', :git => 'git@github.com:ayham-achami/CFoundation.git', :branch => 'mainline'
-  pod 'Alamofire', :git => 'git@github.com:Alamofire/Alamofire.git', :branch => 'feature/async-handlers'
+  pod 'CFoundation', :git => 'https://github.com/ayham-achami/CFoundation.git', :branch => 'mainline'
+  pod 'Alamofire', :git => 'https://github.com/Alamofire/Alamofire.git'
 end
 
 target 'CRest' do
@@ -24,11 +24,5 @@ target 'CRest' do
   
   target 'CRestTests' do
     inherit! :search_paths
-  end
-end
-
-post_install do |installer|
-  installer.pods_project.build_configurations.each do |config|
-    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
   end
 end

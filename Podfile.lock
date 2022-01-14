@@ -1,38 +1,37 @@
 PODS:
-  - Alamofire (5.4.4)
+  - Alamofire (5.5.0)
   - CFoundation (1.0.0)
   - SwiftLint (0.45.1)
 
 DEPENDENCIES:
-  - "Alamofire (from `git@github.com:Alamofire/Alamofire.git`, branch `feature/async-handlers`)"
-  - "CFoundation (from `git@github.com:ayham-achami/CFoundation.git`, branch `mainline`)"
+  - Alamofire (from `https://github.com/Alamofire/Alamofire.git`)
+  - CFoundation (from `https://github.com/ayham-achami/CFoundation.git`, branch `mainline`)
   - SwiftLint
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/CocoaPods/specs.git:
     - SwiftLint
 
 EXTERNAL SOURCES:
   Alamofire:
-    :branch: feature/async-handlers
-    :git: "git@github.com:Alamofire/Alamofire.git"
+    :git: https://github.com/Alamofire/Alamofire.git
   CFoundation:
     :branch: mainline
-    :git: "git@github.com:ayham-achami/CFoundation.git"
+    :git: https://github.com/ayham-achami/CFoundation.git
 
 CHECKOUT OPTIONS:
   Alamofire:
-    :commit: 436d043eb61ee1a14eabe45ae2dffdd3909cf541
-    :git: "git@github.com:Alamofire/Alamofire.git"
+    :commit: e7e39079d7469e81966d2787431bf8979a2b0cc4
+    :git: https://github.com/Alamofire/Alamofire.git
   CFoundation:
     :commit: 1f7e99da4ed4cb0ed95f98b6b6ec4d2b8404a10f
-    :git: "git@github.com:ayham-achami/CFoundation.git"
+    :git: https://github.com/ayham-achami/CFoundation.git
 
 SPEC CHECKSUMS:
-  Alamofire: a4743e9a4b7b484fb4baa9619c13676e1b250122
+  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
   CFoundation: 14aee3cbc17ca7631ac651060cea0e27978270ef
   SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
 
-PODFILE CHECKSUM: 12eb44db857efe055478b3f27d8de2c3d9866af1
+PODFILE CHECKSUM: f6461f3f732c0a5ecf2ed36006e875b022758865
 
 COCOAPODS: 1.11.2

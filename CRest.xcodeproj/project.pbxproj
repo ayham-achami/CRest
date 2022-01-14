@@ -107,6 +107,7 @@
 		CFBBD93226CD358D00C98DCD /* RequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestTests.swift; sourceTree = "<group>"; };
 		CFBBD93726CD368200C98DCD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CFBBD93826CD36E400C98DCD /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		DF1B8C7327919BE700036669 /* Gemfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = Gemfile; sourceTree = "<group>"; };
 		DF307BBA273C077900540031 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DF307BBB273C081200540031 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		DF307BBF273C0E1600540031 /* ProgressPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressPublisher.swift; sourceTree = "<group>"; };
@@ -254,8 +255,8 @@
 		CFAD6DC726CE5DCE005C478E /* CICD */ = {
 			isa = PBXGroup;
 			children = (
-				DF8571B8275FA1DE00C65491 /* CRest.podspec */,
 				CFAD6DC926CE5DE7005C478E /* .swiftlint.yml */,
+				DF8571B8275FA1DE00C65491 /* CRest.podspec */,
 				CFAD6DCD26CE5E0B005C478E /* Fastlane */,
 			);
 			name = CICD;
@@ -264,10 +265,11 @@
 		CFAD6DCD26CE5E0B005C478E /* Fastlane */ = {
 			isa = PBXGroup;
 			children = (
-				CFAD6DD026CE5E24005C478E /* Fastfile */,
-				CFAD6DCE26CE5E24005C478E /* Pluginfile */,
 				DF307BBA273C077900540031 /* README.md */,
 				DF307BBB273C081200540031 /* LICENSE */,
+				CFAD6DD026CE5E24005C478E /* Fastfile */,
+				CFAD6DCE26CE5E24005C478E /* Pluginfile */,
+				DF1B8C7327919BE700036669 /* Gemfile */,
 			);
 			name = Fastlane;
 			sourceTree = "<group>";
@@ -351,6 +353,7 @@
 				CF59738926C534DE00F3B458 /* Sources */,
 				CF59738A26C534DE00F3B458 /* Frameworks */,
 				CF59738B26C534DE00F3B458 /* Resources */,
+				DF1B8C722791999E00036669 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -478,6 +481,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DF1B8C722791999E00036669 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -595,7 +616,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -653,7 +674,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

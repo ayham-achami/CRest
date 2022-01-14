@@ -33,11 +33,15 @@ public extension Http {
         
         public init() {}
         
-        public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        public func adapt(_ urlRequest: URLRequest,
+                          for session: Session,
+                          completion: @escaping (Result<URLRequest, Error>) -> Void) {
             completion(.success(urlRequest))
         }
         
-        public func retry(_ request: Alamofire.Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        public func retry(_ request: Alamofire.Request,
+                          for session: Session,
+                          dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
             completion(.doNotRetry)
         }
     }
