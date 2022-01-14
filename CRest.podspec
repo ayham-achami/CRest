@@ -9,7 +9,7 @@ Pod::Spec.new do |spec|
     spec.author       = { "Ayham Hylam" => "Ayham Hylam" }
     spec.homepage     = "https://github.com/ayham-achami/CRest"
 
-    spec.ios.deployment_target = "11.0"
+    spec.ios.deployment_target = "13.0"
 
     spec.source = {
         :git => "git@github.com:ayham-achami/CRest.git",
