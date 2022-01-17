@@ -21,10 +21,10 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Alamofire:
-    :commit: e7e39079d7469e81966d2787431bf8979a2b0cc4
+    :commit: e1f6c211747bce531f4171848f62d9cb6de0cc82
     :git: https://github.com/Alamofire/Alamofire.git
   CFoundation:
-    :commit: 1f7e99da4ed4cb0ed95f98b6b6ec4d2b8404a10f
+    :commit: f8772334df295d2ea66d55e29bc2bb44f1958c77
     :git: https://github.com/ayham-achami/CFoundation.git
 
 SPEC CHECKSUMS:
@@ -32,6 +32,6 @@ SPEC CHECKSUMS:
   CFoundation: 14aee3cbc17ca7631ac651060cea0e27978270ef
   SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
 
-PODFILE CHECKSUM: f6461f3f732c0a5ecf2ed36006e875b022758865
+PODFILE CHECKSUM: 1aebb8b64a986890ea3c05e041f1751586845d3b
 
 COCOAPODS: 1.11.2
