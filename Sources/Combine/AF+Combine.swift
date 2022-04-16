@@ -50,7 +50,7 @@ extension Alamofire.DownloadRequest {
                     }
                 } else if Response.self == Never.self {
                     // swiftlint:disable:next force_cast
-                    return Empty.empty as! Response
+                    return Empty() as! Response
                 } else {
                     throw NetworkError.somethingWrong
                 }

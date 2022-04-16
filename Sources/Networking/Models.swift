@@ -124,24 +124,15 @@ public protocol ParametersBuilder: AnyObject {
 /// Пустой обеъкт мадели
 public struct Empty: UniversalModel {
 
-    public static var empty: Self { .init() }
-    
-    public static var `nil`: Self? { nil }
-
     public init() {}
 
     public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let responce = try? container.decode([String: String].self), !responce.isEmpty {
-            throw NetworkError.parsing(Data())
-        } else if let responce = try? container.decode(String.self), !responce.isEmpty || responce != "{}" {
-            if let data = responce.data(using: .utf8) {
-                throw NetworkError.parsing(data)
-            } else {
-                throw NetworkError.parsing(Data())
-            }
-        }
+        var container = try decoder.unkeyedContainer()
+        guard
+            try container.decodeIfPresent([String: String].self) == nil
+        else { throw NetworkError.parsing(Data()) }
+        guard
+            let response = try container.decodeIfPresent(String.self), response.isEmpty
+        else { throw NetworkError.parsing(Data()) }
     }
-
-    public func encode(to encoder: Encoder) throws {}
 }
