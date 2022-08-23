@@ -26,12 +26,7 @@
 import Foundation
 
 @usableFromInline
-protocol AnyEncodable {
-    
-    var base: Any { get }
-    
-    init<Base>(_ base: Base?)
-}
+protocol AnyEncodable: Baseable {}
 
 extension AnyEncodable {
     
@@ -71,15 +66,13 @@ extension AnyEncodable {
             try container.encode(double)
         case let string as String:
             try container.encode(string)
-        case let number as NSNumber:
-            try encode(number: number, into: &container)
         case let date as Date:
             try container.encode(date)
         case let url as URL:
             try container.encode(url)
-        case let array as [Any?]:
+        case let array as [AnyParameters]:
             try container.encode(array.map { AnyParameters($0) })
-        case let dictionary as [String: Any?]:
+        case let dictionary as [String: AnyParameters]:
             try container.encode(dictionary.mapValues { AnyParameters($0) })
         case let encodable as Encodable:
             try encodable.encode(to: encoder)
@@ -88,44 +81,95 @@ extension AnyEncodable {
             throw EncodingError.invalidValue(base, context)
         }
     }
-
-    // swiftlint:disable:next cyclomatic_complexity
-    private func encode(number: NSNumber, into container: inout SingleValueEncodingContainer) throws {
-        switch Character(Unicode.Scalar(UInt8(number.objCType.pointee))) {
-        case "B":
-            try container.encode(number.boolValue)
-        case "c":
-            try container.encode(number.int8Value)
-        case "s":
-            try container.encode(number.int16Value)
-        case "i", "l":
-            try container.encode(number.int32Value)
-        case "q":
-            try container.encode(number.int64Value)
-        case "C":
-            try container.encode(number.uint8Value)
-        case "S":
-            try container.encode(number.uint16Value)
-        case "I", "L":
-            try container.encode(number.uint32Value)
-        case "Q":
-            try container.encode(number.uint64Value)
-        case "f":
-            try container.encode(number.floatValue)
-        case "d":
-            try container.encode(number.doubleValue)
-        default:
-            let context = EncodingError.Context(codingPath: container.codingPath, debugDescription: "number cannot be encoded because its type is not handled")
-            throw EncodingError.invalidValue(number, context)
-        }
-    }
 }
 
-@frozen public struct AnyParameters: AnyEncodable, Encodable {
+@frozen public struct AnyParameters: Parameters, AnyEncodable, JSONRepresentable {
     
     public let base: Any
     
     public init<Base>(_ base: Base?) {
         self.base = base ?? ()
+    }
+}
+
+extension AnyParameters: CustomStringConvertible {
+    
+    public var description: String {
+        guard
+            let convertible = base as? CustomStringConvertible
+        else { return String(describing: "\(type(of: base)): \(base)") }
+        return convertible.description
+    }
+}
+
+extension AnyParameters: CustomDebugStringConvertible {
+    
+    public var debugDescription: String {
+        guard
+            let convertible = base as? CustomDebugStringConvertible
+        else { return String(describing: "\(type(of: base)): \(base)") }
+        return convertible.debugDescription
+    }
+}
+
+extension AnyParameters: ExpressibleByNilLiteral {
+    
+    public init(nilLiteral: ()) {
+        self.base = nilLiteral
+    }
+}
+
+extension AnyParameters: ExpressibleByBooleanLiteral {
+    
+    public typealias BooleanLiteralType = Bool
+    
+    public init(booleanLiteral value: Bool) {
+        self.base = value
+    }
+}
+
+extension AnyParameters: ExpressibleByIntegerLiteral {
+    
+    public typealias IntegerLiteralType = Int
+    
+    public init(integerLiteral value: Int) {
+        self.base = value
+    }
+}
+
+extension AnyParameters: ExpressibleByFloatLiteral {
+    
+    public typealias FloatLiteralType = Double
+    
+    public init(floatLiteral value: Double) {
+        self.base = value
+    }
+}
+
+extension AnyParameters: ExpressibleByStringLiteral {
+    
+    public typealias StringLiteralType = String
+    
+    public init(stringLiteral value: String) {
+        self.base = value
+    }
+}
+
+extension AnyParameters: ExpressibleByArrayLiteral {
+    
+    public typealias ArrayLiteralElement = AnyParameters
+    
+    public init(arrayLiteral elements: ArrayLiteralElement...) {
+        self.base = elements
+    }
+}
+
+extension AnyParameters: ExpressibleByDictionaryLiteral {
+    
+    public typealias Key = String
+    public typealias Value = AnyParameters
+    
+    public init(dictionaryLiteral elements: (Key, Value)...) {
+        self.base = elements
     }
 }

@@ -38,6 +38,6 @@ target 'CRest' do
   networking
   
   target 'CRestTests' do
-    inherit! :search_paths
+    inherit! :complete
   end
 end

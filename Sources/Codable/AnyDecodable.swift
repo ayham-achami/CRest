@@ -26,12 +26,7 @@
 import Foundation
 
 @usableFromInline
-protocol AnyDecodable {
-    
-    var base: Any { get }
-    
-    init<Base>(_ base: Base?)
-}
+protocol AnyDecodable: Baseable {}
 
 extension AnyDecodable {
     
@@ -59,11 +54,93 @@ extension AnyDecodable {
     }
 }
 
-@frozen public struct AnyResponse: AnyDecodable, Decodable {
+@frozen public struct AnyResponse: Response, AnyDecodable, JSONRepresentable {
     
     public let base: Any
     
     public init<Base>(_ base: Base?) {
         self.base = base ?? ()
+    }
+}
+
+extension AnyResponse: CustomStringConvertible {
+    
+    public var description: String {
+        guard
+            let convertible = base as? CustomStringConvertible
+        else { return String(describing: "\(type(of: base)): \(base)") }
+        return convertible.description
+    }
+}
+
+extension AnyResponse: CustomDebugStringConvertible {
+    
+    public var debugDescription: String {
+        guard
+            let convertible = base as? CustomDebugStringConvertible
+        else { return String(describing: "\(type(of: base)): \(base)") }
+        return convertible.debugDescription
+    }
+}
+
+extension AnyResponse: ExpressibleByNilLiteral {
+    
+    public init(nilLiteral: ()) {
+        self.base = nilLiteral
+    }
+}
+
+extension AnyResponse: ExpressibleByBooleanLiteral {
+    
+    public typealias BooleanLiteralType = Bool
+    
+    public init(booleanLiteral value: Bool) {
+        self.base = value
+    }
+}
+
+extension AnyResponse: ExpressibleByIntegerLiteral {
+    
+    public typealias IntegerLiteralType = Int
+    
+    public init(integerLiteral value: Int) {
+        self.base = value
+    }
+}
+
+extension AnyResponse: ExpressibleByFloatLiteral {
+    
+    public typealias FloatLiteralType = Double
+    
+    public init(floatLiteral value: Double) {
+        self.base = value
+    }
+}
+
+extension AnyResponse: ExpressibleByStringLiteral {
+    
+    public typealias StringLiteralType = String
+    
+    public init(stringLiteral value: String) {
+        self.base = value
+    }
+}
+
+extension AnyResponse: ExpressibleByArrayLiteral {
+    
+    public typealias ArrayLiteralElement = AnyResponse
+    
+    public init(arrayLiteral elements: ArrayLiteralElement...) {
+        self.base = elements
+    }
+}
+
+extension AnyResponse: ExpressibleByDictionaryLiteral {
+    
+    public typealias Key = String
+    public typealias Value = AnyResponse
+    
+    public init(dictionaryLiteral elements: (Key, Value)...) {
+        self.base = elements
     }
 }
