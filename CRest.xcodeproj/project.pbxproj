@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		372FA171DB3B38B9FB50D8A5 /* Pods_CRestTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1F0727310E82703C3922E3 /* Pods_CRestTests.framework */; };
+		16F0CF764233217B7C1F9FF5 /* Pods_CRestTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1F0727310E82703C3922E3 /* Pods_CRestTests.framework */; };
 		4FD766638FC4E8BE868A9284 /* Pods_CRest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D06329B95B6973D73E32471 /* Pods_CRest.framework */; };
 		6BAA8ABE275F48720042CFCC /* AsyncAlamofireRestIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAA8ABC275F48720042CFCC /* AsyncAlamofireRestIO.swift */; };
 		6BAA8ABF275F48720042CFCC /* AsyncRestIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BAA8ABD275F48720042CFCC /* AsyncRestIO.swift */; };
@@ -32,7 +32,6 @@
 		CF39E31C26CBEBE6004DDCF9 /* ObserverSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF39E31626CBEBE6004DDCF9 /* ObserverSource.swift */; };
 		CF39E31D26CBEBE6004DDCF9 /* Invocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF39E31726CBEBE6004DDCF9 /* Invocation.swift */; };
 		CF39E31E26CBEBE6004DDCF9 /* ObserverProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF39E31826CBEBE6004DDCF9 /* ObserverProtocol.swift */; };
-		CF59739726C534DE00F3B458 /* CRest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF59738D26C534DE00F3B458 /* CRest.framework */; };
 		CF59739E26C534DE00F3B458 /* CRest.h in Headers */ = {isa = PBXBuildFile; fileRef = CF59739026C534DE00F3B458 /* CRest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CFBBD91826CD1A5A00C98DCD /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD90E26CD1A5A00C98DCD /* Models.swift */; };
 		CFBBD91926CD1A5A00C98DCD /* RestIOConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD91026CD1A5A00C98DCD /* RestIOConfiguration.swift */; };
@@ -43,15 +42,20 @@
 		CFBBD91E26CD1A5A00C98DCD /* DynamicHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD91526CD1A5A00C98DCD /* DynamicHeaders.swift */; };
 		CFBBD91F26CD1A5A00C98DCD /* TrustEvaluating.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD91626CD1A5A00C98DCD /* TrustEvaluating.swift */; };
 		CFBBD92026CD1A5A00C98DCD /* Multipart.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD91726CD1A5A00C98DCD /* Multipart.swift */; };
-		CFBBD93626CD35DA00C98DCD /* RequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD93226CD358D00C98DCD /* RequestTests.swift */; };
 		DF307BC5273C0E1700540031 /* ProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BBF273C0E1600540031 /* ProgressPublisher.swift */; };
 		DF307BC6273C0E1700540031 /* CombineRestIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BC0273C0E1600540031 /* CombineRestIO.swift */; };
 		DF307BC7273C0E1700540031 /* CombineAlamofireRestIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BC1273C0E1600540031 /* CombineAlamofireRestIO.swift */; };
 		DF307BC8273C0E1700540031 /* AF+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BC2273C0E1700540031 /* AF+Combine.swift */; };
+		DFBB9A73289D4F7D00ADDEC3 /* AnyDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A72289D4F7D00ADDEC3 /* AnyDecodable.swift */; };
+		DFBB9A7528A0F1C400ADDEC3 /* AnyCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A7428A0F1C400ADDEC3 /* AnyCodable.swift */; };
+		DFBB9A7728A0F1CE00ADDEC3 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A7628A0F1CE00ADDEC3 /* AnyEncodable.swift */; };
+		DFBB9A8228A246FB00ADDEC3 /* CRest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF59738D26C534DE00F3B458 /* CRest.framework */; };
+		DFBB9A8828A2470100ADDEC3 /* RequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD93226CD358D00C98DCD /* RequestTests.swift */; };
+		DFBB9A8928A2470400ADDEC3 /* AnyCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A7828A11C6A00ADDEC3 /* AnyCodableTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CF59739826C534DE00F3B458 /* PBXContainerItemProxy */ = {
+		DFBB9A8328A246FB00ADDEC3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CF59738426C534DE00F3B458 /* Project object */;
 			proxyType = 1;
@@ -91,7 +95,6 @@
 		CF59738D26C534DE00F3B458 /* CRest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CRest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF59739026C534DE00F3B458 /* CRest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CRest.h; sourceTree = "<group>"; };
 		CF59739126C534DE00F3B458 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CF59739626C534DE00F3B458 /* CRestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CRestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFAD6DC926CE5DE7005C478E /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		CFAD6DCE26CE5E24005C478E /* Pluginfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; name = Pluginfile; path = fastlane/Pluginfile; sourceTree = "<group>"; };
 		CFAD6DD026CE5E24005C478E /* Fastfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; name = Fastfile; path = fastlane/Fastfile; sourceTree = "<group>"; };
@@ -115,6 +118,11 @@
 		DF307BC1273C0E1600540031 /* CombineAlamofireRestIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombineAlamofireRestIO.swift; sourceTree = "<group>"; };
 		DF307BC2273C0E1700540031 /* AF+Combine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AF+Combine.swift"; sourceTree = "<group>"; };
 		DF8571B8275FA1DE00C65491 /* CRest.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = CRest.podspec; sourceTree = "<group>"; };
+		DFBB9A72289D4F7D00ADDEC3 /* AnyDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyDecodable.swift; sourceTree = "<group>"; };
+		DFBB9A7428A0F1C400ADDEC3 /* AnyCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCodable.swift; sourceTree = "<group>"; };
+		DFBB9A7628A0F1CE00ADDEC3 /* AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
+		DFBB9A7828A11C6A00ADDEC3 /* AnyCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCodableTests.swift; sourceTree = "<group>"; };
+		DFBB9A7E28A246FB00ADDEC3 /* CRestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CRestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E02A3EA14293626AE63222D6 /* Pods-CRestTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CRestTests.release.xcconfig"; path = "Target Support Files/Pods-CRestTests/Pods-CRestTests.release.xcconfig"; sourceTree = "<group>"; };
 		EA1F0727310E82703C3922E3 /* Pods_CRestTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CRestTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -128,12 +136,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CF59739326C534DE00F3B458 /* Frameworks */ = {
+		DFBB9A7B28A246FB00ADDEC3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF59739726C534DE00F3B458 /* CRest.framework in Frameworks */,
-				372FA171DB3B38B9FB50D8A5 /* Pods_CRestTests.framework in Frameworks */,
+				DFBB9A8228A246FB00ADDEC3 /* CRest.framework in Frameworks */,
+				16F0CF764233217B7C1F9FF5 /* Pods_CRestTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +227,7 @@
 				CFBBD93826CD36E400C98DCD /* Package.swift */,
 				CFAD6DC726CE5DCE005C478E /* CICD */,
 				CF59738F26C534DE00F3B458 /* Sources */,
-				CFBBD92E26CD358D00C98DCD /* Tests */,
+				CFBBD92E26CD358D00C98DCD /* CRestTests */,
 				CF59738E26C534DE00F3B458 /* Products */,
 				1F6012CA120F2B418D61E5C3 /* Pods */,
 				DAB5A464443FB32EE482F124 /* Frameworks */,
@@ -230,7 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				CF59738D26C534DE00F3B458 /* CRest.framework */,
-				CF59739626C534DE00F3B458 /* CRestTests.xctest */,
+				DFBB9A7E28A246FB00ADDEC3 /* CRestTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -240,14 +248,15 @@
 			children = (
 				CF59739126C534DE00F3B458 /* Info.plist */,
 				CF59739026C534DE00F3B458 /* CRest.h */,
+				6BAA8ABB275F48720042CFCC /* Async */,
 				CF277B2426C6BF660003CDA9 /* Errors */,
 				CF277B1626C6BC570003CDA9 /* Logging */,
+				DFBB9A71289D4F5B00ADDEC3 /* Codable */,
+				DF307BBC273C0DFC00540031 /* Combine */,
 				CF277AF126C6BAF70003CDA9 /* Alamofire */,
 				CF39E31226CBEBE6004DDCF9 /* Observing */,
 				CFBBD90D26CD1A5A00C98DCD /* Networking */,
 				CF277B1D26C6BE5B0003CDA9 /* Reachability */,
-				6BAA8ABB275F48720042CFCC /* Async */,
-				DF307BBC273C0DFC00540031 /* Combine */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -301,13 +310,14 @@
 			path = Http;
 			sourceTree = "<group>";
 		};
-		CFBBD92E26CD358D00C98DCD /* Tests */ = {
+		CFBBD92E26CD358D00C98DCD /* CRestTests */ = {
 			isa = PBXGroup;
 			children = (
-				CFBBD93226CD358D00C98DCD /* RequestTests.swift */,
 				CFBBD93726CD368200C98DCD /* Info.plist */,
+				CFBBD93226CD358D00C98DCD /* RequestTests.swift */,
+				DFBB9A7828A11C6A00ADDEC3 /* AnyCodableTests.swift */,
 			);
-			path = Tests;
+			path = CRestTests;
 			sourceTree = SOURCE_ROOT;
 		};
 		DAB5A464443FB32EE482F124 /* Frameworks */ = {
@@ -328,6 +338,16 @@
 				DF307BC1273C0E1600540031 /* CombineAlamofireRestIO.swift */,
 			);
 			path = Combine;
+			sourceTree = "<group>";
+		};
+		DFBB9A71289D4F5B00ADDEC3 /* Codable */ = {
+			isa = PBXGroup;
+			children = (
+				DFBB9A7428A0F1C400ADDEC3 /* AnyCodable.swift */,
+				DFBB9A72289D4F7D00ADDEC3 /* AnyDecodable.swift */,
+				DFBB9A7628A0F1CE00ADDEC3 /* AnyEncodable.swift */,
+			);
+			path = Codable;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -364,23 +384,23 @@
 			productReference = CF59738D26C534DE00F3B458 /* CRest.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CF59739526C534DE00F3B458 /* CRestTests */ = {
+		DFBB9A7D28A246FB00ADDEC3 /* CRestTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CF5973A426C534DE00F3B458 /* Build configuration list for PBXNativeTarget "CRestTests" */;
+			buildConfigurationList = DFBB9A8528A246FB00ADDEC3 /* Build configuration list for PBXNativeTarget "CRestTests" */;
 			buildPhases = (
-				9180C678E8EB29D414363FA3 /* [CP] Check Pods Manifest.lock */,
-				CF59739226C534DE00F3B458 /* Sources */,
-				CF59739326C534DE00F3B458 /* Frameworks */,
-				CF59739426C534DE00F3B458 /* Resources */,
+				F6BF72C6AC7EF94649FD8D5C /* [CP] Check Pods Manifest.lock */,
+				DFBB9A7A28A246FB00ADDEC3 /* Sources */,
+				DFBB9A7B28A246FB00ADDEC3 /* Frameworks */,
+				DFBB9A7C28A246FB00ADDEC3 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CF59739926C534DE00F3B458 /* PBXTargetDependency */,
+				DFBB9A8428A246FB00ADDEC3 /* PBXTargetDependency */,
 			);
 			name = CRestTests;
 			productName = CRestTests;
-			productReference = CF59739626C534DE00F3B458 /* CRestTests.xctest */;
+			productReference = DFBB9A7E28A246FB00ADDEC3 /* CRestTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -389,14 +409,14 @@
 		CF59738426C534DE00F3B458 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1250;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					CF59738C26C534DE00F3B458 = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
-					CF59739526C534DE00F3B458 = {
-						CreatedOnToolsVersion = 12.5.1;
+					DFBB9A7D28A246FB00ADDEC3 = {
+						CreatedOnToolsVersion = 13.4.1;
 					};
 				};
 			};
@@ -414,7 +434,7 @@
 			projectRoot = "";
 			targets = (
 				CF59738C26C534DE00F3B458 /* CRest */,
-				CF59739526C534DE00F3B458 /* CRestTests */,
+				DFBB9A7D28A246FB00ADDEC3 /* CRestTests */,
 			);
 		};
 /* End PBXProject section */
@@ -427,7 +447,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CF59739426C534DE00F3B458 /* Resources */ = {
+		DFBB9A7C28A246FB00ADDEC3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -437,28 +457,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		9180C678E8EB29D414363FA3 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CRestTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		CA40487511D85B28E4D46A66 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -499,6 +497,28 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
 		};
+		F6BF72C6AC7EF94649FD8D5C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CRestTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -509,6 +529,7 @@
 				CFBBD91C26CD1A5A00C98DCD /* DynamicURL.swift in Sources */,
 				DF307BC6273C0E1700540031 /* CombineRestIO.swift in Sources */,
 				CF277B2A26C6BF880003CDA9 /* BuildingError.swift in Sources */,
+				DFBB9A73289D4F7D00ADDEC3 /* AnyDecodable.swift in Sources */,
 				CF39E31D26CBEBE6004DDCF9 /* Invocation.swift in Sources */,
 				6BAA8ABF275F48720042CFCC /* AsyncRestIO.swift in Sources */,
 				CF39E31926CBEBE6004DDCF9 /* Observer.swift in Sources */,
@@ -532,12 +553,14 @@
 				DF307BC8273C0E1700540031 /* AF+Combine.swift in Sources */,
 				CFBBD91E26CD1A5A00C98DCD /* DynamicHeaders.swift in Sources */,
 				CF277B1826C6BC570003CDA9 /* NetworkInformant.swift in Sources */,
+				DFBB9A7528A0F1C400ADDEC3 /* AnyCodable.swift in Sources */,
 				6BAA8ABE275F48720042CFCC /* AsyncAlamofireRestIO.swift in Sources */,
 				CF277AFB26C6BAF70003CDA9 /* AF+Trust.swift in Sources */,
 				CF277B2826C6BF660003CDA9 /* NetworkError.swift in Sources */,
 				DF307BC5273C0E1700540031 /* ProgressPublisher.swift in Sources */,
 				DF307BC7273C0E1700540031 /* CombineAlamofireRestIO.swift in Sources */,
 				CFBBD91F26CD1A5A00C98DCD /* TrustEvaluating.swift in Sources */,
+				DFBB9A7728A0F1CE00ADDEC3 /* AnyEncodable.swift in Sources */,
 				CF39E31C26CBEBE6004DDCF9 /* ObserverSource.swift in Sources */,
 				CF277B0026C6BAF70003CDA9 /* RestInterceptor.swift in Sources */,
 				CF277B3126C6C0180003CDA9 /* SerializationError.swift in Sources */,
@@ -545,21 +568,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CF59739226C534DE00F3B458 /* Sources */ = {
+		DFBB9A7A28A246FB00ADDEC3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CFBBD93626CD35DA00C98DCD /* RequestTests.swift in Sources */,
+				DFBB9A8828A2470100ADDEC3 /* RequestTests.swift in Sources */,
+				DFBB9A8928A2470400ADDEC3 /* AnyCodableTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CF59739926C534DE00F3B458 /* PBXTargetDependency */ = {
+		DFBB9A8428A246FB00ADDEC3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CF59738C26C534DE00F3B458 /* CRest */;
-			targetProxy = CF59739826C534DE00F3B458 /* PBXContainerItemProxy */;
+			targetProxy = DFBB9A8328A246FB00ADDEC3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -740,39 +764,41 @@
 			};
 			name = Release;
 		};
-		CF5973A526C534DE00F3B458 /* Debug */ = {
+		DFBB9A8628A246FB00ADDEC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6FC1AA2DC67485025641E4E2 /* Pods-CRestTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = cometrica.CRestTests;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9XVT6R2MZ7;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CRestTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = CRest.CRestTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		CF5973A626C534DE00F3B458 /* Release */ = {
+		DFBB9A8728A246FB00ADDEC3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E02A3EA14293626AE63222D6 /* Pods-CRestTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = cometrica.CRestTests;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9XVT6R2MZ7;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CRestTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = CRest.CRestTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -799,11 +825,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CF5973A426C534DE00F3B458 /* Build configuration list for PBXNativeTarget "CRestTests" */ = {
+		DFBB9A8528A246FB00ADDEC3 /* Build configuration list for PBXNativeTarget "CRestTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CF5973A526C534DE00F3B458 /* Debug */,
-				CF5973A626C534DE00F3B458 /* Release */,
+				DFBB9A8628A246FB00ADDEC3 /* Debug */,
+				DFBB9A8728A246FB00ADDEC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

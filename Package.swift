@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(name: "Alamofire", url: "https://github.com/Alamofire/Alamofire.git", from: "5.5.0"),
+        .package(name: "Alamofire", url: "https://github.com/Alamofire/Alamofire.git", from: "5.6.2"),
         .package(name: "CFoundation", url: "https://github.com/ayham-achami/CFoundation.git", .branch("mainline"))
     ],
     targets: [
