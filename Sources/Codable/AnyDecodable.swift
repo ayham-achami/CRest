@@ -26,8 +26,10 @@
 import Foundation
 
 @usableFromInline
+/// Любой Decodable объект
 protocol AnyDecodable: Baseable {}
 
+// MARK: - AnyDecodable + Default
 extension AnyDecodable {
     
     public init(from decoder: Decoder) throws {
@@ -38,8 +40,6 @@ extension AnyDecodable {
             self.init(bool)
         } else if let int = try? container.decode(Int.self) {
             self.init(int)
-        } else if let uint = try? container.decode(UInt.self) {
-            self.init(uint)
         } else if let double = try? container.decode(Double.self) {
             self.init(double)
         } else if let string = try? container.decode(String.self) {
@@ -54,6 +54,7 @@ extension AnyDecodable {
     }
 }
 
+/// Любой ответ
 @frozen public struct AnyResponse: Response, AnyDecodable, JSONRepresentable {
     
     public let base: Any
@@ -63,6 +64,7 @@ extension AnyDecodable {
     }
 }
 
+// MARK: - AnyResponse + CustomStringConvertible
 extension AnyResponse: CustomStringConvertible {
     
     public var description: String {
@@ -73,6 +75,7 @@ extension AnyResponse: CustomStringConvertible {
     }
 }
 
+// MARK: - AnyResponse + CustomDebugStringConvertible
 extension AnyResponse: CustomDebugStringConvertible {
     
     public var debugDescription: String {
@@ -83,6 +86,7 @@ extension AnyResponse: CustomDebugStringConvertible {
     }
 }
 
+// MARK: - AnyResponse + ExpressibleByNilLiteral
 extension AnyResponse: ExpressibleByNilLiteral {
     
     public init(nilLiteral: ()) {
@@ -90,6 +94,7 @@ extension AnyResponse: ExpressibleByNilLiteral {
     }
 }
 
+// MARK: - AnyResponse + ExpressibleByBooleanLiteral
 extension AnyResponse: ExpressibleByBooleanLiteral {
     
     public typealias BooleanLiteralType = Bool
@@ -99,6 +104,7 @@ extension AnyResponse: ExpressibleByBooleanLiteral {
     }
 }
 
+// MARK: - AnyResponse + ExpressibleByIntegerLiteral
 extension AnyResponse: ExpressibleByIntegerLiteral {
     
     public typealias IntegerLiteralType = Int
@@ -108,6 +114,7 @@ extension AnyResponse: ExpressibleByIntegerLiteral {
     }
 }
 
+// MARK: - AnyResponse + ExpressibleByFloatLiteral
 extension AnyResponse: ExpressibleByFloatLiteral {
     
     public typealias FloatLiteralType = Double
@@ -117,6 +124,7 @@ extension AnyResponse: ExpressibleByFloatLiteral {
     }
 }
 
+// MARK: - AnyResponse + ExpressibleByStringLiteral
 extension AnyResponse: ExpressibleByStringLiteral {
     
     public typealias StringLiteralType = String
@@ -126,6 +134,7 @@ extension AnyResponse: ExpressibleByStringLiteral {
     }
 }
 
+// MARK: - AnyResponse + ExpressibleByArrayLiteral
 extension AnyResponse: ExpressibleByArrayLiteral {
     
     public typealias ArrayLiteralElement = AnyResponse
@@ -135,6 +144,7 @@ extension AnyResponse: ExpressibleByArrayLiteral {
     }
 }
 
+// MARK: - AnyResponse + ExpressibleByDictionaryLiteral
 extension AnyResponse: ExpressibleByDictionaryLiteral {
     
     public typealias Key = String

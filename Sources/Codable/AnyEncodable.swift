@@ -26,8 +26,10 @@
 import Foundation
 
 @usableFromInline
+/// /// Любой Encodable объект
 protocol AnyEncodable: Baseable {}
 
+// MARK: - AnyEncodable
 extension AnyEncodable {
     
     // swiftlint:disable:next cyclomatic_complexity
@@ -42,24 +44,6 @@ extension AnyEncodable {
             try container.encode(bool)
         case let int as Int:
             try container.encode(int)
-        case let int8 as Int8:
-            try container.encode(int8)
-        case let int16 as Int16:
-            try container.encode(int16)
-        case let int32 as Int32:
-            try container.encode(int32)
-        case let int64 as Int64:
-            try container.encode(int64)
-        case let uint as UInt:
-            try container.encode(uint)
-        case let uint8 as UInt8:
-            try container.encode(uint8)
-        case let uint16 as UInt16:
-            try container.encode(uint16)
-        case let uint32 as UInt32:
-            try container.encode(uint32)
-        case let uint64 as UInt64:
-            try container.encode(uint64)
         case let float as Float:
             try container.encode(float)
         case let double as Double:
@@ -83,6 +67,7 @@ extension AnyEncodable {
     }
 }
 
+/// Любые параметры запроса
 @frozen public struct AnyParameters: Parameters, AnyEncodable, JSONRepresentable {
     
     public let base: Any
@@ -92,6 +77,7 @@ extension AnyEncodable {
     }
 }
 
+// MARK: - AnyEncodable + CustomStringConvertible
 extension AnyParameters: CustomStringConvertible {
     
     public var description: String {
@@ -102,6 +88,7 @@ extension AnyParameters: CustomStringConvertible {
     }
 }
 
+// MARK: - AnyEncodable + CustomDebugStringConvertible
 extension AnyParameters: CustomDebugStringConvertible {
     
     public var debugDescription: String {
@@ -112,6 +99,7 @@ extension AnyParameters: CustomDebugStringConvertible {
     }
 }
 
+// MARK: - AnyEncodable + ExpressibleByNilLiteral
 extension AnyParameters: ExpressibleByNilLiteral {
     
     public init(nilLiteral: ()) {
@@ -119,6 +107,7 @@ extension AnyParameters: ExpressibleByNilLiteral {
     }
 }
 
+// MARK: - AnyEncodable + ExpressibleByBooleanLiteral
 extension AnyParameters: ExpressibleByBooleanLiteral {
     
     public typealias BooleanLiteralType = Bool
@@ -128,6 +117,7 @@ extension AnyParameters: ExpressibleByBooleanLiteral {
     }
 }
 
+// MARK: - AnyEncodable + ExpressibleByIntegerLiteral
 extension AnyParameters: ExpressibleByIntegerLiteral {
     
     public typealias IntegerLiteralType = Int
@@ -137,6 +127,7 @@ extension AnyParameters: ExpressibleByIntegerLiteral {
     }
 }
 
+// MARK: - AnyEncodable + ExpressibleByFloatLiteral
 extension AnyParameters: ExpressibleByFloatLiteral {
     
     public typealias FloatLiteralType = Double
@@ -146,6 +137,7 @@ extension AnyParameters: ExpressibleByFloatLiteral {
     }
 }
 
+// MARK: - AnyEncodable + ExpressibleByStringLiteral
 extension AnyParameters: ExpressibleByStringLiteral {
     
     public typealias StringLiteralType = String
@@ -155,6 +147,7 @@ extension AnyParameters: ExpressibleByStringLiteral {
     }
 }
 
+// MARK: - AnyEncodable + ExpressibleByArrayLiteral
 extension AnyParameters: ExpressibleByArrayLiteral {
     
     public typealias ArrayLiteralElement = AnyParameters
@@ -164,6 +157,7 @@ extension AnyParameters: ExpressibleByArrayLiteral {
     }
 }
 
+// MARK: - AnyEncodable + ExpressibleByDictionaryLiteral
 extension AnyParameters: ExpressibleByDictionaryLiteral {
     
     public typealias Key = String
