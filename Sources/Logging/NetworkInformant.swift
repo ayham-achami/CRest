@@ -99,6 +99,13 @@ public final class NetworkInformant {
         }
         """, file, function, line)
     }
+    
+    public func log(json data: Data,
+                    _ file: StaticString = #file,
+                    _ function: StaticString = #function,
+                    _ line: Int = #line) {
+        logger.json(data, file, function, line)
+    }
 
     public func log(debug message: @autoclosure () -> Any,
                     _ file: StaticString = #file,
@@ -112,12 +119,5 @@ public final class NetworkInformant {
                     _ function: StaticString = #function,
                     _ line: Int = #line) {
         logger.error(message(), file, function, line)
-    }
-    
-    public func log(json data: Data,
-                    _ file: StaticString = #file,
-                    _ function: StaticString = #function,
-                    _ line: Int = #line) {
-        logger.json(data, file, function, line)
     }
 }

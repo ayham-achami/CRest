@@ -28,7 +28,7 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CF59739526C534DE00F3B458"
+               BlueprintIdentifier = "DFBB9A7D28A246FB00ADDEC3"
                BuildableName = "CRestTests.xctest"
                BlueprintName = "CRestTests"
                ReferencedContainer = "container:CRest.xcodeproj">
@@ -46,7 +46,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CF59739526C534DE00F3B458"
+               BlueprintIdentifier = "DFBB9A7D28A246FB00ADDEC3"
                BuildableName = "CRestTests.xctest"
                BlueprintName = "CRestTests"
                ReferencedContainer = "container:CRest.xcodeproj">
