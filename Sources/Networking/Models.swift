@@ -72,7 +72,7 @@ extension CollectionRepresented where Item: Model, Index == Int {
 }
 
 /// Протокол реализующий логику парсинга дефолтное значение для энематоров
-public protocol RawResponse: Response & RawRepresentable {
+public protocol RawResponse: Response, RawRepresentable {
 
     /// Дефолтное значение
     static var `default`: Self { get }
