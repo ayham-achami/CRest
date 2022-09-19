@@ -46,6 +46,9 @@
 		DF307BC6273C0E1700540031 /* CombineRestIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BC0273C0E1600540031 /* CombineRestIO.swift */; };
 		DF307BC7273C0E1700540031 /* CombineAlamofireRestIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BC1273C0E1600540031 /* CombineAlamofireRestIO.swift */; };
 		DF307BC8273C0E1700540031 /* AF+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BC2273C0E1700540031 /* AF+Combine.swift */; };
+		DF45870D28D893E700504053 /* Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF45870C28D893E700504053 /* Base64.swift */; };
+		DF45870F28D8955800504053 /* Base64+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF45870E28D8955800504053 /* Base64+JSON.swift */; };
+		DF45871128D895A900504053 /* GZip+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF45871028D895A900504053 /* GZip+Base64.swift */; };
 		DFBB9A73289D4F7D00ADDEC3 /* AnyDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A72289D4F7D00ADDEC3 /* AnyDecodable.swift */; };
 		DFBB9A7728A0F1CE00ADDEC3 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A7628A0F1CE00ADDEC3 /* AnyEncodable.swift */; };
 		DFBB9A8228A246FB00ADDEC3 /* CRest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF59738D26C534DE00F3B458 /* CRest.framework */; };
@@ -121,6 +124,9 @@
 		DF307BC0273C0E1600540031 /* CombineRestIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombineRestIO.swift; sourceTree = "<group>"; };
 		DF307BC1273C0E1600540031 /* CombineAlamofireRestIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombineAlamofireRestIO.swift; sourceTree = "<group>"; };
 		DF307BC2273C0E1700540031 /* AF+Combine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AF+Combine.swift"; sourceTree = "<group>"; };
+		DF45870C28D893E700504053 /* Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64.swift; sourceTree = "<group>"; };
+		DF45870E28D8955800504053 /* Base64+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Base64+JSON.swift"; sourceTree = "<group>"; };
+		DF45871028D895A900504053 /* GZip+Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GZip+Base64.swift"; sourceTree = "<group>"; };
 		DF8571B8275FA1DE00C65491 /* CRest.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = CRest.podspec; sourceTree = "<group>"; };
 		DFBB9A72289D4F7D00ADDEC3 /* AnyDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyDecodable.swift; sourceTree = "<group>"; };
 		DFBB9A7628A0F1CE00ADDEC3 /* AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
@@ -256,6 +262,7 @@
 				CF59739026C534DE00F3B458 /* CRest.h */,
 				6BAA8ABB275F48720042CFCC /* Async */,
 				CF277B2426C6BF660003CDA9 /* Errors */,
+				DF45870B28D893DB00504053 /* Base64 */,
 				CF277B1626C6BC570003CDA9 /* Logging */,
 				DFBB9A71289D4F5B00ADDEC3 /* Codable */,
 				DF307BBC273C0DFC00540031 /* Combine */,
@@ -344,6 +351,16 @@
 				DF307BC1273C0E1600540031 /* CombineAlamofireRestIO.swift */,
 			);
 			path = Combine;
+			sourceTree = "<group>";
+		};
+		DF45870B28D893DB00504053 /* Base64 */ = {
+			isa = PBXGroup;
+			children = (
+				DF45870C28D893E700504053 /* Base64.swift */,
+				DF45871028D895A900504053 /* GZip+Base64.swift */,
+				DF45870E28D8955800504053 /* Base64+JSON.swift */,
+			);
+			path = Base64;
 			sourceTree = "<group>";
 		};
 		DFBB9A71289D4F5B00ADDEC3 /* Codable */ = {
@@ -563,6 +580,7 @@
 				CF277AFF26C6BAF70003CDA9 /* AF+Reachability.swift in Sources */,
 				CF277AFE26C6BAF70003CDA9 /* AF+Error.swift in Sources */,
 				CF39E31B26CBEBE6004DDCF9 /* ProgressController.swift in Sources */,
+				DF45870F28D8955800504053 /* Base64+JSON.swift in Sources */,
 				CFBBD92026CD1A5A00C98DCD /* Multipart.swift in Sources */,
 				CF39E31E26CBEBE6004DDCF9 /* ObserverProtocol.swift in Sources */,
 				CF277AFD26C6BAF70003CDA9 /* DynamicRequest.swift in Sources */,
@@ -571,8 +589,10 @@
 				CF277B2F26C6BFEA0003CDA9 /* UIImage.swift in Sources */,
 				CFBBD91D26CD1A5A00C98DCD /* Http.swift in Sources */,
 				CFBBD91826CD1A5A00C98DCD /* Models.swift in Sources */,
+				DF45871128D895A900504053 /* GZip+Base64.swift in Sources */,
 				CFBBD91A26CD1A5A00C98DCD /* Request+EndPoint.swift in Sources */,
 				CFBBD91B26CD1A5A00C98DCD /* DynamicResponse.swift in Sources */,
+				DF45870D28D893E700504053 /* Base64.swift in Sources */,
 				CF277B1A26C6BC770003CDA9 /* LogProtocols.swift in Sources */,
 				CF277AFA26C6BAF70003CDA9 /* AF+Extensions.swift in Sources */,
 				CF277B1F26C6BE5B0003CDA9 /* ReachabilityListener.swift in Sources */,
