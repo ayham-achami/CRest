@@ -87,11 +87,16 @@ public struct ImageMultipartParameter: MultipartParameter {
 
     public let data: Data
     public let name: String
+    public let fileName: String?
     public let mime: String
 
-    public init(_ image: UIImage, _ name: String, _ serialization: UIImage.Serialization = .png) throws {
+    public init(_ image: UIImage,
+                _ name: String,
+                _ fileName: String? = nil,
+                _ serialization: UIImage.Serialization = .png) throws {
         self.data = try image.serialized(serialization)
         self.name = name
+        self.fileName = fileName
         self.mime = "image/\(serialization.rawValue)"
     }
 }

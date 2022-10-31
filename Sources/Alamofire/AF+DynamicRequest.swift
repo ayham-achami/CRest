@@ -72,7 +72,10 @@ extension DynamicRequest {
                 data.append(parameter.data, withName: parameter.name)
             #if canImport(UIKit)
             case let parameter as ImageMultipartParameter:
-                data.append(parameter.data, withName: parameter.name, mimeType: parameter.mime)
+                data.append(parameter.data,
+                            withName: parameter.name,
+                            fileName: parameter.fileName,
+                            mimeType: parameter.mime)
             #endif
             case let parameter as StreamMultipartParameter:
                 data.append(parameter.url, withName: parameter.name)
