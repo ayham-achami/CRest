@@ -114,25 +114,28 @@ public extension RawResponse where RawValue: Response {
     }
 }
 
-/// Протокол создание объекта моделий через билдер
+/// Протокол создание объекта модели через билдер
 public protocol ParametersBuilder: AnyObject {
 
-    /// Создание объекта моделий через билдер
+    /// Создание объекта модели через билдер
     func build<ParametersType>() throws -> ParametersType where ParametersType: Parameters
 }
 
-/// Пустой обеъкт мадели
+/// Пустой объект модели
 public struct Empty: UniversalModel {
 
     public init() {}
 
     public init(from decoder: Decoder) throws {
-        var container = try decoder.unkeyedContainer()
-        guard
-            try container.decodeIfPresent([String: String].self) == nil
-        else { throw NetworkError.parsing(Data()) }
-        guard
-            let response = try container.decodeIfPresent(String.self), response.isEmpty
-        else { throw NetworkError.parsing(Data()) }
+        let container = try decoder.singleValueContainer()
+        if let response = try? container.decode([String: String].self), !response.isEmpty {
+            throw NetworkError.parsing(Data())
+        } else if let response = try? container.decode(String.self), !response.isEmpty || response != "{}" {
+            if let data = response.data(using: .utf8) {
+                throw NetworkError.parsing(data)
+            } else {
+                throw NetworkError.parsing(Data())
+            }
+        }
     }
 }

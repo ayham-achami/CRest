@@ -46,6 +46,10 @@ public struct DynamicRequest {
     public let headers: [String: String]
     /// Наблюдатель запрса
     public let interceptor: RestInterceptor
+    /// <#Description#>
+    public let emptyResponseCodes: Set<Int>
+    /// <#Description#>
+    public let emptyRequestMethods: Set<Http.Method>
 
     /// Билдер
     public final class Builder {
@@ -59,6 +63,8 @@ public struct DynamicRequest {
         private var decoder: JSONDecoder = JSONDecoder()
         private var encoder: JSONEncoder = JSONEncoder()
         private var interceptor: RestInterceptor = Http.Interceptor()
+        private var emptyResponseCodes: Set<Int> = [204]
+        private var emptyRequestMethods: Set<Http.Method> = [.head]
 
         /// Инициализация
         /// - Parameter parameters: Прпметры запроса
@@ -135,6 +141,17 @@ public struct DynamicRequest {
             self.interceptor = interceptor
             return self
         }
+        
+        public func with(emptyResponseCodes: Set<Int>) -> Self {
+            self.emptyResponseCodes = emptyResponseCodes
+            return self
+        }
+        
+        public func with(emptyRequestMethods: Set<Http.Method>) -> Self {
+            self.emptyRequestMethods = emptyRequestMethods
+            return self
+        }
+        
 
         /// Создает запрос
         public func build() throws -> DynamicRequest {
@@ -147,7 +164,9 @@ public struct DynamicRequest {
                                   parameters: parameters,
                                   encoding: encoding,
                                   headers: headers,
-                                  interceptor: interceptor)
+                                  interceptor: interceptor,
+                                  emptyResponseCodes: emptyResponseCodes,
+                                  emptyRequestMethods: emptyRequestMethods)
         }
     }
 }

@@ -49,6 +49,7 @@
 		DF45870D28D893E700504053 /* Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF45870C28D893E700504053 /* Base64.swift */; };
 		DF45870F28D8955800504053 /* Base64+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF45870E28D8955800504053 /* Base64+JSON.swift */; };
 		DF45871128D895A900504053 /* GZip+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF45871028D895A900504053 /* GZip+Base64.swift */; };
+		DF68EE7329B0BC1700381CE1 /* IOResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF68EE7229B0BC1700381CE1 /* IOResponseSerializer.swift */; };
 		DFBB9A73289D4F7D00ADDEC3 /* AnyDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A72289D4F7D00ADDEC3 /* AnyDecodable.swift */; };
 		DFBB9A7728A0F1CE00ADDEC3 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A7628A0F1CE00ADDEC3 /* AnyEncodable.swift */; };
 		DFBB9A8228A246FB00ADDEC3 /* CRest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF59738D26C534DE00F3B458 /* CRest.framework */; };
@@ -127,6 +128,7 @@
 		DF45870C28D893E700504053 /* Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64.swift; sourceTree = "<group>"; };
 		DF45870E28D8955800504053 /* Base64+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Base64+JSON.swift"; sourceTree = "<group>"; };
 		DF45871028D895A900504053 /* GZip+Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GZip+Base64.swift"; sourceTree = "<group>"; };
+		DF68EE7229B0BC1700381CE1 /* IOResponseSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOResponseSerializer.swift; sourceTree = "<group>"; };
 		DF8571B8275FA1DE00C65491 /* CRest.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = CRest.podspec; sourceTree = "<group>"; };
 		DFBB9A72289D4F7D00ADDEC3 /* AnyDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyDecodable.swift; sourceTree = "<group>"; };
 		DFBB9A7628A0F1CE00ADDEC3 /* AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				CF277AF926C6BAF70003CDA9 /* AF+Interceptor.swift */,
 				CF277AF726C6BAF70003CDA9 /* AF+Reachability.swift */,
 				CF277AF426C6BAF70003CDA9 /* AF+DynamicRequest.swift */,
+				DF68EE7229B0BC1700381CE1 /* IOResponseSerializer.swift */,
 			);
 			path = Alamofire;
 			sourceTree = "<group>";
@@ -582,6 +585,7 @@
 				CF39E31B26CBEBE6004DDCF9 /* ProgressController.swift in Sources */,
 				DF45870F28D8955800504053 /* Base64+JSON.swift in Sources */,
 				CFBBD92026CD1A5A00C98DCD /* Multipart.swift in Sources */,
+				DF68EE7329B0BC1700381CE1 /* IOResponseSerializer.swift in Sources */,
 				CF39E31E26CBEBE6004DDCF9 /* ObserverProtocol.swift in Sources */,
 				CF277AFD26C6BAF70003CDA9 /* DynamicRequest.swift in Sources */,
 				CFBBD91926CD1A5A00C98DCD /* RestIOConfiguration.swift in Sources */,
