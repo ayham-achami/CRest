@@ -1,10 +1,27 @@
 //
-//  AsyncAlamofireRestIO.swift
-//  CFoundation
+//  AF+Trust.swift
 //
-//  Created by Aleksandr Miaots on 15.11.2021.
-//  Copyright © 2021 Cometrica. All rights reserved.
+//  The MIT License (MIT)
 //
+//  Copyright (c) 2019 Community Arch
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
 
 #if compiler(>=5.6.0) && canImport(_Concurrency)
 import Alamofire
@@ -50,7 +67,11 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
     
     public func perform<Response>(_ request: DynamicRequest,
                                   response: Response.Type) async throws -> Response where Response: CRest.Response {
-        let requester = dataRequest(for: request)
+        try await perform(request, response: response).response
+    }
+    
+    public func perform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response {
+        let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
         let response = await requester
             .serializingResponse(using: IOResponseSerializer<Response>(request))
@@ -58,10 +79,10 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         switch response.result {
         case let .success(model):
             configuration.informant.log(response: response)
-            return model
+            return .init(model, response.response)
         case let .failure(error):
             configuration.informant.logError(response: response)
-            throw reason(from: error, response.response?.statusCode, responseData: response.data)
+            throw error.reason(with: response.response?.statusCode, responseData: response.data)
         }
     }
     
@@ -69,7 +90,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
                                    with request: DynamicRequest,
                                    response: Response.Type,
                                    progress: ProgressHandler?) async throws -> Response where Response: CRest.Response {
-        let downloader = downloadRequest(for: request, into: destination)
+        let downloader = IO.with(session).downloadRequest(for: request, into: destination)
         configuration.informant.log(request: downloader)
         invoke(progress, from: downloader.downloadProgress())
         let downloadResponse = await downloader
@@ -81,7 +102,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
             return model
         case .failure(let error):
             configuration.informant.logError(response: downloadResponse)
-            throw reason(from: error, downloadResponse.response?.statusCode)
+            throw error.reason(with: downloadResponse.response?.statusCode)
         }
     }
     
@@ -89,7 +110,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
                                  with request: DynamicRequest,
                                  response: Response.Type,
                                  progress: ProgressHandler?) async throws -> Response where Response: CRest.Response {
-        let uploader = uploadRequest(for: request, from: source)
+        let uploader = IO.with(session).uploadRequest(for: request, from: source)
         configuration.informant.log(request: uploader)
         invoke(progress, from: uploader.uploadProgress())
         let uploadResponse = await uploader
@@ -101,107 +122,16 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
             return model
         case .failure(let error):
             configuration.informant.logError(response: uploadResponse)
-            throw reason(from: error, uploadResponse.response?.statusCode)
-        }
-    }
-    
-    /// <#Description#>
-    /// - Parameter request: <#request description#>
-    /// - Returns: <#description#>
-    private func dataRequest(for request: DynamicRequest) -> DataRequest {
-        switch request.encoding {
-        case let .URL(configuration):
-            return session.request(request.url,
-                                   method: request.afMethod,
-                                   parameters: request.afParameters,
-                                   encoder: configuration.URLEncoded,
-                                   headers: request.afHeders,
-                                   interceptor: request.interceptor)
-            .validate(request.validate)
-            .retry(request.interceptor)
-        case .JSON:
-            return session.request(request.url,
-                                   method: request.afMethod,
-                                   parameters: request.afParameters,
-                                   encoder: request.afJSONEncoder,
-                                   headers: request.afHeders,
-                                   interceptor: request.interceptor)
-            .validate(request.validate)
-            .retry(request.interceptor)
-        case .multipart:
-            return session.upload(multipartFormData: request.encode(into:),
-                                  to: request.url,
-                                  method: request.afMethod,
-                                  headers: request.afHeders,
-                                  interceptor: request.interceptor)
-            .validate(request.validate)
-            .retry(request.interceptor)
+            throw error.reason(with: uploadResponse.response?.statusCode)
         }
     }
     
     // MARK: - Private
     
-    /// Возвращает запрос загрузки для заданного запроса
+    /// Вызвать прогресс загрузки из асинхронного стрима
     /// - Parameters:
-    ///   - request: Динамический запрос
-    ///   - destination: Ссылка куда сохранить загруженных данных
-    private func downloadRequest(for request: DynamicRequest, into destination: Destination) -> DownloadRequest {
-        let afDestination: DownloadRequest.Destination = { _, _ in (destination, [.removePreviousFile]) }
-        switch request.encoding {
-        case let .URL(configuration):
-            return session.download(request.url,
-                                    method: request.afMethod,
-                                    parameters: request.afParameters,
-                                    encoder: configuration.URLEncoded,
-                                    headers: request.afHeders,
-                                    interceptor: request.interceptor,
-                                    to: afDestination)
-            .validate(request.validate)
-            .retry(request.interceptor)
-        case .JSON:
-            return session.download(request.url,
-                                    method: request.afMethod,
-                                    parameters: request.afParameters,
-                                    encoder: JSONParameterEncoder.default,
-                                    headers: request.afHeders,
-                                    interceptor: request.interceptor,
-                                    to: afDestination)
-            .validate(request.validate)
-            .retry(request.interceptor)
-        case .multipart:
-            preconditionFailure("Download request not support multipart parameters")
-        }
-    }
-    
-    /// Возвращает запрос выгрузки для заданного запроса
-    /// - Parameters:
-    ///   - request: Динамический запрос
-    ///   - source: Ссылка на источник данных
-    private func uploadRequest(for request: DynamicRequest, from source: Source) -> UploadRequest {
-        switch request.encoding {
-        case .URL, .JSON:
-            return session.upload(source,
-                                  to: request.url,
-                                  method: request.afMethod,
-                                  headers: request.afHeders,
-                                  interceptor: request.interceptor)
-            .validate(request.validate)
-            .retry(request.interceptor)
-        case .multipart:
-            return session.upload(multipartFormData: request.encode(into:),
-                                  to: request.url,
-                                  method: request.afMethod,
-                                  headers: request.afHeders,
-                                  interceptor: request.interceptor)
-            .validate(request.validate)
-            .retry(request.interceptor)
-        }
-    }
-    
-    /// <#Description#>
-    /// - Parameters:
-    ///   - progress: <#progress description#>
-    ///   - stream: <#stream description#>
+    ///   - progress: Обработчик прогресса
+    ///   - stream: Стрим загрузки
     private func invoke(_ progress: ProgressHandler?, from stream: StreamOf<Progress>) {
         guard let progress else { return }
         Task {
@@ -215,8 +145,8 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
 // MARK: - NetworkInformant + Concurrency
 private extension NetworkInformant {
     
-    /// <#Description#>
-    /// - Parameter request: <#request description#>
+    /// Логировать описание запроса из асинхронного стрима
+    /// - Parameter request: Запрос
     func log(request: Alamofire.Request) {
         Task {
             for await request in request.urlRequests() {

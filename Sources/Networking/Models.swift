@@ -71,13 +71,13 @@ extension CollectionRepresented where Item: Model, Index == Int {
     }
 }
 
-/// Протокол реализующий логику парсинга дефолтное значение для энематоров
+/// Протокол реализующий логику парсинга дефолтное значение для `Enum`
 public protocol RawResponse: Response, RawRepresentable {
 
     /// Дефолтное значение
     static var `default`: Self { get }
 
-    /// Инициализация с помощью первоначальнего значения
+    /// Инициализация с помощью первоначального значения
     /// если значение не известное возвращается дефолтное значение
     /// - Parameter rawValue: Значение первоначальное
     init(try rawValue: RawValue)
@@ -123,7 +123,8 @@ public protocol ParametersBuilder: AnyObject {
 
 /// Пустой объект модели
 public struct Empty: UniversalModel {
-
+    
+    /// Инициализация
     public init() {}
 
     public init(from decoder: Decoder) throws {

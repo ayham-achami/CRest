@@ -26,17 +26,17 @@
 import CFoundation
 import Foundation
 
-/// Логирование сетвых запросов
+/// Логирование сетевых запросов
 public protocol RequestLog: CustomCURLStringConvertible {
 
-    /// Запрос
+    /// Описание запроса
     var requestDescription: String { get }
 }
 
-/// Логирование сетвых ответов
+/// Логирование сетевых ответов
 public protocol ResponseLog: CustomCURLStringConvertible {
 
-    /// Ответ
+    /// Описание ответа
     var responseDescription: String { get }
 }
 

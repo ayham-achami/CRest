@@ -25,10 +25,10 @@
 
 import Foundation
 
-/// Http нэмспасе
+/// Http
 public enum Http {
     
-    /// Объект, кодирующий в строки запроса в кодировке URL.
+    /// Объект, кодирующий в строки запроса в URL.
     public struct EncodingConfiguration {
     
         /// Кодировка, используемая для значений `Array`
@@ -105,7 +105,6 @@ public enum Http {
     }
 
     /// Определения Http методов
-    ///
     /// See https://tools.ietf.org/html/rfc7231#section-4.3
     public enum Method: String, CaseIterable {
         

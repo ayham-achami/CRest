@@ -1,10 +1,27 @@
 //
-//  AsyncRestIO.swift
-//  CFoundation
+//  AF+Trust.swift
 //
-//  Created by Aleksandr Miaots on 15.11.2021.
-//  Copyright © 2021 Cometrica. All rights reserved.
+//  The MIT License (MIT)
 //
+//  Copyright (c) 2019 Community Arch
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
 
 #if compiler(>=5.5.2) && canImport(_Concurrency)
 import Foundation
@@ -27,6 +44,13 @@ public protocol AsyncRestIO: AnyObject {
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
     func perform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> Response where Response: CRest.Response
+    
+    /// Выполняет REST http запроса
+    /// - Parameters:
+    ///   - request: Динамический запрос
+    ///   - response: Тип ответа
+    /// - Returns: `DynamicResponse` c ответом на запрос
+    func perform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response
     
     /// Скачает данные и сохраняет их на диске
     /// - Parameters:

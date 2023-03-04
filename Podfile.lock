@@ -1,7 +1,7 @@
 PODS:
-  - Alamofire (5.6.2)
+  - Alamofire (5.6.4)
   - CFoundation (1.0.0)
-  - SwiftLint (0.49.1)
+  - SwiftLint (0.50.3)
 
 DEPENDENCIES:
   - Alamofire
@@ -20,14 +20,14 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   CFoundation:
-    :commit: 3078b78d10c740e3c3c281b05b6b265224e5fc29
+    :commit: 1f2b721a29c9cba5202a3c4389a702033f7f7373
     :git: https://github.com/ayham-achami/CFoundation.git
 
 SPEC CHECKSUMS:
-  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
+  Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
   CFoundation: c483c0174fa4c40f9fa67f12feb860aeafa18db4
-  SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
+  SwiftLint: 77f7cb2b9bb81ab4a12fcc86448ba3f11afa50c6
 
 PODFILE CHECKSUM: 73452898124ec216142250694890a353969628ae
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

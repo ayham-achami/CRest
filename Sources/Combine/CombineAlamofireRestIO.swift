@@ -23,7 +23,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if canImport(Combine)
 import Combine
 import Alamofire
 import Foundation
@@ -71,40 +70,53 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     
     public func perform<Response>(_ request: DynamicRequest,
                                   response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response {
-        let dataRequest = self.dataRequest(for: request)
-        configuration.informant.log(request: dataRequest)
-        return dataRequest.response(of: response,
-                                    queue: serializationQueue,
-                                    decoder: request.decoder,
-                                    interceptor: request.interceptor,
-                                    informant: configuration.informant)
+        let requester = IO.with(session).dataRequest(for: request)
+        configuration.informant.log(request: requester)
+        return requester.publishResponse(using: IOResponseSerializer<Response>(request))
+            .tryMap { [weak self] response in
+                self?.configuration.informant.log(response: response)
+                switch response.result {
+                case let .success(model):
+                    self?.configuration.informant.log(response: response)
+                    return model
+                case let .failure(error):
+                    self?.configuration.informant.logError(response: response)
+                    throw error.reason(with: response.response?.statusCode, responseData: response.data)
+                }
+            }.eraseToAnyPublisher()
     }
     
     public func perform<Response>(_ request: DynamicRequest,
                                   response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response {
-        let dataRequest = self.dataRequest(for: request)
-        configuration.informant.log(request: dataRequest)
-        return dataRequest.response(of: response,
-                                    queue: serializationQueue,
-                                    decoder: request.decoder,
-                                    interceptor: request.interceptor,
-                                    informant: configuration.informant)
+        let requester = IO.with(session).dataRequest(for: request)
+        configuration.informant.log(request: requester)
+        return requester.publishResponse(using: IOResponseSerializer<Response>(request))
+            .tryMap { [weak self] response in
+                switch response.result {
+                case let .success(model):
+                    self?.configuration.informant.log(response: response)
+                    return .init(model, response.response)
+                case let .failure(error):
+                    self?.configuration.informant.logError(response: response)
+                    throw error.reason(with: response.response?.statusCode, responseData: response.data)
+                }
+            }.eraseToAnyPublisher()
     }
     
     public func download<Response>(into destination: Destination,
                                    with request: DynamicRequest,
                                    response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
-        let downloader = downloadRequest(for: request, info: destination)
+        let downloader = IO.with(session).downloadRequest(for: request, into: destination)
         configuration.informant.log(request: downloader)
-        let responsePublisher = downloader
-            .publishDecodable(type: response, decoder: request.decoder)
+        let responsePublisher = downloader.publishResponse(using: IOResponseSerializer<Response>(request))
             .tryMap { [weak self] response -> Response in
-                self?.configuration.informant.log(response: response)
                 switch response.result {
                 case let .success(model):
+                    self?.configuration.informant.log(response: response)
                     return model
                 case let .failure(error):
-                    throw reason(from: error, response.response?.statusCode)
+                    self?.configuration.informant.logError(response: response)
+                    throw error.reason(with: response.response?.statusCode)
                 }
             }
         let progressSubject = PassthroughSubject<Progress, Swift.Never>()
@@ -121,17 +133,18 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     public func upload<Response>(from source: Source,
                                  with request: DynamicRequest,
                                  response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
-        let uploader = uploadRequest(for: request, from: source)
+        let uploader = IO.with(session).uploadRequest(for: request, from: source)
         configuration.informant.log(request: uploader)
         let responsePublisher = uploader
-            .publishDecodable(type: response, decoder: request.decoder)
+            .publishResponse(using: IOResponseSerializer<Response>(request))
             .tryMap { [weak self] response -> Response in
-                self?.configuration.informant.log(response: response)
                 switch response.result {
                 case let .success(model):
+                    self?.configuration.informant.log(response: response)
                     return model
                 case let .failure(error):
-                    throw reason(from: error, response.response?.statusCode)
+                    self?.configuration.informant.logError(response: response)
+                    throw error.reason(with: response.response?.statusCode)
                 }
             }
         let progressSubject = PassthroughSubject<Progress, Swift.Never>()
@@ -144,86 +157,16 @@ public final class CombineAlamofireRestIO: CombineRestIO {
         return .init(response: responsePublisher.eraseToAnyPublisher(),
                      progress: progressSubject.eraseToAnyPublisher())
     }
+}
+
+// MARK: - NetworkInformant + Concurrency
+private extension NetworkInformant {
     
-    /// Возвращает запрос данных для заданного запроса
-    /// - Parameter request: Динамический запрос
-    private func dataRequest(for request: DynamicRequest) -> DataRequest {
-        switch request.encoding {
-        case let .URL(configuration):
-            return session.request(request.url,
-                                   method: request.afMethod,
-                                   parameters: request.afParameters,
-                                   encoder: configuration.URLEncoded,
-                                   headers: request.afHeders).validate(request.validate).retry(request.interceptor)
-        case .JSON:
-            return session.request(request.url,
-                                   method: request.afMethod,
-                                   parameters: request.afParameters,
-                                   encoder: request.afJSONEncoder,
-                                   headers: request.afHeders).validate(request.validate).retry(request.interceptor)
-        case .multipart:
-            return session.upload(multipartFormData: request.encode(into:),
-                                  to: request.url,
-                                  method: request.afMethod,
-                                  headers: request.afHeders).validate(request.validate).retry(request.interceptor)
-        }
-    }
-    
-    /// Возвращает запрос загруски для заданного запроса
-    /// - Parameters:
-    ///   - request: Динамический запрос
-    ///   - destination: Ссылка куда сохранить загруженных данных
-    private func downloadRequest(for request: DynamicRequest,
-                                 info destination: Destination) -> DownloadRequest {
-        let afDestination: DownloadRequest.Destination = { _, _ in (destination, [.removePreviousFile]) }
-        switch request.encoding {
-        case let .URL(configuration):
-            return self.session.download(request.url,
-                                         method: request.afMethod,
-                                         parameters: request.afParameters,
-                                         encoder: configuration.URLEncoded,
-                                         headers: request.afHeders,
-                                         to: afDestination)
-                .validate(request.validate)
-                .retry(request.interceptor)
-        case .JSON:
-            return self.session.download(request.url,
-                                         method: request.afMethod,
-                                         parameters: request.afParameters,
-                                         encoder: JSONParameterEncoder.default,
-                                         headers: request.afHeders,
-                                         to: afDestination)
-                .validate(request.validate)
-                .retry(request.interceptor)
-        case .multipart:
-            preconditionFailure("Download request not support multipart parameters")
-        }
-    }
-    
-    /// Возвращает запрос выгрузки для заданного запроса
-    /// - Parameters:
-    ///   - request: Динамический запрос
-    ///   - source: Ссылка на источник данных
-    private func uploadRequest(for request: DynamicRequest,
-                               from source: Source) -> UploadRequest {
-        switch request.encoding {
-        case .URL, .JSON:
-            return session.upload(source,
-                                  to: request.url,
-                                  method: request.afMethod,
-                                  headers: request.afHeders,
-                                  interceptor: request.interceptor)
-                .validate(request.validate)
-                .retry(request.interceptor)
-        case .multipart:
-            return session.upload(multipartFormData: request.encode(into:),
-                                  to: request.url,
-                                  method: request.afMethod,
-                                  headers: request.afHeders,
-                                  interceptor: request.interceptor)
-                .validate(request.validate)
-                .retry(request.interceptor)
+    /// Логировать описание запроса
+    /// - Parameter request: Запрос
+    func log(request: Alamofire.Request) {
+        request.onURLRequestCreation { [weak self] request in
+            self?.log(request: request)
         }
     }
 }
-#endif

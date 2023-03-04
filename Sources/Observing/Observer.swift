@@ -32,7 +32,6 @@ public final class Observer<Owner: AnyObject, Argument> {
     private let source: ObserverSource<Owner, Argument>
 
     /// Инициализация наблюдателя
-    ///
     /// - Parameters:
     ///   - owner: объект создающий запрос (делегат)
     ///   - responseType: тип ожидаемого ответа
@@ -41,7 +40,6 @@ public final class Observer<Owner: AnyObject, Argument> {
     }
 
     /// Реализация замыкания успеха
-    ///
     /// - Parameter done: замыкание успеха
     /// - Returns: наблюдатель запроса
     public func done(_ done: @escaping ((Owner, Argument) throws -> Void)) -> Self {
@@ -50,7 +48,6 @@ public final class Observer<Owner: AnyObject, Argument> {
     }
 
     /// Реализация замыкания обработки ошибки
-    ///
     /// - Parameter `catch`: замыкание обработки ошибки
     /// - Returns: наблюдатель за запрос
     @discardableResult

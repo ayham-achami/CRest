@@ -28,7 +28,7 @@ import Foundation
 /// Исполняемый объект
 public protocol Invocation {
 
-    /// Выполнить любое значнине
+    /// Выполнить любое значение
     /// - Parameter argument: любое значнине
     func invoke(_ argument: Any)
 }
