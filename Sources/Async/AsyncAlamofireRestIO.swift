@@ -67,10 +67,10 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
     
     public func perform<Response>(_ request: DynamicRequest,
                                   response: Response.Type) async throws -> Response where Response: CRest.Response {
-        try await perform(request, response: response).response
+        try await dynamicPerform(request, response: response).response
     }
     
-    public func perform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response {
+    public func dynamicPerform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
         let response = await requester

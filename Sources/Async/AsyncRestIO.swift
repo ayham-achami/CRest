@@ -50,7 +50,7 @@ public protocol AsyncRestIO: AnyObject {
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: `DynamicResponse` c ответом на запрос
-    func perform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response
+    func dynamicPerform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response
     
     /// Скачает данные и сохраняет их на диске
     /// - Parameters:
