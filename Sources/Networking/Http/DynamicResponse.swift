@@ -28,12 +28,12 @@ import Foundation
 /// Динамический ответ
 public struct DynamicResponse<Response: CRest.Response> {
     
-    /// <#Description#>
+    /// Состояние ответа
     public enum State {
         
-        /// <#Description#>
+        /// Ошибочный
         case invalid(Response)
-        /// <#Description#>
+        /// Успешный
         case actually(DynamicResponse<Response>)
     }
     
@@ -46,7 +46,7 @@ public struct DynamicResponse<Response: CRest.Response> {
     /// Загловки ответа
     public let allHeaderFields: [AnyHashable: Any]
     
-    /// <#Description#>
+    /// Состояние ответа
     public var state: State {
         guard url != nil else { return .invalid(response) }
         return .actually(self)

@@ -46,9 +46,9 @@ public struct DynamicRequest {
     public let headers: [String: String]
     /// Наблюдатель запроса
     public let interceptor: RestInterceptor
-    /// <#Description#>
+    /// http коды с которыми разрешено пустой ответ
     public let emptyResponseCodes: Set<Int>
-    /// <#Description#>
+    /// http методы с которыми разрешено пустой ответ
     public let emptyRequestMethods: Set<Http.Method>
 
     /// Билдер
