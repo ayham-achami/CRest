@@ -28,6 +28,15 @@ import Foundation
 /// Динамический ответ
 public struct DynamicResponse<Response: CRest.Response> {
     
+    /// Состояние ответа
+    public enum State {
+        
+        /// Ошибочный
+        case invalid(Response)
+        /// Успешный
+        case actually(DynamicResponse<Response>)
+    }
+    
     /// URL запроса
     public let url: URL?
     /// Код ответа
@@ -36,6 +45,12 @@ public struct DynamicResponse<Response: CRest.Response> {
     public let response: Response
     /// Загловки ответа
     public let allHeaderFields: [AnyHashable: Any]
+    
+    /// Состояние ответа
+    public var state: State {
+        guard url != nil else { return .invalid(response) }
+        return .actually(self)
+    }
     
     /// Инициализация
     /// - Parameters:
@@ -49,7 +64,7 @@ public struct DynamicResponse<Response: CRest.Response> {
             allHeaderFields = URLResponse.allHeaderFields
         } else {
             url = nil
-            statusCode = 400
+            statusCode = -1
             allHeaderFields = [:]
         }
     }

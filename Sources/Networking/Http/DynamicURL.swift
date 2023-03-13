@@ -30,7 +30,7 @@ public protocol URLQueryKey {}
 
 // MARK: - DynamicURL
 
-/// Динамическая рестовая ссылка
+/// Динамическая REST ссылка
 public struct DynamicURL {
 
     /// Тип занчения
@@ -88,7 +88,7 @@ public struct DynamicURL {
             return self
         }
 
-        /// Добавить значение под ключем
+        /// Добавить значение под ключом
         /// - Parameters:
         ///   - value: значение
         ///   - key: ключ значения

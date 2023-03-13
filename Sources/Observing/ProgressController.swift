@@ -25,16 +25,16 @@
 
 import Foundation
 
-/// Протокол контроля прогресс скачивания
+/// Протокол контроля прогресс загрузки
 public protocol ProgressController: AnyObject {
 
-    /// Остановить скачивание
+    /// Остановить загрузки
     func pauseProgress()
 
-    /// Возобновить скачивание
+    /// Возобновить загрузки
     func resumeProgress()
 
-    /// Отменить скачивание
+    /// Отменить загрузки
     func cancelProgress()
 }
 
@@ -42,17 +42,16 @@ public struct ProgressToken<Owner: AnyObject, Argument> {
 
     /// Уникальный идентификатор
     public let id: String
-    /// Уонтроля прогресс скачивания
+    /// Контролер прогресса загрузки
     public let controller: ProgressController
-    /// Наблюдатель прогресса скачивания
+    /// Наблюдатель прогресса загрузки
     public let observer: ProgressObserver<Owner, Argument>
 
     /// Инициализация
-    ///
     /// - Parameters:
     ///   - id: Идентификатор
-    ///   - observer: Контроля прогресс скачивания
-    ///   - controller: Наблюдатель прогресса скачивания
+    ///   - observer: Контроля прогресс загрузки
+    ///   - controller: Наблюдатель прогресса загрузки
     public init(_ id: String,
                 _ observer: ProgressObserver<Owner, Argument>,
                 _ controller: ProgressController) {
@@ -62,10 +61,9 @@ public struct ProgressToken<Owner: AnyObject, Argument> {
     }
 
     /// Инициализация
-    ///
     /// - Parameters:
-    ///   - observer: Контроля прогресс скачивания
-    ///   - controller: Наблюдатель прогресса скачивания
+    ///   - observer: Контроля прогресс загрузки
+    ///   - controller: Наблюдатель прогресса загрузки
     public init(_ observer: ProgressObserver<Owner, Argument>,
                 _ controller: ProgressController) {
         self.init(UUID().uuidString, observer, controller)

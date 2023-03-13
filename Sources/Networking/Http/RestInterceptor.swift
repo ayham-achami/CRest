@@ -25,5 +25,5 @@
 
 import Alamofire
 
-/// Наблюдатель запрса
+/// Наблюдатель запроса
 public protocol RestInterceptor: RequestInterceptor {}

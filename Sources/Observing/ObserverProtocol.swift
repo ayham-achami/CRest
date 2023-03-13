@@ -57,7 +57,7 @@ public protocol ObserverProtocol: AnyObject {
     /// - Parameter response: ожидаемый объект
     func tryDone(_ argument: Argument)
 
-    /// Попробовать выполнить замыкание прогресс скачивания
+    /// Попробовать выполнить замыкание прогресс загрузки
     ///
     /// - Parameter progress: Объект, который передает текущий прогресс для данной задачи
     func tryProgress(_ progress: Progress)

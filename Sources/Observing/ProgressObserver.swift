@@ -25,14 +25,13 @@
 
 import Foundation
 
-/// Наблюдатель прогресса скачивания
+/// Наблюдатель прогресса загрузки
 public final class ProgressObserver<Owner: AnyObject, Argument> {
 
     /// Источник контроля
     private let source: ObserverSource<Owner, Argument>
 
     /// Инициализация наблюдателя
-    ///
     /// - Parameters:
     ///   - owner: объект создающий запрос (делегат)
     ///   - responseType: тип ожидаемого ответа
@@ -41,7 +40,6 @@ public final class ProgressObserver<Owner: AnyObject, Argument> {
     }
 
     /// Реализация замыкания успеха
-    ///
     /// - Parameter done: замыкание успеха
     /// - Returns: наблюдатель запроса
     public func done(_ done: @escaping ((Owner, Argument) throws -> Void)) -> Self {
@@ -50,7 +48,6 @@ public final class ProgressObserver<Owner: AnyObject, Argument> {
     }
 
     /// Реализация замыкания обработки ошибки
-    ///
     /// - Parameter `catch`: замыкание обработки ошибки
     /// - Returns: наблюдатель за запрос
     @discardableResult
@@ -60,7 +57,6 @@ public final class ProgressObserver<Owner: AnyObject, Argument> {
     }
 
     /// Реализация замыкания изменения прогресса (загрузки, выгрузки)
-    ///
     /// - Parameter progress: Объект, который передает текущий прогресс для данной задачи
     /// - Returns: Наблюдатель за запрос
     public func progress(_ progress: @escaping ((Owner, Progress) throws -> Void)) -> Self {

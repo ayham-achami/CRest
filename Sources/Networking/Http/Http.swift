@@ -25,26 +25,29 @@
 
 import Foundation
 
-/// Http нэмспасе
+/// Http
 public enum Http {
     
-    /// Объект, кодирующий в строки запроса в кодировке URL.
+    /// Объект, кодирующий в строки запроса в URL.
     public struct EncodingConfiguration {
     
         /// Кодировка, используемая для значений `Array`
         public enum ArrayEncoding {
+            
             case brackets
             case noBrackets
         }
         
         /// Кодировка, используемая для значений `Bool`
         public enum BoolEncoding {
+            
             case numeric
             case literal
         }
         
         /// Кодировка, используемая для значений `Data`
         public enum DataEncoding {
+            
             case base64
             case deferredToData
             case custom((Data) throws -> String)
@@ -52,6 +55,7 @@ public enum Http {
         
         /// Кодировка, используемая для значений `Date`
         public enum DateEncoding {
+            
             case iso8601
             case deferredToDate
             case secondsSince1970
@@ -94,15 +98,16 @@ public enum Http {
     
     /// Типы енкднга данных
     public enum Encoding {
+        
         case JSON
         case multipart
         case URL(EncodingConfiguration)
     }
 
     /// Определения Http методов
-    ///
     /// See https://tools.ietf.org/html/rfc7231#section-4.3
-    public enum Method: String {
+    public enum Method: String, CaseIterable {
+        
         case options = "OPTIONS"
         case get     = "GET"
         case head    = "HEAD"

@@ -24,24 +24,33 @@
 //  SOFTWARE.
 
 import Alamofire
+import Combine
 import CFoundation
 
-/// Объект прослушивает изменения стостяние сети
+/// Объект прослушивает изменения состояние сети
+@available(OSX 10.15, watchOS 6.0, iOS 13.0, iOSApplicationExtension 13.0, OSXApplicationExtension 10.15, tvOS 13.0, *)
 public class AlamofireReachability {
+    
+    /// Хост наблюдения
+    public static var host: String = "apple.com"
 
-    /// Объект прослушивает изменения стостяние сети
+    /// Объект прослушивает изменения состояние сети
     public static let shared = AlamofireReachability()
 
     /// Доступна ли сеть в настоящее время.
     public var isReachable: Bool { manager?.isReachable ?? true }
+    
+    /// Текущее состояние сети
+    public var currentState: Connection { subject.value }
 
     private var source: ReferenceArray<AnyObject>
     private let manager: NetworkReachabilityManager?
+    private let subject = CurrentValueSubject<Connection, Never>(.unknown)
 
     /// Инициализация
     private init() {
         source = []
-        manager = NetworkReachabilityManager(host: "apple.com")
+        manager = NetworkReachabilityManager(host: Self.host)
         manager?.startListening(onUpdatePerforming: notifyReachabilityChanged(_:))
     }
 
@@ -56,13 +65,22 @@ public class AlamofireReachability {
     public func removeListener(_ listener: ReachabilityListener) {
         source.remove(listener)
     }
+    
+    /// подписать на состояние сети
+    /// - Returns: `AnyPublisher<Connection, Never>`
+    func subscribeReachabilityState() -> AnyPublisher<Connection, Never> {
+        subject.eraseToAnyPublisher()
+    }
 
     /// Вызывается когда меняется состояние сети
     /// - Parameter state: Новое состояние
     private func notifyReachabilityChanged(_ state: NetworkReachabilityManager.NetworkReachabilityStatus) {
         source.cleanup()
             .compactMap { $0 as? ReachabilityListener }
-            .forEach { $0.networkReachabilityStateDidChange(state.connection) }
+            .forEach {
+                $0.networkReachabilityStateDidChange(state.connection)
+                subject.send(state.connection)
+            }
     }
 }
 
@@ -90,6 +108,8 @@ private extension NetworkReachabilityManager.NetworkReachabilityStatus {
 public extension ReachabilityListener {
 
     var isReachable: Bool { AlamofireReachability.shared.isReachable }
+    
+    var currentState: Connection { AlamofireReachability.shared.currentState }
 
     func startWatchReachabilityState() {
         AlamofireReachability.shared.addListener(self)
@@ -97,5 +117,9 @@ public extension ReachabilityListener {
 
     func stopWatchReachabilityState() {
         AlamofireReachability.shared.removeListener(self)
+    }
+    
+    func subscribeReachabilityState() -> AnyPublisher<Connection, Never> {
+        AlamofireReachability.shared.subscribeReachabilityState()
     }
 }

@@ -27,6 +27,7 @@ import Foundation
 
 /// Ошибка сериализации и десериализации
 public enum Base64Error: Error {
+    
     /// Ошибка сериализации
     case encoding
     /// Ошибка десериализации

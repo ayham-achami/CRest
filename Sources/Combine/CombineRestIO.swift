@@ -38,14 +38,14 @@ public protocol CombineRestIO: AnyObject {
     /// - Parameter configuration: Общие настройки REST клиента
     init(_ configuration: RestIOConfiguration)
     
-    /// Выполняет рестовый http запроса
+    /// Выполняет REST http запроса
     /// - Parameters:
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     func perform<Response>(_ request: DynamicRequest,
                            response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response
     
-    /// Выполняет рестовый http запроса
+    /// Выполняет REST http запроса
     /// - Parameters:
     ///   - request: Динамический запрос
     ///   - response: Тип ответа

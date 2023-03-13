@@ -34,18 +34,22 @@ public struct DynamicRequest {
     public let validate: Bool
     /// Метод запроса
     public let method: Http.Method
-    /// Обеъкт десерлизации
+    /// Объект десерлизации
     public let decoder: JSONDecoder
     /// Объект сериализации
     public let encoder: JSONEncoder
-    /// Параметры запрса
+    /// Параметры запроса
     public let parameters: Parameters?
     /// Тип енкодинга
     public let encoding: Http.Encoding
     /// Загловки
     public let headers: [String: String]
-    /// Наблюдатель запрса
+    /// Наблюдатель запроса
     public let interceptor: RestInterceptor
+    /// http коды с которыми разрешено пустой ответ
+    public let emptyResponseCodes: Set<Int>
+    /// http методы с которыми разрешено пустой ответ
+    public let emptyRequestMethods: Set<Http.Method>
 
     /// Билдер
     public final class Builder {
@@ -59,6 +63,8 @@ public struct DynamicRequest {
         private var decoder: JSONDecoder = JSONDecoder()
         private var encoder: JSONEncoder = JSONEncoder()
         private var interceptor: RestInterceptor = Http.Interceptor()
+        private var emptyResponseCodes: Set<Int> = [204]
+        private var emptyRequestMethods: Set<Http.Method> = [.head]
 
         /// Инициализация
         /// - Parameter parameters: Прпметры запроса
@@ -66,21 +72,21 @@ public struct DynamicRequest {
             self.parameters = nil
         }
 
-        /// Добваить урль
+        /// Добвить URL
         /// - Parameter url: урль
         public func with(url: String) -> Self {
             self.url = url
             return self
         }
         
-        /// Добавить провеку имеет ли ответ код в допустимом диапазоне по умолчанию 200...299
+        /// Добавить проверку имеет ли ответ код в допустимом диапазоне по умолчанию 200...299
         /// - Parameter validate: Флаг
         public func with(validate: Bool) -> Self {
             self.validate = validate
             return self
         }
 
-        /// Добваить рестовый запрос
+        /// Добавить REST запрос
         /// - Parameter request: Рестовый запрос
         public func with(request: Request) -> Self {
             self.url = request.rawValue
@@ -94,7 +100,7 @@ public struct DynamicRequest {
             return self
         }
 
-        /// Добавить парметры
+        /// Добавить параметры
         /// - Parameter parameters: парметры `Parameters`
         public func with(parameters: Parameters?) -> Self {
             self.parameters = parameters
@@ -115,14 +121,14 @@ public struct DynamicRequest {
             return self
         }
 
-        /// Добавить обеъкт десерлизации
-        /// - Parameter decoder: Обеъкт десерлизации
+        /// Добавить объект десерлизации
+        /// - Parameter decoder: Объект десерлизации
         public func with(decoder: JSONDecoder) -> Self {
             self.decoder = decoder
             return self
         }
 
-        /// Добавить обеъкт серлизации
+        /// Добавить объект сериализации
         /// - Parameter encoder: Обеъкт серлизации
         public func with(encoder: JSONEncoder) -> Self {
             self.encoder = encoder
@@ -135,7 +141,17 @@ public struct DynamicRequest {
             self.interceptor = interceptor
             return self
         }
-
+        
+        public func with(emptyResponseCodes: Set<Int>) -> Self {
+            self.emptyResponseCodes = emptyResponseCodes
+            return self
+        }
+        
+        public func with(emptyRequestMethods: Set<Http.Method>) -> Self {
+            self.emptyRequestMethods = emptyRequestMethods
+            return self
+        }
+        
         /// Создает запрос
         public func build() throws -> DynamicRequest {
             guard let url = url else { throw ModelBuildError(errorDescription: "Dynamic request URL is nil") }
@@ -147,7 +163,9 @@ public struct DynamicRequest {
                                   parameters: parameters,
                                   encoding: encoding,
                                   headers: headers,
-                                  interceptor: interceptor)
+                                  interceptor: interceptor,
+                                  emptyResponseCodes: emptyResponseCodes,
+                                  emptyRequestMethods: emptyRequestMethods)
         }
     }
 }

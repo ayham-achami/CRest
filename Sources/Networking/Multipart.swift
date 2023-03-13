@@ -40,7 +40,6 @@ public struct DataMultipartParameter: MultipartParameter {
     public let name: String
 
     /// Добавить данные
-    ///
     /// - Parameters:
     ///   - value: Данные
     ///   - key: Ключ
@@ -58,8 +57,7 @@ public struct DataMultipartParameter: MultipartParameter {
         self.name = name
     }
 
-    /// инициализировать со славорем
-    ///
+    /// Инициализировать со словарем
     /// - Parameters:
     ///   - value: словарь (JSON)
     ///   - key: ключ
@@ -69,8 +67,7 @@ public struct DataMultipartParameter: MultipartParameter {
         self.name = name
     }
 
-    /// добавить строку
-    ///
+    /// Добавить строку
     /// - Parameters:
     ///   - value: строка
     ///   - key: ключ
@@ -82,7 +79,7 @@ public struct DataMultipartParameter: MultipartParameter {
 }
 
 #if canImport(UIKit)
-/// Мультипартпараметр содержащий картинку
+/// Мультипарт параметр содержащий картинку
 public struct ImageMultipartParameter: MultipartParameter {
 
     public let data: Data
@@ -114,15 +111,15 @@ public struct StreamMultipartParameter: MultipartParameter {
     }
 }
 
-/// Парметры в мульти типовых
+/// Параметры в мульти типовых
 public struct MultipartParameters: Parameters {
 
     private var content: [MultipartParameter] = []
 
     public init() {}
 
-    public init(_ initail: (MultipartParameters) -> Void) {
-        initail(self)
+    public init(_ initial: (MultipartParameters) -> Void) {
+        initial(self)
     }
 
     /// Добавить парметр
@@ -132,7 +129,7 @@ public struct MultipartParameters: Parameters {
     }
 
     /// вызывает данное замыкание для каждого элемента в последовательности
-    /// - Parameter body: (мультипарт параметр)
+    /// - Parameter body: (Мультипарт параметр)
     public func forEach(_ body: (MultipartParameter) throws -> Void) rethrows {
         try content.forEach { try body($0) }
     }

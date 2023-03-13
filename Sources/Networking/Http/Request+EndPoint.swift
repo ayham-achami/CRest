@@ -26,7 +26,7 @@
 import CFoundation
 import Foundation
 
-/// Базвая ссылка бэкинда
+/// Базовая ссылка
 public struct EndPoint: Model {
 
     public let rawValue: String
@@ -83,7 +83,7 @@ private extension String {
     }
 }
 
-/// Рестовый запрос
+/// REST запрос
 public struct Request: Model {
     
     public let rawValue: String

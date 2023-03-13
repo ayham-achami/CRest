@@ -28,7 +28,7 @@ import Foundation
 
 public extension Http {
     
-    /// Дефолтный наблюдать за запросами
+    /// Наблюдать за запросами по умолчанию
     class Interceptor: RestInterceptor {
         
         public init() {}

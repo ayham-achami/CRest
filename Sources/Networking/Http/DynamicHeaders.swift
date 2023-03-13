@@ -63,7 +63,7 @@ public extension Http {
             /// - Parameter keyedBy: Тип ключей
             public init(keyedBy: Key.Type) {}
 
-            /// Добавить значение под ключем
+            /// Добавить значение под ключом
             /// - Parameters:
             ///   - value: значение
             ///   - key: ключ

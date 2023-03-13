@@ -26,26 +26,30 @@
 import Alamofire
 import Foundation
 
-/// Конвертирует `AFError` в `NetworkError`
-/// - Parameter error: Alamofire error `AFError`
-public func reason(from error: AFError, _ statusCode: Int?, responseData: Data? = nil) -> NetworkError {
-    if error.isExplicitlyCancelledError {
-        return .explicitlyCancelled
-    } else if error.isServerTrustEvaluationError {
-            return .ssl(error.errorDescription ?? "\(String(describing: error.destinationURL))")
-    } else if let statusCode = statusCode, !(200..<300).contains(statusCode) {
-        return .http(statusCode, data: responseData)
-    } else if case let .sessionTaskFailed(error as NSError) = error {
-        if error.code == NSURLErrorNotConnectedToInternet {
-            return .notConnected
-        } else if error.code == NSURLErrorNetworkConnectionLost {
-            return .connectionLost
+extension AFError {
+ 
+    /// Конвертирует `AFError` в `NetworkError`
+    /// - Parameter error: Alamofire error `AFError`
+    public func reason(with statusCode: Int?, responseData: Data? = nil) -> NetworkError {
+        if isExplicitlyCancelledError {
+            return .explicitlyCancelled
+        } else if isServerTrustEvaluationError {
+                return .ssl(errorDescription ?? "\(String(describing: destinationURL))")
+        } else if let statusCode = statusCode, !(200..<300).contains(statusCode) {
+            return .http(statusCode, data: responseData)
+        } else if case let .sessionTaskFailed(error as NSError) = self {
+            if error.code == NSURLErrorNotConnectedToInternet {
+                return .notConnected
+            } else if error.code == NSURLErrorNetworkConnectionLost {
+                return .connectionLost
+            } else {
+                return .io(error.asAFError?.errorDescription ?? error.localizedDescription)
+            }
+        } else if let description = errorDescription {
+            return .io(description)
         } else {
-            return .io(error.asAFError?.errorDescription ?? error.localizedDescription)
+            return .io(localizedDescription)
         }
-    } else if let description = error.errorDescription {
-        return .io(description)
-    } else {
-        return .io(error.localizedDescription)
     }
+
 }

@@ -50,6 +50,10 @@ extension DynamicRequest {
     public var afMethod: Alamofire.HTTPMethod {
         HTTPMethod(rawValue: method.rawValue)
     }
+    
+    public var afEmptyRequestMethods: Set<Alamofire.HTTPMethod> {
+        Set(emptyRequestMethods.compactMap { .init(rawValue: $0.rawValue) })
+    }
 
     public var afParameters: Wrapper? {
         switch encoding {

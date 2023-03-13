@@ -29,7 +29,7 @@ import UIKit
 // MARK: - UIImage + Serialization
 public extension UIImage {
 
-    /// Типы серилизуемых изображений
+    /// Типы серлизуемых изображений
     ///
     /// - PNG: PNG формат
     /// - JPEG: JPEG формат
@@ -38,19 +38,19 @@ public extension UIImage {
         case jpeg
     }
 
-    /// Серлизация в байты
+    /// Cерлизация в байты
     /// - Parameters:
-    ///   - serialization: фотмат серлизация
+    ///   - serialization: формат серлизация
     ///   - compressionQuality: Качество сжатия
     func serialized(_ serialization: Serialization, compressionQuality: CGFloat = 1.0) throws -> Data {
-        let imageData: Data?
+        let data: Data?
         switch serialization {
         case .png:
-            imageData = pngData()
+            data = pngData()
         case .jpeg:
-            imageData = jpegData(compressionQuality: compressionQuality)
+            data = jpegData(compressionQuality: compressionQuality)
         }
-        guard let data = imageData else { throw SerializationError(UIImage.self) }
+        guard let data else { throw SerializationError(UIImage.self) }
         return data
     }
 }
