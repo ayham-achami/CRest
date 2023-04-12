@@ -5,7 +5,11 @@ import PackageDescription
 
 let package = Package(
     name: "CRest",
-    platforms: [.iOS(.v13), .macCatalyst(.v13), .macOS(.v10_15)],
+    platforms: [.iOS(.v13),
+                .tvOS(.v13),
+                .watchOS(.v6),
+                .macOS(.v10_15),
+                .macCatalyst(.v13)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
