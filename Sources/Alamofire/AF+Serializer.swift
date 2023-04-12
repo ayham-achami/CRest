@@ -26,28 +26,24 @@
 import Foundation
 import Alamofire
 
-/// `ResponseSerializer`, который декодирует данные ответа как универсальное значение, используя любой тип, который соответствует
-/// считается ошибкой. Однако, если запрос имеет `HTTPMethod` или ответ имеет действительный код состояния HTTP
-/// для пустых ответов будет возвращено пустое значение. Если декодированный тип соответствует `Empty`,
-/// будет возвращен тип `empty()`. Если декодированный тип «Пустой», возвращается экземпляр «.value». Если
-/// декодированный тип *не* соответствует `Empty` и не является `Empty`, будет выдана ошибка.
-public final class IOResponseSerializer<Response>: ResponseSerializer where Response: CRest.Response {
+
+/// Обертка поверх `ResponseSerializer`
+struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: CRest.Response {
+        
+    private let decoder: JSONDecoder
+    private let serializer: IOSerializer
     
-    public typealias SerializedObject = Response
+    let emptyResponseCodes: Set<Int>
+    let emptyRequestMethods: Set<HTTPMethod>
     
-    public let decoder: JSONDecoder
-    public let emptyResponseCodes: Set<Int>
-    public let emptyRequestMethods: Set<HTTPMethod>
-    public let dataPreprocessor: DataPreprocessor
-    
-    public init(_ request: DynamicRequest, _ dataPreprocessor: DataPreprocessor = IOResponseSerializer.defaultDataPreprocessor) {
+    init(_ request: DynamicRequest) {
         self.decoder = request.decoder
-        self.dataPreprocessor = dataPreprocessor
+        self.serializer = request.serializer
         self.emptyResponseCodes = request.emptyResponseCodes
         self.emptyRequestMethods = request.afEmptyRequestMethods
     }
     
-    public func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> Response {
+    func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> Response {
         if let error {
             throw error
         } else if let empty = CRest.Empty() as? Response {
@@ -55,11 +51,20 @@ public final class IOResponseSerializer<Response>: ResponseSerializer where Resp
                 emptyResponseAllowed(forRequest: request, response: response)
             else { throw AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength) }
             return empty
-        } else if var data, !data.isEmpty {
-            data = try dataPreprocessor.preprocess(data)
-            return try decoder.decode(Response.self, from: data)
+        } else if let data, !data.isEmpty {
+            return try serializer.serialize(data, decoder, request, response)
         } else {
             throw AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength)
+        }
+    }
+    
+    func serializeDownload(request: URLRequest?, response: HTTPURLResponse?, fileURL: URL?, error: Error?) throws -> Response {
+        if let error {
+            throw error
+        } else if let fileURL {
+            return try serializer.serialize(fileURL, decoder, request, response)
+        } else {
+            throw AFError.responseSerializationFailed(reason: .inputFileNil)
         }
     }
 }

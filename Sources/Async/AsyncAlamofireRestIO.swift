@@ -30,7 +30,6 @@ import Foundation
 // MARK: - AlamofireRestIO
 
 /// Имплементация RestIO с Alamofire
-@available(OSX 10.15, watchOS 6.0, iOS 13.0, iOSApplicationExtension 13.0, OSXApplicationExtension 10.15, tvOS 13.0, *)
 public final class AsyncAlamofireRestIO: AsyncRestIO {
     
     // MARK: - Lazy
@@ -40,17 +39,23 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         Session(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
                 rootQueue: networkQueue,
                 requestQueue: requestsQueue,
+                serializationQueue: serializationQueue,
                 serverTrustManager: configuration.serverTrustManager)
     }()
     
-    /// Поток запросов
+    /// Очередь запросов
     private lazy var networkQueue: DispatchQueue = {
         DispatchQueue(label: "RestIO.networkQueue", qos: .default)
     }()
     
-    /// Поток запросов
+    /// Очередь запросов
     private lazy var requestsQueue: DispatchQueue = {
-        DispatchQueue(label: "RestIO.requestsQueue", qos: .default, target: networkQueue)
+        DispatchQueue(label: "RestIO.requestsQueue", qos: .default, attributes: .concurrent, target: networkQueue)
+    }()
+    
+    /// Очередь десериализации
+    private lazy var serializationQueue: DispatchQueue = {
+        DispatchQueue(label: "RestIO.serializationQueue", qos: .default, attributes: .concurrent, target: networkQueue)
     }()
     
     // MARK: - Private properties
@@ -74,7 +79,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
         let response = await requester
-            .serializingResponse(using: IOResponseSerializer<Response>(request))
+            .serializingResponse(using: ResponseSerializerWrapper<Response>(request))
             .response
         switch response.result {
         case let .success(model):
@@ -94,7 +99,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         configuration.informant.log(request: downloader)
         invoke(progress, from: downloader.downloadProgress())
         let downloadResponse = await downloader
-            .serializingDownload(using: IOResponseSerializer<Response>(request))
+            .serializingDownload(using: ResponseSerializerWrapper<Response>(request))
             .response
         switch downloadResponse.result {
         case .success(let model):
@@ -114,7 +119,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         configuration.informant.log(request: uploader)
         invoke(progress, from: uploader.uploadProgress())
         let uploadResponse = await uploader
-            .serializingResponse(using: IOResponseSerializer<Response>(request))
+            .serializingResponse(using: ResponseSerializerWrapper<Response>(request))
             .response
         switch uploadResponse.result {
         case .success(let model):

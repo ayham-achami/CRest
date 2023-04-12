@@ -23,6 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+#if canImport(Combine)
 import Combine
 import Alamofire
 import Foundation
@@ -30,7 +31,6 @@ import Foundation
 // MARK: - CombineAlamofireRestIO
 
 /// Имплементация RestIO с Alamofire и Combine
-@available(OSX 10.15, watchOS 6.0, iOS 13.0, iOSApplicationExtension 13.0, OSXApplicationExtension 10.15, tvOS 13.0, *)
 public final class CombineAlamofireRestIO: CombineRestIO {
     
     // MARK: - Lazy
@@ -72,7 +72,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                                   response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
-        return requester.publishResponse(using: IOResponseSerializer<Response>(request))
+        return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response in
                 self?.configuration.informant.log(response: response)
                 switch response.result {
@@ -90,7 +90,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                                   response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
-        return requester.publishResponse(using: IOResponseSerializer<Response>(request))
+        return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response in
                 switch response.result {
                 case let .success(model):
@@ -108,7 +108,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                                    response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
         let downloader = IO.with(session).downloadRequest(for: request, into: destination)
         configuration.informant.log(request: downloader)
-        let responsePublisher = downloader.publishResponse(using: IOResponseSerializer<Response>(request))
+        let responsePublisher = downloader.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response -> Response in
                 switch response.result {
                 case let .success(model):
@@ -136,7 +136,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
         let uploader = IO.with(session).uploadRequest(for: request, from: source)
         configuration.informant.log(request: uploader)
         let responsePublisher = uploader
-            .publishResponse(using: IOResponseSerializer<Response>(request))
+            .publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response -> Response in
                 switch response.result {
                 case let .success(model):
@@ -170,3 +170,4 @@ private extension NetworkInformant {
         }
     }
 }
+#endif

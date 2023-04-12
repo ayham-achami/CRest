@@ -26,4 +26,5 @@
 import Alamofire
 
 /// Наблюдатель запроса
+@available(*, deprecated, message: "Use IOInterceptor")
 public protocol RestInterceptor: RequestInterceptor {}

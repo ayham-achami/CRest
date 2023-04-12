@@ -128,7 +128,7 @@ public struct Empty: UniversalModel {
     public init() {}
 
     public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
+        guard let container = try? decoder.singleValueContainer() else { return }
         if let response = try? container.decode([String: String].self), !response.isEmpty {
             throw NetworkError.parsing(Data())
         } else if let response = try? container.decode(String.self), !response.isEmpty || response != "{}" {

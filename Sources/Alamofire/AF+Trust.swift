@@ -26,13 +26,14 @@
 import Alamofire
 import Foundation
 
-// MARK: - TrustEvaluatorWrapper
-
 /// Обертка `TrustEvaluator` в `ServerTrustEvaluating`
 class TrustEvaluatorWrapper: ServerTrustEvaluating {
-
+    
+    /// Логика оценки доверии
     let evaluator: TrustEvaluator
-
+    
+    /// Инициализация
+    /// - Parameter evaluator: Логика оценки доверии
     init(_ evaluator: TrustEvaluator) {
         self.evaluator = evaluator
     }

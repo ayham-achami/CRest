@@ -42,6 +42,10 @@
 		CFBBD91E26CD1A5A00C98DCD /* DynamicHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD91526CD1A5A00C98DCD /* DynamicHeaders.swift */; };
 		CFBBD91F26CD1A5A00C98DCD /* TrustEvaluating.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD91626CD1A5A00C98DCD /* TrustEvaluating.swift */; };
 		CFBBD92026CD1A5A00C98DCD /* Multipart.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBBD91726CD1A5A00C98DCD /* Multipart.swift */; };
+		DF0967F329D6B1710066D0C5 /* RestIOTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0967F229D6B1710066D0C5 /* RestIOTestCase.swift */; };
+		DF0967F529D6B3950066D0C5 /* RestIO+TestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0967F429D6B3950066D0C5 /* RestIO+TestCases.swift */; };
+		DF0967FA29D831660066D0C5 /* IOInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0967F829D830A50066D0C5 /* IOInterceptor.swift */; };
+		DF0967FB29D831690066D0C5 /* IOSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0967F629D830740066D0C5 /* IOSerializer.swift */; };
 		DF307BC5273C0E1700540031 /* ProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BBF273C0E1600540031 /* ProgressPublisher.swift */; };
 		DF307BC6273C0E1700540031 /* CombineRestIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BC0273C0E1600540031 /* CombineRestIO.swift */; };
 		DF307BC7273C0E1700540031 /* CombineAlamofireRestIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF307BC1273C0E1600540031 /* CombineAlamofireRestIO.swift */; };
@@ -57,6 +61,9 @@
 		DFBB9A8928A2470400ADDEC3 /* AnyCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBB9A7828A11C6A00ADDEC3 /* AnyCodableTests.swift */; };
 		DFD2E85C28B5094000A13691 /* Baseable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD2E85B28B5094000A13691 /* Baseable.swift */; };
 		DFD2E85E28B5096C00A13691 /* JSONRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD2E85D28B5096C00A13691 /* JSONRepresentable.swift */; };
+		DFF1697729E034C2009B8C55 /* IOAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF1697629E034C2009B8C55 /* IOAuthenticator.swift */; };
+		DFF1697929E03515009B8C55 /* AF+Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF1697829E03515009B8C55 /* AF+Authenticator.swift */; };
+		DFF1697C29E04C75009B8C55 /* IOHandshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF1697A29E0371E009B8C55 /* IOHandshake.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +125,10 @@
 		CFBBD93226CD358D00C98DCD /* RequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestTests.swift; sourceTree = "<group>"; };
 		CFBBD93726CD368200C98DCD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CFBBD93826CD36E400C98DCD /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		DF0967F229D6B1710066D0C5 /* RestIOTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestIOTestCase.swift; sourceTree = "<group>"; };
+		DF0967F429D6B3950066D0C5 /* RestIO+TestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RestIO+TestCases.swift"; sourceTree = "<group>"; };
+		DF0967F629D830740066D0C5 /* IOSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSerializer.swift; sourceTree = "<group>"; };
+		DF0967F829D830A50066D0C5 /* IOInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOInterceptor.swift; sourceTree = "<group>"; };
 		DF1B8C7327919BE700036669 /* Gemfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = Gemfile; sourceTree = "<group>"; };
 		DF307BBA273C077900540031 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DF307BBB273C081200540031 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -129,13 +140,16 @@
 		DF45871028D895A900504053 /* GZip+Base64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GZip+Base64.swift"; sourceTree = "<group>"; };
 		DF68EE7229B0BC1700381CE1 /* AF+Serializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AF+Serializer.swift"; sourceTree = "<group>"; };
 		DF68EE7429B1DFB800381CE1 /* AF+IO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AF+IO.swift"; sourceTree = "<group>"; };
-		DF8571B8275FA1DE00C65491 /* CRest.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = CRest.podspec; sourceTree = "<group>"; };
+		DF8571B8275FA1DE00C65491 /* CRest.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = CRest.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		DFBB9A72289D4F7D00ADDEC3 /* AnyDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyDecodable.swift; sourceTree = "<group>"; };
 		DFBB9A7628A0F1CE00ADDEC3 /* AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
 		DFBB9A7828A11C6A00ADDEC3 /* AnyCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCodableTests.swift; sourceTree = "<group>"; };
 		DFBB9A7E28A246FB00ADDEC3 /* CRestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CRestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFD2E85B28B5094000A13691 /* Baseable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Baseable.swift; sourceTree = "<group>"; };
 		DFD2E85D28B5096C00A13691 /* JSONRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONRepresentable.swift; sourceTree = "<group>"; };
+		DFF1697629E034C2009B8C55 /* IOAuthenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOAuthenticator.swift; sourceTree = "<group>"; };
+		DFF1697829E03515009B8C55 /* AF+Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AF+Authenticator.swift"; sourceTree = "<group>"; };
+		DFF1697A29E0371E009B8C55 /* IOHandshake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOHandshake.swift; sourceTree = "<group>"; };
 		E02A3EA14293626AE63222D6 /* Pods-CRestTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CRestTests.release.xcconfig"; path = "Target Support Files/Pods-CRestTests/Pods-CRestTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,6 +206,7 @@
 				CF277AF226C6BAF70003CDA9 /* AF+Extensions.swift */,
 				CF277AF926C6BAF70003CDA9 /* AF+Interceptor.swift */,
 				CF277AF726C6BAF70003CDA9 /* AF+Reachability.swift */,
+				DFF1697829E03515009B8C55 /* AF+Authenticator.swift */,
 				CF277AF426C6BAF70003CDA9 /* AF+DynamicRequest.swift */,
 			);
 			path = Alamofire;
@@ -315,6 +330,10 @@
 			isa = PBXGroup;
 			children = (
 				CFBBD91426CD1A5A00C98DCD /* Http.swift */,
+				DF0967F629D830740066D0C5 /* IOSerializer.swift */,
+				DF0967F829D830A50066D0C5 /* IOInterceptor.swift */,
+				DFF1697A29E0371E009B8C55 /* IOHandshake.swift */,
+				DFF1697629E034C2009B8C55 /* IOAuthenticator.swift */,
 				CFBBD91326CD1A5A00C98DCD /* DynamicURL.swift */,
 				CF277AF826C6BAF70003CDA9 /* RestInterceptor.swift */,
 				CFBBD91626CD1A5A00C98DCD /* TrustEvaluating.swift */,
@@ -331,6 +350,8 @@
 			isa = PBXGroup;
 			children = (
 				CFBBD93726CD368200C98DCD /* Info.plist */,
+				DF0967F229D6B1710066D0C5 /* RestIOTestCase.swift */,
+				DF0967F429D6B3950066D0C5 /* RestIO+TestCases.swift */,
 				CFBBD93226CD358D00C98DCD /* RequestTests.swift */,
 				DFBB9A7828A11C6A00ADDEC3 /* AnyCodableTests.swift */,
 			);
@@ -576,6 +597,7 @@
 				CF277B2A26C6BF880003CDA9 /* BuildingError.swift in Sources */,
 				DFBB9A73289D4F7D00ADDEC3 /* AnyDecodable.swift in Sources */,
 				CF39E31D26CBEBE6004DDCF9 /* Invocation.swift in Sources */,
+				DF0967FB29D831690066D0C5 /* IOSerializer.swift in Sources */,
 				6BAA8ABF275F48720042CFCC /* AsyncRestIO.swift in Sources */,
 				CF39E31926CBEBE6004DDCF9 /* Observer.swift in Sources */,
 				CF277B0126C6BAF70003CDA9 /* AF+Interceptor.swift in Sources */,
@@ -584,11 +606,13 @@
 				CF277AFE26C6BAF70003CDA9 /* AF+Error.swift in Sources */,
 				CF39E31B26CBEBE6004DDCF9 /* ProgressController.swift in Sources */,
 				DF45870F28D8955800504053 /* Base64+JSON.swift in Sources */,
+				DF0967FA29D831660066D0C5 /* IOInterceptor.swift in Sources */,
 				CFBBD92026CD1A5A00C98DCD /* Multipart.swift in Sources */,
 				DF68EE7329B0BC1700381CE1 /* AF+Serializer.swift in Sources */,
 				CF39E31E26CBEBE6004DDCF9 /* ObserverProtocol.swift in Sources */,
 				CF277AFD26C6BAF70003CDA9 /* DynamicRequest.swift in Sources */,
 				CFBBD91926CD1A5A00C98DCD /* RestIOConfiguration.swift in Sources */,
+				DFF1697729E034C2009B8C55 /* IOAuthenticator.swift in Sources */,
 				DFD2E85C28B5094000A13691 /* Baseable.swift in Sources */,
 				CF277B2F26C6BFEA0003CDA9 /* UIImage.swift in Sources */,
 				CFBBD91D26CD1A5A00C98DCD /* Http.swift in Sources */,
@@ -614,6 +638,8 @@
 				CF39E31C26CBEBE6004DDCF9 /* ObserverSource.swift in Sources */,
 				CF277B0026C6BAF70003CDA9 /* RestInterceptor.swift in Sources */,
 				CF277B3126C6C0180003CDA9 /* SerializationError.swift in Sources */,
+				DFF1697929E03515009B8C55 /* AF+Authenticator.swift in Sources */,
+				DFF1697C29E04C75009B8C55 /* IOHandshake.swift in Sources */,
 				CF39E31A26CBEBE6004DDCF9 /* ProgressObserver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -623,6 +649,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DFBB9A8828A2470100ADDEC3 /* RequestTests.swift in Sources */,
+				DF0967F529D6B3950066D0C5 /* RestIO+TestCases.swift in Sources */,
+				DF0967F329D6B1710066D0C5 /* RestIOTestCase.swift in Sources */,
 				DFBB9A8928A2470400ADDEC3 /* AnyCodableTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -771,19 +799,25 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = CRest;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
 			};
 			name = Debug;
 		};
@@ -798,19 +832,25 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = CRest;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
 			};
 			name = Release;
 		};
@@ -824,7 +864,7 @@
 				DEVELOPMENT_TEAM = 9XVT6R2MZ7;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = CRestTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = CRest.CRestTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -844,7 +884,7 @@
 				DEVELOPMENT_TEAM = 9XVT6R2MZ7;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = CRestTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = CRest.CRestTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

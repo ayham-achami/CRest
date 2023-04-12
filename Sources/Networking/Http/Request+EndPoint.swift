@@ -52,7 +52,6 @@ extension EndPoint: Hashable {
 private extension CharacterSet {
     
     /// Допустимые символы хотя бы в одной части URL-адреса.
-    ///
     /// Эти символы нельзя использовать во ВСЕХ частях URL-адреса
     /// у каждой части разные требования. Этот набор полезен для проверки
     /// символов Юникода, которые необходимо закодировать в процентах перед
@@ -87,11 +86,17 @@ private extension String {
 public struct Request: Model {
     
     public let rawValue: String
-
+    
+    /// Инициализация
+    /// - Parameters:
+    ///   - endPoint: `endPoint`
+    ///   - path: Путь запроса
     public init(endPoint: EndPoint, path: String) {
         self.rawValue = "\(endPoint.rawValue)\(path)".unicodeEncodedString
     }
-
+    
+    /// Инициализация
+    /// - Parameter dynamicURL: Динамический запрос
     public init(_ dynamicURL: DynamicURL) {
         self.rawValue = dynamicURL.row.unicodeEncodedString
     }
@@ -106,5 +111,27 @@ extension Request: Hashable {
 
     public static func != (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue == rhs.rawValue
+    }
+}
+
+// MARK: - Request + Equatable + URLRequest
+public extension Request {
+     
+    /// Сравнить Request и URLRequest
+    /// - Parameters:
+    ///   - lhs: `URLRequest`
+    ///   - rhs: `Request`
+    /// - Returns: true если равны
+    static func == (lhs: URLRequest, rhs: Self) -> Bool {
+        lhs.url?.absoluteString ?? "" == rhs.rawValue
+    }
+    
+    ///  Сравнить Request и URLRequest
+    /// - Parameters:
+    ///   - lhs: `URLRequest`
+    ///   - rhs: `Request`
+    /// - Returns: true если не равны
+    static func != (lhs: URLRequest, rhs: Self) -> Bool {
+        !(lhs == rhs)
     }
 }

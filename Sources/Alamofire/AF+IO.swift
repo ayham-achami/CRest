@@ -56,7 +56,7 @@ struct IO {
                                    parameters: request.afParameters,
                                    encoder: configuration.URLEncoded,
                                    headers: request.afHeders,
-                                   interceptor: request.interceptor)
+                                   interceptor: request.afInterceptor)
             .validate(request.validate)
             .retry(request.interceptor)
         case .JSON:
@@ -65,7 +65,7 @@ struct IO {
                                    parameters: request.afParameters,
                                    encoder: request.afJSONEncoder,
                                    headers: request.afHeders,
-                                   interceptor: request.interceptor)
+                                   interceptor: request.afInterceptor)
             .validate(request.validate)
             .retry(request.interceptor)
         case .multipart:
@@ -73,7 +73,7 @@ struct IO {
                                   to: request.url,
                                   method: request.afMethod,
                                   headers: request.afHeders,
-                                  interceptor: request.interceptor)
+                                  interceptor: request.afInterceptor)
             .validate(request.validate)
             .retry(request.interceptor)
         }
@@ -93,7 +93,7 @@ struct IO {
                                     parameters: request.afParameters,
                                     encoder: configuration.URLEncoded,
                                     headers: request.afHeders,
-                                    interceptor: request.interceptor,
+                                    interceptor: request.afInterceptor,
                                     to: afDestination)
             .validate(request.validate)
             .retry(request.interceptor)
@@ -103,7 +103,7 @@ struct IO {
                                     parameters: request.afParameters,
                                     encoder: JSONParameterEncoder.default,
                                     headers: request.afHeders,
-                                    interceptor: request.interceptor,
+                                    interceptor: request.afInterceptor,
                                     to: afDestination)
             .validate(request.validate)
             .retry(request.interceptor)
@@ -124,7 +124,7 @@ struct IO {
                                   to: request.url,
                                   method: request.afMethod,
                                   headers: request.afHeders,
-                                  interceptor: request.interceptor)
+                                  interceptor: request.afInterceptor)
             .validate(request.validate)
             .retry(request.interceptor)
         case .multipart:
@@ -132,7 +132,7 @@ struct IO {
                                   to: request.url,
                                   method: request.afMethod,
                                   headers: request.afHeders,
-                                  interceptor: request.interceptor)
+                                  interceptor: request.afInterceptor)
             .validate(request.validate)
             .retry(request.interceptor)
         }

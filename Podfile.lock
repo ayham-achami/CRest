@@ -1,7 +1,7 @@
 PODS:
   - Alamofire (5.6.4)
   - CFoundation (1.0.0)
-  - SwiftLint (0.50.3)
+  - SwiftLint (0.51.0)
 
 DEPENDENCIES:
   - Alamofire
@@ -26,7 +26,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
   CFoundation: c483c0174fa4c40f9fa67f12feb860aeafa18db4
-  SwiftLint: 77f7cb2b9bb81ab4a12fcc86448ba3f11afa50c6
+  SwiftLint: 1b7561918a19e23bfed960e40759086e70f4dba5
 
 PODFILE CHECKSUM: 73452898124ec216142250694890a353969628ae
 

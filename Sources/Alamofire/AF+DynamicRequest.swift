@@ -26,6 +26,53 @@
 import Alamofire
 import Foundation
 
+// MARK: - CRest.Empty + Alamofire
+extension CRest.Empty: EmptyResponse {
+    
+    public static var value: Self {
+        .init()
+    }
+    
+    public static func emptyValue() -> Self {
+        .value
+    }
+}
+
+// MARK: - DynamicRequest + Interceptor
+extension DynamicRequest {
+
+    func afInterceptors(_ interceptor: IOInterceptor) -> Alamofire.RequestInterceptor {
+        switch interceptor {
+        case let authenticator as IOBearerAuthenticator:
+            return wrapping(bearer: authenticator)
+        case let authenticator as IOHandshakeAuthenticator:
+            return wrapping(encryptor: authenticator)
+        default:
+            return wrapping(interceptor: interceptor)
+        }
+    }
+    
+    var afInterceptor: Alamofire.Interceptor {
+        .init(interceptors: [interceptor] + interceptors.map(afInterceptors(_:)))
+    }
+    
+    private func wrapping(bearer: IOBearerAuthenticator) -> RequestInterceptor {
+        AuthenticationInterceptor<BearerAuthAuthentificatorWrapper>(
+            authenticator: BearerAuthAuthentificatorWrapper(bearer),
+            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(bearer.provider.credential))
+    }
+    
+    private func wrapping(encryptor: IOHandshakeAuthenticator) -> RequestInterceptor {
+        AuthenticationInterceptor<HandshakeAuthentificatorWrapper>(
+            authenticator: HandshakeAuthentificatorWrapper(encryptor),
+            credential: HandshakeAuthentificatorWrapper.SessionWrapper(encryptor.provider.session))
+    }
+    
+    private func wrapping(interceptor: IOInterceptor) -> RequestInterceptor {
+        InterceptorWrapper(interceptor)
+    }
+}
+
 // MARK: - DynamicRequest + Alamofire
 extension DynamicRequest {
     
