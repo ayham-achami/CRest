@@ -142,7 +142,7 @@ public struct DynamicRequest {
         }
         
         /// Добавить сериализтор ответа
-        /// - Parameter serializer: <#serializer description#>
+        /// - Parameter serializer: Сериализтор ответа
         public func with(serializer: IOSerializer) -> Self {
             self.serializer = serializer
             return self
