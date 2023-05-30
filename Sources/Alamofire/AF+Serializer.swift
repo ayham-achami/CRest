@@ -61,6 +61,11 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
     func serializeDownload(request: URLRequest?, response: HTTPURLResponse?, fileURL: URL?, error: Error?) throws -> Response {
         if let error {
             throw error
+        } else if let empty = CRest.Empty() as? Response {
+            guard
+                emptyResponseAllowed(forRequest: request, response: response)
+            else { throw AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength) }
+            return empty
         } else if let fileURL {
             return try serializer.serialize(fileURL, decoder, request, response)
         } else {

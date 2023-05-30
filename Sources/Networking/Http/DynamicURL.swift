@@ -97,19 +97,26 @@ public struct DynamicURL {
             items.append(URLQueryItem(name: String(describing: key.rawValue), value: "\(value)"))
             return self
         }
+        
+        /// Добавить новый параметр с ключом используя `URLQueryItem`
+        /// - Parameter query: Новый пармер
+        public func with(_ query: URLQueryItem) -> Self {
+            items.append(query)
+            return self
+        }
 
         /// Создает ссылку
         public func build() -> DynamicURL {
-            guard let url = url else {
-                fatalError("The Base URL is Nil, you must call with(base:) method befor call build")
-            }
-            guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
-                fatalError("The url components of \(url) is nil")
-            }
+            guard
+                let url = url
+            else { preconditionFailure("The Base URL is Nil, you must call with(base:) method befor call build") }
+            guard
+                var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            else { preconditionFailure("The url components of \(url) is nil") }
             components.queryItems = items
-            guard let queryURL = components.url else {
-                fatalError("URL of components is nil \(components)")
-            }
+            guard
+                let queryURL = components.url
+            else { preconditionFailure("URL of components is nil \(components)") }
             return DynamicURL(queryURL)
         }
     }
@@ -121,7 +128,7 @@ extension DynamicURL: ExpressibleByStringLiteral {
     public typealias StringLiteralType = String
 
     public init(stringLiteral value: DynamicURL.StringLiteralType) {
-        guard let url = URL(string: value) else { fatalError("The URL is Nil, use build") }
+        guard let url = URL(string: value) else { preconditionFailure("The URL is Nil, use build") }
         queryURL = url
     }
 }
