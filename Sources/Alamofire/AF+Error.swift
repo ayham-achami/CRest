@@ -33,6 +33,10 @@ extension AFError {
     public func reason(with statusCode: Int?, responseData: Data? = nil) -> NetworkError {
         if isExplicitlyCancelledError {
             return .explicitlyCancelled
+        } else if case let .responseSerializationFailed(reason) = self,
+                  case let .customSerializationFailed(error) = reason,
+                  let serverError = error as? ServerError {
+            return .server(serverError)
         } else if isServerTrustEvaluationError {
                 return .ssl(errorDescription ?? "\(String(describing: destinationURL))")
         } else if let statusCode = statusCode, !(200..<300).contains(statusCode) {
@@ -51,5 +55,4 @@ extension AFError {
             return .io(localizedDescription)
         }
     }
-
 }
