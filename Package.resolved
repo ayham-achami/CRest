@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Alamofire/Alamofire.git",
       "state" : {
-        "revision" : "78424be314842833c04bc3bef5b72e85fff99204",
-        "version" : "5.6.4"
+        "revision" : "bc268c28fb170f494de9e9927c371b8342979ece",
+        "version" : "5.7.1"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/ayham-achami/CFoundation.git",
       "state" : {
         "branch" : "mainline",
-        "revision" : "3078b78d10c740e3c3c281b05b6b265224e5fc29"
+        "revision" : "1f2b721a29c9cba5202a3c4389a702033f7f7373"
       }
     }
   ],

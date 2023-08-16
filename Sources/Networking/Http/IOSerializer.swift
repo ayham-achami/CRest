@@ -33,14 +33,16 @@ public protocol IOErrorSerializationController {
     ///   - error: Обишка
     ///   - request: Запрос
     ///   - response: Ответ
-    func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?) throws
+    ///   - data: Байты ответа
+    /// - Returns: Ошибка
+    func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error
 }
 
 // MARK: - IOErrorSerializationController + Default
 public extension IOErrorSerializationController {
     
-    func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?) throws {
-        throw error
+    func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error {
+        return error
     }
 }
 
