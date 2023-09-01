@@ -36,6 +36,9 @@ public protocol RestIOConfiguration {
 
     /// Оценщик доверии к серверу
     var trustEvaluating: TrustEvaluating? { get }
+    
+    /// Необходимо ли проверять все хосты на доверие
+    var allHostsMustBeEvaluated: Bool { get }
 }
 
 // MARK: - RestIOConfiguration + Default
