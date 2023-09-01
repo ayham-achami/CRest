@@ -69,7 +69,7 @@ extension RestIOConfiguration {
             }
             return applies.merging(result) { (_, new) in new }
         }
-        return ServerTrustManager(evaluators: applies)
+        return ServerTrustManager(allHostsMustBeEvaluated: allHostsMustBeEvaluated, evaluators: applies)
     }
 }
 
