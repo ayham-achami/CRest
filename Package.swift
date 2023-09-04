@@ -28,8 +28,8 @@ let package = Package(
         .target(
             name: "CRest",
             dependencies: [
-                .product(name: "Alamofire", package: "Alamofire"),
-                .product(name: "CFoundation", package: "CFoundation")
+                "Alamofire",
+                "CFoundation"
             ],
             path: "Sources",
             exclude: [
