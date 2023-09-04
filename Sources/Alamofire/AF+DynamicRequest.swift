@@ -53,7 +53,7 @@ extension DynamicRequest {
     }
     
     var afInterceptor: Alamofire.Interceptor {
-        .init(interceptors: [interceptor] + interceptors.map(afInterceptors(_:)))
+        .init(interceptors: interceptors.map(afInterceptors(_:)))
     }
     
     private func wrapping(bearer: IOBearerAuthenticator) -> RequestInterceptor {

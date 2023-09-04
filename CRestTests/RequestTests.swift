@@ -49,7 +49,6 @@ extension Request {
 class RequestTests: XCTestCase {
 
     func testURLEncoding() {
-        
         XCTAssertNotNil(URL(string: Request.get.rawValue))
         XCTAssertNotNil(URL(string: Request.query.rawValue))
         XCTAssertNotNil(URL(string: Request.queryValue.rawValue))

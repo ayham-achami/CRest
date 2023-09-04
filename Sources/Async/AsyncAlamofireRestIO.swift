@@ -27,8 +27,6 @@
 import Alamofire
 import Foundation
 
-// MARK: - AlamofireRestIO
-
 /// Имплементация RestIO с Alamofire
 public final class AsyncAlamofireRestIO: AsyncRestIO {
     
@@ -36,26 +34,26 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
     
     /// Сессия запросов
     private lazy var session: Session = {
-        Session(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
-                rootQueue: networkQueue,
-                requestQueue: requestsQueue,
-                serializationQueue: serializationQueue,
-                serverTrustManager: configuration.serverTrustManager)
+        .init(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
+              rootQueue: networkQueue,
+              requestQueue: requestsQueue,
+              serializationQueue: serializationQueue,
+              serverTrustManager: configuration.serverTrustManager)
     }()
     
     /// Очередь запросов
     private lazy var networkQueue: DispatchQueue = {
-        DispatchQueue(label: "RestIO.networkQueue", qos: .default)
+        .init(label: "RestIO.concurrency.networkQueue", qos: .default)
     }()
     
     /// Очередь запросов
     private lazy var requestsQueue: DispatchQueue = {
-        DispatchQueue(label: "RestIO.requestsQueue", qos: .default, attributes: .concurrent, target: networkQueue)
+        .init(label: "RestIO.concurrency.requestsQueue", qos: .default, attributes: .concurrent, target: networkQueue)
     }()
     
     /// Очередь десериализации
     private lazy var serializationQueue: DispatchQueue = {
-        DispatchQueue(label: "RestIO.serializationQueue", qos: .default, attributes: .concurrent, target: networkQueue)
+        .init(label: "RestIO.concurrency.serializationQueue", qos: .default, attributes: .concurrent, target: networkQueue)
     }()
     
     // MARK: - Private properties

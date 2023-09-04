@@ -1,5 +1,5 @@
 //
-//  RestInterceptor.swift
+//  RestIOTestCase.swift
 //
 //  The MIT License (MIT)
 //
@@ -23,8 +23,21 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Alamofire
+import XCTest
+import Foundation
+@testable import CRest
 
-/// Наблюдатель запроса
-@available(*, deprecated, message: "Use IOInterceptor")
-public protocol RestInterceptor: RequestInterceptor {}
+class RestIOTestCase: XCTestCase {
+    
+    let timeout: TimeInterval = 10
+}
+
+final class AsyncRestIOTestCase: RestIOTestCase {
+    
+    lazy var io: AsyncRestIO = AsyncAlamofireRestIO(RestConfiguration())
+}
+
+final class CombineRestIOTestCase: RestIOTestCase {
+    
+    lazy var io: CombineRestIO = CombineAlamofireRestIO(RestConfiguration())
+}

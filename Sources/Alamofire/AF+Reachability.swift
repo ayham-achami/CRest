@@ -74,12 +74,11 @@ public class AlamofireReachability {
     /// Вызывается когда меняется состояние сети
     /// - Parameter state: Новое состояние
     private func notifyReachabilityChanged(_ state: NetworkReachabilityManager.NetworkReachabilityStatus) {
-        source.cleanup()
+        subject.send(state.connection)
+        source
+            .cleanup()
             .compactMap { $0 as? ReachabilityListener }
-            .forEach {
-                $0.networkReachabilityStateDidChange(state.connection)
-                subject.send(state.connection)
-            }
+            .forEach { $0.networkReachabilityStateDidChange(state.connection) }
     }
 }
 

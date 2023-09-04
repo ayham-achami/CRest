@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,7 +17,6 @@
 		CF277AFD26C6BAF70003CDA9 /* DynamicRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF277AF526C6BAF70003CDA9 /* DynamicRequest.swift */; };
 		CF277AFE26C6BAF70003CDA9 /* AF+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF277AF626C6BAF70003CDA9 /* AF+Error.swift */; };
 		CF277AFF26C6BAF70003CDA9 /* AF+Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF277AF726C6BAF70003CDA9 /* AF+Reachability.swift */; };
-		CF277B0026C6BAF70003CDA9 /* RestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF277AF826C6BAF70003CDA9 /* RestInterceptor.swift */; };
 		CF277B0126C6BAF70003CDA9 /* AF+Interceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF277AF926C6BAF70003CDA9 /* AF+Interceptor.swift */; };
 		CF277B1826C6BC570003CDA9 /* NetworkInformant.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF277B1726C6BC570003CDA9 /* NetworkInformant.swift */; };
 		CF277B1A26C6BC770003CDA9 /* LogProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF277B1926C6BC770003CDA9 /* LogProtocols.swift */; };
@@ -92,7 +91,6 @@
 		CF277AF526C6BAF70003CDA9 /* DynamicRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicRequest.swift; sourceTree = "<group>"; };
 		CF277AF626C6BAF70003CDA9 /* AF+Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AF+Error.swift"; sourceTree = "<group>"; };
 		CF277AF726C6BAF70003CDA9 /* AF+Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AF+Reachability.swift"; sourceTree = "<group>"; };
-		CF277AF826C6BAF70003CDA9 /* RestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestInterceptor.swift; sourceTree = "<group>"; };
 		CF277AF926C6BAF70003CDA9 /* AF+Interceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AF+Interceptor.swift"; sourceTree = "<group>"; };
 		CF277B1726C6BC570003CDA9 /* NetworkInformant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkInformant.swift; sourceTree = "<group>"; };
 		CF277B1926C6BC770003CDA9 /* LogProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogProtocols.swift; sourceTree = "<group>"; };
@@ -335,7 +333,6 @@
 				DFF1697A29E0371E009B8C55 /* IOHandshake.swift */,
 				DFF1697629E034C2009B8C55 /* IOAuthenticator.swift */,
 				CFBBD91326CD1A5A00C98DCD /* DynamicURL.swift */,
-				CF277AF826C6BAF70003CDA9 /* RestInterceptor.swift */,
 				CFBBD91626CD1A5A00C98DCD /* TrustEvaluating.swift */,
 				CFBBD91526CD1A5A00C98DCD /* DynamicHeaders.swift */,
 				CF277AF526C6BAF70003CDA9 /* DynamicRequest.swift */,
@@ -636,7 +633,6 @@
 				CFBBD91F26CD1A5A00C98DCD /* TrustEvaluating.swift in Sources */,
 				DFBB9A7728A0F1CE00ADDEC3 /* AnyEncodable.swift in Sources */,
 				CF39E31C26CBEBE6004DDCF9 /* ObserverSource.swift in Sources */,
-				CF277B0026C6BAF70003CDA9 /* RestInterceptor.swift in Sources */,
 				CF277B3126C6C0180003CDA9 /* SerializationError.swift in Sources */,
 				DFF1697929E03515009B8C55 /* AF+Authenticator.swift in Sources */,
 				DFF1697C29E04C75009B8C55 /* IOHandshake.swift in Sources */,

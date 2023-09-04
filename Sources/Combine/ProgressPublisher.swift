@@ -23,7 +23,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -63,4 +62,3 @@ public class ProgressPublisher<Response> where Response: CRest.Response {
         return self
     }
 }
-#endif

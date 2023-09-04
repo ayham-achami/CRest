@@ -24,7 +24,6 @@
 //  SOFTWARE.
 
 import Foundation
-import CFoundation
 
 /// Десериализации с Base64 c GZip
 public protocol Base64GZipDecodable: Base64JSONDecoder {}

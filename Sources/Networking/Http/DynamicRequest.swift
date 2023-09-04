@@ -46,8 +46,6 @@ public struct DynamicRequest {
     public let headers: [String: String]
     /// Серилизатор ответа
     public let serializer: IOSerializer
-    /// Наблюдатель запроса
-    public let interceptor: RestInterceptor
     /// Наблюдатели запроса
     public let interceptors: [IOInterceptor]
     /// http коды с которыми разрешено пустой ответ
@@ -67,7 +65,6 @@ public struct DynamicRequest {
         private var decoder: JSONDecoder = JSONDecoder()
         private var encoder: JSONEncoder = JSONEncoder()
         private var serializer: IOSerializer = DefaultSerializer()
-        private var interceptor: RestInterceptor = Http.Interceptor()
         private var interceptors: [IOInterceptor] = [DefaultInterceptor()]
         private var emptyResponseCodes: Set<Int> = [204]
         private var emptyRequestMethods: Set<Http.Method> = [.head]
@@ -147,13 +144,6 @@ public struct DynamicRequest {
             self.serializer = serializer
             return self
         }
-
-        ///  Добавить наблюдатель запрса
-        /// - Parameter interceptor: наблюдатель запрса
-        public func with(interceptor: RestInterceptor) -> Self {
-            self.interceptor = interceptor
-            return self
-        }
         
         ///  Добавить наблюдатели запрса
         /// - Parameter interceptor: наблюдатели запрса
@@ -184,7 +174,6 @@ public struct DynamicRequest {
                                   encoding: encoding,
                                   headers: headers,
                                   serializer: serializer,
-                                  interceptor: interceptor,
                                   interceptors: interceptors,
                                   emptyResponseCodes: emptyResponseCodes,
                                   emptyRequestMethods: emptyRequestMethods)

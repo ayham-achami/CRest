@@ -23,28 +23,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import CFoundation
 import Foundation
 
 /// Базовая ссылка
-public struct EndPoint: Model {
+public struct EndPoint: Hashable {
 
     public let rawValue: String
 
     public init(rawValue: String) {
         self.rawValue = rawValue
-    }
-}
-
-// MARK: - EndPoint + Hashable
-extension EndPoint: Hashable {
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(rawValue)
-    }
-
-    public static func != (lhs: Self, rhs: Self) -> Bool {
-        lhs.rawValue == rhs.rawValue
     }
 }
 
@@ -73,17 +60,17 @@ private extension String {
     
     /// Возвращает экранированные символы URL
     var unicodeEncodedString: String {
-        guard let unicodeEncodedString = self
+        guard 
+            let unicodeEncodedString = self
                 .removingPercentEncoding?
-                .addingPercentEncoding(withAllowedCharacters: .urlAllowedCharacters) else {
-            preconditionFailure("Content unencoding character")
-        }
+                .addingPercentEncoding(withAllowedCharacters: .urlAllowedCharacters) 
+        else { preconditionFailure("Content unencoding character") }
         return unicodeEncodedString
     }
 }
 
 /// REST запрос
-public struct Request: Model {
+public struct Request: Hashable {
     
     public let rawValue: String
     
@@ -99,18 +86,6 @@ public struct Request: Model {
     /// - Parameter dynamicURL: Динамический запрос
     public init(_ dynamicURL: DynamicURL) {
         self.rawValue = dynamicURL.row.unicodeEncodedString
-    }
-}
-
-// MARK: - Request + Hashable
-extension Request: Hashable {
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(rawValue)
-    }
-
-    public static func != (lhs: Self, rhs: Self) -> Bool {
-        lhs.rawValue == rhs.rawValue
     }
 }
 

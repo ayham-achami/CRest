@@ -30,7 +30,7 @@ extension AFError {
  
     /// Конвертирует `AFError` в `NetworkError`
     /// - Parameter error: Alamofire error `AFError`
-    public func reason(with statusCode: Int?, responseData: Data? = nil) -> NetworkError {
+    func reason(with statusCode: Int?, responseData: Data? = nil) -> NetworkError {
         if isExplicitlyCancelledError {
             return .explicitlyCancelled
         } else if case let .responseSerializationFailed(reason) = self,

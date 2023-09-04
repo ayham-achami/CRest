@@ -94,14 +94,6 @@ extension Alamofire.AFDownloadResponse: ResponseLog {
     }
 }
 
-// MARK: - Alamofire.Request + Retry
-public extension Alamofire.Request {
-
-    func retry(_ restInterceptor: RestInterceptor) -> Self {
-        return self
-    }
-}
-
 // MARK: - Request + validate
 extension Alamofire.DataRequest {
     

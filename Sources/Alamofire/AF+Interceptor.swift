@@ -26,27 +26,6 @@
 import Alamofire
 import Foundation
 
-public extension Http {
-    
-    /// Наблюдать за запросами по умолчанию
-    class Interceptor: RestInterceptor {
-        
-        public init() {}
-        
-        public func adapt(_ urlRequest: URLRequest,
-                          for session: Session,
-                          completion: @escaping (Result<URLRequest, Error>) -> Void) {
-            completion(.success(urlRequest))
-        }
-        
-        public func retry(_ request: Alamofire.Request,
-                          for session: Session,
-                          dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-            completion(.doNotRetry)
-        }
-    }
-}
-
 /// Обертка поверх `RequestInterceptor`
 struct InterceptorWrapper: RequestInterceptor {
     

@@ -26,7 +26,6 @@
 import Foundation
 import Alamofire
 
-
 /// Обертка поверх `ResponseSerializer`
 struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: CRest.Response {
         

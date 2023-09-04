@@ -23,12 +23,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if canImport(Combine)
 import Combine
 import Alamofire
 import Foundation
-
-// MARK: - CombineAlamofireRestIO
 
 /// Имплементация RestIO с Alamofire и Combine
 public final class CombineAlamofireRestIO: CombineRestIO {
@@ -37,25 +34,25 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     
     /// Сессия запросов
     private lazy var session: Session = {
-        Session(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
-                rootQueue: networkQueue,
-                requestQueue: requestsQueue,
-                serverTrustManager: configuration.serverTrustManager)
+        .init(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
+              rootQueue: networkQueue,
+              requestQueue: requestsQueue,
+              serverTrustManager: configuration.serverTrustManager)
     }()
     
     /// Поток запросов
     private lazy var networkQueue: DispatchQueue = {
-        DispatchQueue(label: "ReactiveRestIO.Combine.networkQueue", qos: .default)
+        .init(label: "RestIO.combine.networkQueue", qos: .default)
     }()
     
     /// Поток запросов
     private lazy var requestsQueue: DispatchQueue = {
-        DispatchQueue(label: "ReactiveRestIO.Combine.requestsQueue", qos: .default, target: networkQueue)
+        .init(label: "RestIO.combine.requestsQueue", qos: .default, target: networkQueue)
     }()
     
     /// Поток сериализации
     private lazy var serializationQueue: DispatchQueue = {
-        DispatchQueue(label: "ReactiveRestIO.Combine.serializationQueue", qos: .default, target: networkQueue)
+        .init(label: "RestIO.combine.serializationQueue", qos: .default, target: networkQueue)
     }()
     
     // MARK: - Private properties
@@ -170,4 +167,3 @@ private extension NetworkInformant {
         }
     }
 }
-#endif

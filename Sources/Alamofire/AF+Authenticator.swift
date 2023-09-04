@@ -43,7 +43,7 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
         }
         
         public var requiresRefresh: Bool {
-            !self.isValidated
+            !isValidated
         }
         
         init(_ credential: BearerCredential) {

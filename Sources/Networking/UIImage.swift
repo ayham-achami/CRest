@@ -34,6 +34,7 @@ public extension UIImage {
     /// - PNG: PNG формат
     /// - JPEG: JPEG формат
     enum Serialization: String {
+        
         case png
         case jpeg
     }

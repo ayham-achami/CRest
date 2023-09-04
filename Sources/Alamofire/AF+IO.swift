@@ -58,7 +58,6 @@ struct IO {
                                    headers: request.afHeders,
                                    interceptor: request.afInterceptor)
             .validate(request.validate)
-            .retry(request.interceptor)
         case .JSON:
             return session.request(request.url,
                                    method: request.afMethod,
@@ -67,7 +66,6 @@ struct IO {
                                    headers: request.afHeders,
                                    interceptor: request.afInterceptor)
             .validate(request.validate)
-            .retry(request.interceptor)
         case .multipart:
             return session.upload(multipartFormData: request.encode(into:),
                                   to: request.url,
@@ -75,7 +73,6 @@ struct IO {
                                   headers: request.afHeders,
                                   interceptor: request.afInterceptor)
             .validate(request.validate)
-            .retry(request.interceptor)
         }
     }
     
@@ -96,7 +93,6 @@ struct IO {
                                     interceptor: request.afInterceptor,
                                     to: afDestination)
             .validate(request.validate)
-            .retry(request.interceptor)
         case .JSON:
             return session.download(request.url,
                                     method: request.afMethod,
@@ -106,7 +102,6 @@ struct IO {
                                     interceptor: request.afInterceptor,
                                     to: afDestination)
             .validate(request.validate)
-            .retry(request.interceptor)
         case .multipart:
             preconditionFailure("Download request not support multipart parameters")
         }
@@ -126,7 +121,6 @@ struct IO {
                                   headers: request.afHeders,
                                   interceptor: request.afInterceptor)
             .validate(request.validate)
-            .retry(request.interceptor)
         case .multipart:
             return session.upload(multipartFormData: request.encode(into:),
                                   to: request.url,
@@ -134,7 +128,6 @@ struct IO {
                                   headers: request.afHeders,
                                   interceptor: request.afInterceptor)
             .validate(request.validate)
-            .retry(request.interceptor)
         }
     }
 }
