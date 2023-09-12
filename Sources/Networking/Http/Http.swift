@@ -29,7 +29,7 @@ import Foundation
 public enum Http {
     
     /// Объект, кодирующий в строки запроса в URL.
-    public struct EncodingConfiguration {
+    @frozen public struct EncodingConfiguration {
     
         /// Кодировка, используемая для значений `Array`
         public enum ArrayEncoding {

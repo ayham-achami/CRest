@@ -26,7 +26,7 @@
 import Foundation
 
 /// Динамический ответ
-public struct DynamicResponse<Response: CRest.Response> {
+@frozen public struct DynamicResponse<Response: CRest.Response> {
     
     /// Состояние ответа
     public enum State {

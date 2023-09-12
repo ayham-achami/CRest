@@ -39,7 +39,7 @@ public enum IORetry {
 }
 
 /// Адаптируемый запрос
-public struct AdaptedRequest {
+@frozen public struct AdaptedRequest {
     
     /// Запрос
     public let request: URLRequest

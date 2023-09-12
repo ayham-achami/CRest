@@ -26,7 +26,7 @@
 import Foundation
 
 /// Базовая ссылка
-public struct EndPoint: Hashable {
+@frozen public struct EndPoint: Hashable {
 
     public let rawValue: String
 
@@ -70,7 +70,7 @@ private extension String {
 }
 
 /// REST запрос
-public struct Request: Hashable {
+@frozen public struct Request: Hashable {
     
     public let rawValue: String
     

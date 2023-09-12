@@ -122,7 +122,7 @@ public protocol ParametersBuilder: AnyObject {
 }
 
 /// Пустой объект модели
-public struct Empty: UniversalModel {
+@frozen public struct Empty: UniversalModel {
     
     /// Инициализация
     public init() {}

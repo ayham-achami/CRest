@@ -26,7 +26,7 @@
 import Foundation
 
 /// Динамический http запрос
-public struct DynamicRequest {
+@frozen public struct DynamicRequest {
 
     /// Урль запроса
     public let url: String

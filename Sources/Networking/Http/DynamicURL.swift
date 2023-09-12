@@ -26,17 +26,22 @@
 import Foundation
 
 /// Ключи параметров по ссылке
-public protocol URLQueryKey {}
+public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == String {}
 
 // MARK: - DynamicURL
 
 /// Динамическая REST ссылка
-public struct DynamicURL {
-
+@frozen public struct DynamicURL {
+    
+    /// Создает и возвращает `DynamicURL.Builder`
+    /// - Parameter keys: Тип ключей
+    /// - Returns: `DynamicURL.Builder`
+    public static func keyed<Keys>(by keys: Keys.Type) -> Builder<Keys> where Keys: URLQueryKeys {
+        .init(keyedBy: keys)
+    }
+    
     /// Тип занчения
     public typealias Value = Any
-    /// Тип ключей
-    public typealias Key = URLQueryKey & RawRepresentable
     
     /// Ссылка запроса
     private let queryURL: URL
@@ -50,13 +55,15 @@ public struct DynamicURL {
     public var absolute: URL {
         queryURL
     }
-
+    
+    /// Инициализация
+    /// - Parameter queryURL: Ссылка запроса
     public init(_ queryURL: URL) {
         self.queryURL = queryURL
     }
 
     /// Билдер ссылки
-    public final class Builder<KeyType: Key> {
+    public final class Builder<Key> where Key: URLQueryKeys {
 
         /// базовый ссылка
         private var url: URL?
@@ -65,7 +72,7 @@ public struct DynamicURL {
 
         /// Инициализация
         /// - Parameter keyedBy: Тип ключей
-        public init(keyedBy: KeyType.Type) {}
+        public init(keyedBy: Key.Type) {}
 
         /// Добавить базовую ссылку
         /// - Parameter url: Базовая ссылка
@@ -92,7 +99,7 @@ public struct DynamicURL {
         /// - Parameters:
         ///   - value: значение
         ///   - key: ключ значения
-        public func with(value: Value?, key: KeyType) -> Self {
+        public func with(value: Value?, key: Key) -> Self {
             guard let value = value else { return self }
             items.append(URLQueryItem(name: String(describing: key.rawValue), value: "\(value)"))
             return self

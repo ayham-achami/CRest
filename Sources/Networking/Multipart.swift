@@ -23,16 +23,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if canImport(UIKit)
-import UIKit
-#endif
 import Foundation
 
 /// Любой параметр в автомате multipart
 public protocol MultipartParameter {}
 
 /// Мультипартпараметр содержащий любые данные
-public struct DataMultipartParameter: MultipartParameter {
+@frozen public struct DataMultipartParameter: MultipartParameter {
 
     /// Данные для отправки
     public let data: Data
@@ -79,8 +76,9 @@ public struct DataMultipartParameter: MultipartParameter {
 }
 
 #if canImport(UIKit)
+import UIKit
 /// Мультипарт параметр содержащий картинку
-public struct ImageMultipartParameter: MultipartParameter {
+@frozen public struct ImageMultipartParameter: MultipartParameter {
 
     public let data: Data
     public let name: String
@@ -100,7 +98,7 @@ public struct ImageMultipartParameter: MultipartParameter {
 #endif
 
 /// Стримить данные в Multipart
-public struct StreamMultipartParameter: MultipartParameter {
+@frozen public struct StreamMultipartParameter: MultipartParameter {
 
     public let url: URL
     public let name: String
@@ -112,7 +110,7 @@ public struct StreamMultipartParameter: MultipartParameter {
 }
 
 /// Параметры в мульти типовых
-public struct MultipartParameters: Parameters {
+@frozen public struct MultipartParameters: Parameters {
 
     private var content: [MultipartParameter] = []
 

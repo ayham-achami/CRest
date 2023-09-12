@@ -26,7 +26,7 @@
 import Foundation
 
 /// Ключи параметров загловках
-public protocol HeaderKeys {}
+public protocol HeaderKeys: RawRepresentable, Hashable where RawValue == String {}
 
 /// Любой билдер загловк
 public protocol AnyHeadersBuilder: AnyObject {
@@ -40,21 +40,18 @@ public extension Http {
     /// Http загловки
     enum Headers {
         
-        public enum DefaultKeys: String, HeaderKeys {
-            case `default` = ""
+        /// Создает и возвращает `Headers.Builder`
+        /// - Parameter keys: Тип ключей
+        /// - Returns: `Headers.Builder`
+        public static func keyed<Keys>(by keys: Keys.Type) -> Builder<Keys> where Keys: HeaderKeys {
+            .init(keyedBy: keys)
         }
         
-        public static var empty: Http.Headers.Builder<DefaultKeys> {
-            Http.Headers.Builder(keyedBy: DefaultKeys.self)
-        }
-
         /// Тип значения
         public typealias Value = String
-        /// Тип ключей
-        public typealias Key = HeaderKeys & RawRepresentable & Hashable
 
         /// Билдер
-        public final class Builder<Key: Headers.Key>: AnyHeadersBuilder {
+        public final class Builder<Key>: AnyHeadersBuilder where Key: HeaderKeys {
 
             /// загловки
             private var source = [String: String]()
@@ -68,7 +65,7 @@ public extension Http {
             ///   - value: значение
             ///   - key: ключ
             public func with(value: Value, for key: Key) -> Self {
-                source[String(describing: key.rawValue)] = value
+                source[key.rawValue] = value
                 return self
             }
 
