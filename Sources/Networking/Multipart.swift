@@ -109,6 +109,25 @@ import UIKit
     }
 }
 
+/// Мультипарт параметр содержащий файл
+public struct FileMultipartParameter: MultipartParameter {
+
+    public let data: Data
+    public let name: String
+    public let fileName: String
+    public let mime: String
+
+    public init(_ data: Data,
+                _ name: String,
+                _ fileName: String,
+                _ mime: String) throws {
+        self.data = data
+        self.name = name
+        self.fileName = fileName
+        self.mime = mime
+    }
+}
+
 /// Параметры в мульти типовых
 @frozen public struct MultipartParameters: Parameters {
 

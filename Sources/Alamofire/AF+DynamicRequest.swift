@@ -130,6 +130,11 @@ extension DynamicRequest {
             #endif
             case let parameter as StreamMultipartParameter:
                 data.append(parameter.url, withName: parameter.name)
+            case let parameter as FileMultipartParameter:
+                data.append(parameter.data,
+                            withName: parameter.name,
+                            fileName: parameter.fileName,
+                            mimeType: parameter.mime)
             default:
                 preconditionFailure("Not supported MultipartParameters type")
             }
