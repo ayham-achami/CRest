@@ -90,8 +90,8 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
 
         /// Добавляет компонент пути к URL.
         /// - Parameter pathComponent: Компонент пути для добавления.
-        public func with(pathComponent: String) -> Self {
-            self.url?.appendPathComponent(pathComponent)
+        public func with(pathComponent: Any) -> Self {
+            self.url?.appendPathComponent(.init(describing: pathComponent))
             return self
         }
 
