@@ -119,10 +119,10 @@ extension DynamicRequest {
         guard let parameters = parameters as? MultipartParameters  else { return }
         if interceptors.isEmpty {
             encode(parameters, into: data)
+        } else if let adapter = interceptors.first(where: { $0 is IORequestMultipartAdapter }) as? IORequestMultipartAdapter {
+            encode(parameters, into: data, adapter: adapter)
         } else {
-            interceptors.forEach { adapter in
-                encode(parameters, into: data, adapter: adapter)
-            }
+            encode(parameters, into: data)
         }
     }
     

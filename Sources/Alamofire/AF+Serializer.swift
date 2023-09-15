@@ -65,7 +65,11 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
             guard
                 emptyResponseAllowed(forRequest: request, response: response)
             else { throw AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength) }
-            return empty
+            if let fileURL {
+                return try serializer.serialize(fileURL, decoder, request, response)
+            } else {
+                return empty
+            }
         } else if let fileURL {
             return try serializer.serialize(fileURL, decoder, request, response)
         } else {

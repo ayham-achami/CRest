@@ -169,7 +169,7 @@ public extension IORequestRetrier {
 }
 
 /// Протокол модификации запроса
-public protocol IOInterceptor: IORequestAdapter, IORequestRetrier, IORequestMultipartAdapter {}
+public protocol IOInterceptor: IORequestAdapter, IORequestRetrier {}
 
 /// Наблюдать за запросами по умолчанию
 @frozen public struct DefaultInterceptor: IOInterceptor {}
