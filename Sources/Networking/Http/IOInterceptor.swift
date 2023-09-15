@@ -121,6 +121,32 @@ public extension IORequestAdapter {
     }
 }
 
+/// Протокол адаптации запроса MultiPart
+public protocol IORequestMultipartAdapter {
+    
+    /// Адаптация часть тела запроса
+    /// - Parameter data: Часть тела запроса
+    /// - Returns: `Data`
+    func adapt(_ data: Data) -> Data
+    
+    /// Адаптация часть тела запроса по ссылки
+    /// - Parameter url: Часть тела запроса по ссылки
+    /// - Returns: `URL`
+    func adapt(_ url: URL) -> URL
+}
+
+// MARK: - IORequestMultipartAdapter + Default
+extension IORequestMultipartAdapter {
+    
+    public func adapt(_ data: Data) -> Data {
+        data
+    }
+    
+    public func adapt(_ url: URL) -> URL {
+        url
+    }
+}
+
 /// Протокол повторения запроса
 public protocol IORequestRetrier {
     
@@ -143,7 +169,7 @@ public extension IORequestRetrier {
 }
 
 /// Протокол модификации запроса
-public protocol IOInterceptor: IORequestAdapter, IORequestRetrier {}
+public protocol IOInterceptor: IORequestAdapter, IORequestRetrier, IORequestMultipartAdapter {}
 
 /// Наблюдать за запросами по умолчанию
 @frozen public struct DefaultInterceptor: IOInterceptor {}

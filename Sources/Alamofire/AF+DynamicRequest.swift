@@ -117,6 +117,16 @@ extension DynamicRequest {
     
     public func encode(into data: MultipartFormData) {
         guard let parameters = parameters as? MultipartParameters  else { return }
+        if interceptors.isEmpty {
+            encode(parameters, into: data)
+        } else {
+            interceptors.forEach { adapter in
+                encode(parameters, into: data, adapter: adapter)
+            }
+        }
+    }
+    
+    private func encode(_ parameters: MultipartParameters, into data: MultipartFormData) {
         parameters.forEach {
             switch $0 {
             case let parameter as DataMultipartParameter:
@@ -130,6 +140,26 @@ extension DynamicRequest {
             #endif
             case let parameter as StreamMultipartParameter:
                 data.append(parameter.url, withName: parameter.name)
+            default:
+                preconditionFailure("Not supported MultipartParameters type")
+            }
+        }
+    }
+    
+    private func encode(_ parameters: MultipartParameters, into data: MultipartFormData, adapter: IORequestMultipartAdapter) {
+        parameters.forEach {
+            switch $0 {
+            case let parameter as DataMultipartParameter:
+                data.append(adapter.adapt(parameter.data), withName: parameter.name)
+            #if canImport(UIKit)
+            case let parameter as ImageMultipartParameter:
+                data.append(adapter.adapt(parameter.data),
+                            withName: parameter.name,
+                            fileName: parameter.fileName,
+                            mimeType: parameter.mime)
+            #endif
+            case let parameter as StreamMultipartParameter:
+                data.append(adapter.adapt(parameter.url), withName: parameter.name)
             default:
                 preconditionFailure("Not supported MultipartParameters type")
             }
