@@ -117,10 +117,8 @@ extension DynamicRequest {
     
     public func encode(into data: MultipartFormData) {
         guard let parameters = parameters as? MultipartParameters  else { return }
-        if interceptors.isEmpty {
-            encode(parameters, into: data)
-        } else if let adapter = interceptors.first(where: { $0 is IORequestMultipartAdapter }) as? IORequestMultipartAdapter {
-            encode(parameters, into: data, adapter: adapter)
+        if let adapter = interceptors.multipartAdapter() {
+            encode(parameters, into: data, with: adapter)
         } else {
             encode(parameters, into: data)
         }
@@ -146,7 +144,7 @@ extension DynamicRequest {
         }
     }
     
-    private func encode(_ parameters: MultipartParameters, into data: MultipartFormData, adapter: IORequestMultipartAdapter) {
+    private func encode(_ parameters: MultipartParameters, into data: MultipartFormData, with adapter: IORequestMultipartAdapter) {
         parameters.forEach {
             switch $0 {
             case let parameter as DataMultipartParameter:
@@ -219,5 +217,14 @@ extension Http.EncodingConfiguration {
                                     boolEncoding: boolEncoding,
                                     dataEncoding: dataEncoding,
                                     dateEncoding: dateEncoding))
+    }
+}
+
+// MARK: - Array + IOInterceptor
+private extension Array where Element == any IOInterceptor {
+    
+    func multipartAdapter() -> IORequestMultipartAdapter? {
+        guard !isEmpty else { return nil }
+        return compactMap { $0 as? IORequestMultipartAdapter }.first
     }
 }
