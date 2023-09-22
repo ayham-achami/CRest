@@ -93,6 +93,15 @@ public extension IOResponseSerializer {
 /// Протокол сериализации ответа для запросов скачивания
 public protocol IODownloadResponseSerializer: HTTPBodyController, IOErrorSerializationController {
     
+    /// Сериализации файла например расшифровать
+    /// - Parameters:
+    ///   - fileURL: Ссылка на скачанный файл
+    ///   - request: Запрос
+    ///   - response: Ответ
+    func serialize(_ fileURL: URL,
+                   _ request: URLRequest?,
+                   _ response: HTTPURLResponse?) throws
+    
     /// Сериализации ответа
     /// - Parameters:
     ///   - fileURL: Ссылка на скачанный файл
@@ -109,6 +118,10 @@ public protocol IODownloadResponseSerializer: HTTPBodyController, IOErrorSeriali
 // MARK: - IODownloadResponseSerializer + Default
 public extension IODownloadResponseSerializer where Self: IOSerializer {
 
+    func serialize(_ fileURL: URL,
+                   _ request: URLRequest?,
+                   _ response: HTTPURLResponse?) throws {}
+    
     func serialize<T>(_ fileURL: URL,
                       _ decoder: JSONDecoder,
                       _ request: URLRequest?,
