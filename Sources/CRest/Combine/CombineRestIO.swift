@@ -10,6 +10,7 @@ public protocol CombineRestIO: AnyObject {
     
     typealias Source = URL
     typealias Destination = URL
+    typealias ProgressHandler = (Progress) -> Void
     
     /// Инициализация
     /// - Parameter configuration: Общие настройки REST клиента
@@ -19,21 +20,22 @@ public protocol CombineRestIO: AnyObject {
     /// - Parameters:
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
-    func perform<Response>(_ request: DynamicRequest,
-                           response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response
+    /// - Returns: ответ на запрос
+    func perform<Response>(_ request: DynamicRequest, response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response
     
     /// Выполняет REST http запроса
     /// - Parameters:
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
-    func perform<Response>(_ request: DynamicRequest,
-                           response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response
+    /// - Returns: `DynamicResponse` c ответом на запрос
+    func dynamicPerform<Response>(_ request: DynamicRequest, response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response
     
     /// Скачает данные и сохраняет их на диске
     /// - Parameters:
     ///   - destination: Куда сохранить
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
+    /// - Returns: ответ на запрос
     func download<Response>(into destination: Destination,
                             with request: DynamicRequest,
                             response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response
@@ -43,6 +45,7 @@ public protocol CombineRestIO: AnyObject {
     ///   - source: Откуда брать данные
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
+    /// - Returns: ответ на запрос
     func upload<Response>(from source: Source,
                           with request: DynamicRequest,
                           response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response

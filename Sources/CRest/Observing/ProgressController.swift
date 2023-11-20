@@ -5,6 +5,7 @@
 import Foundation
 
 /// Протокол контроля прогресс загрузки
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 public protocol ProgressController: AnyObject {
 
     /// Остановить загрузки
@@ -17,6 +18,7 @@ public protocol ProgressController: AnyObject {
     func cancelProgress()
 }
 
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 public struct ProgressToken<Owner: AnyObject, Argument> {
 
     /// Уникальный идентификатор

@@ -74,7 +74,7 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
             guard
                 let queryURL = components.url
             else { preconditionFailure("URL of components is nil \(components)") }
-            return DynamicURL(queryURL)
+            return .init(queryURL)
         }
     }
     

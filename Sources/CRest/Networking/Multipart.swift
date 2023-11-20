@@ -99,8 +99,8 @@ import UIKit
         initial(self)
     }
 
-    /// Добавить парметр
-    /// - Parameter parameter: Парметр
+    /// Добавить параметр
+    /// - Parameter parameter: Параметр
     public mutating func append(_ parameter: MultipartParameter) {
         content.append(parameter)
     }
@@ -124,14 +124,18 @@ import UIKit
     }
 }
 
-// MARK: - реализация по умолчанию
-extension MultipartParameters {
-
-    public var description: String {
-        content.description
-    }
-
+// MARK: - MultipartParameters + CustomDebugStringConvertible
+extension MultipartParameters: CustomDebugStringConvertible {
+    
     public var debugDescription: String {
         content.debugDescription
+    }
+}
+
+// MARK: - MultipartParameters + CustomStringConvertible
+extension MultipartParameters: CustomStringConvertible {
+    
+    public var description: String {
+        content.description
     }
 }

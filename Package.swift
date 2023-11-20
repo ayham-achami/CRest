@@ -24,9 +24,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/realm/SwiftLint", from: "0.53.0"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
-        .package(url: "https://github.com/Alamofire/Alamofire.git", from: .init(5, 8, 0)),
-        .package(url: "https://github.com/ayham-achami/CFoundation.git", branch: "mainline")
+        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.8.1"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0")
     ],
     targets: [
         .macro(
@@ -43,7 +42,6 @@ let package = Package(
             name: "CRest",
             dependencies: [
                 "Alamofire",
-                "CFoundation",
                 "CRestMacros"
             ],
             plugins: [

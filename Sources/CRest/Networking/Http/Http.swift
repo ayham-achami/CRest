@@ -5,7 +5,41 @@
 import Foundation
 
 /// Http
-public enum Http {
+public enum Http {}
+
+// MARK: - Http + Method
+extension Http {
+    
+    /// Определения Http методов
+    /// See https://tools.ietf.org/html/rfc7231#section-4.3
+    public enum Method: String, CaseIterable {
+        
+        case options = "OPTIONS"
+        case get     = "GET"
+        case head    = "HEAD"
+        case post    = "POST"
+        case put     = "PUT"
+        case patch   = "PATCH"
+        case delete  = "DELETE"
+        case trace   = "TRACE"
+        case connect = "CONNECT"
+    }
+}
+
+// MARK: - Http + Encoding
+extension Http {
+    
+    /// Типы игодинга данных
+    public enum Encoding {
+        
+        case JSON
+        case multipart
+        case URL(EncodingConfiguration)
+    }
+}
+
+// MARK: - Http + EncodingConfiguration
+extension Http {
     
     /// Объект, кодирующий в строки запроса в URL.
     @frozen public struct EncodingConfiguration {
@@ -73,28 +107,5 @@ public enum Http {
             self.date = date
             self.array = array
         }
-    }
-    
-    /// Типы енкднга данных
-    public enum Encoding {
-        
-        case JSON
-        case multipart
-        case URL(EncodingConfiguration)
-    }
-
-    /// Определения Http методов
-    /// See https://tools.ietf.org/html/rfc7231#section-4.3
-    public enum Method: String, CaseIterable {
-        
-        case options = "OPTIONS"
-        case get     = "GET"
-        case head    = "HEAD"
-        case post    = "POST"
-        case put     = "PUT"
-        case patch   = "PATCH"
-        case delete  = "DELETE"
-        case trace   = "TRACE"
-        case connect = "CONNECT"
     }
 }

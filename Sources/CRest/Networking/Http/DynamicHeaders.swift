@@ -9,7 +9,9 @@ public protocol HeaderKeys: RawRepresentable, Hashable where RawValue == String 
 
 /// Любой билдер загловк
 public protocol AnyHeadersBuilder: AnyObject {
-
+    
+    /// <#Description#>
+    /// - Returns: <#description#>
     func build() -> [String: String]
 }
 
@@ -53,5 +55,68 @@ public extension Http {
                 source
             }
         }
+    }
+}
+
+/// <#Description#>
+public protocol HeadersDetection {
+    
+    /// <#Description#>
+    /// - Parameter key: <#key description#>
+    /// - Returns: <#description#>
+    func value(for key: some HeaderKeys) -> String?
+}
+
+// MARK: - HeadersDetection + Default
+public extension HeadersDetection {
+    
+    subscript(_ key: some HeaderKeys) -> String? {
+        value(for: key)
+    }
+}
+
+// MARK: - HTTPURLResponse + HeadersDetection
+extension HTTPURLResponse {
+    
+    /// <#Description#>
+    @frozen public struct Headers: HeadersDetection {
+        
+        private let source: HTTPURLResponse
+        
+        init(source: HTTPURLResponse) {
+            self.source = source
+        }
+        
+        public func value(for key: some HeaderKeys) -> String? {
+            source.value(forHTTPHeaderField: key.rawValue)
+        }
+    }
+    
+    /// <#Description#>
+    public var headersDetection: Headers {
+        .init(source: self)
+    }
+}
+
+// MARK: - URLRequest + HeadersDetection
+extension URLRequest {
+    
+    /// <#Description#>
+    public struct Headers: HeadersDetection {
+        
+        private let source: URLRequest
+        
+        init(source: URLRequest) {
+            self.source = source
+        }
+        
+        public func value(for key: some HeaderKeys) -> String? {
+            source.value(forHTTPHeaderField: key.rawValue)
+        }
+    }
+    
+    /// <#Description#>
+    public var headersDetection: Headers {
+        .init(source: self)
     }
 }

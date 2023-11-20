@@ -87,7 +87,7 @@ public extension AsyncRestIO where Self: AsyncRestIOSendable {
     func fetch<Response, Parameters>(for request: Request,
                                      parameters: Parameters = Empty.value,
                                      response: Response.Type = Empty.self,
-                                     encoding: Http.Encoding) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
+                                     encoding: Http.Encoding = .URL(.default)) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
         try await send(for: request, parameters: parameters, response: response, method: .get, encoding: encoding)
     }
     

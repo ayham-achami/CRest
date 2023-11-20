@@ -143,19 +143,21 @@ import Foundation
         
         /// Создает запрос
         public func build() throws -> DynamicRequest {
-            guard let url = url else { throw ModelBuildError(errorDescription: "Dynamic request URL is nil") }
-            return DynamicRequest(url: url,
-                                  validate: validate,
-                                  method: method,
-                                  decoder: decoder,
-                                  encoder: encoder,
-                                  parameters: parameters,
-                                  encoding: encoding,
-                                  headers: headers,
-                                  serializer: serializer,
-                                  interceptors: interceptors,
-                                  emptyResponseCodes: emptyResponseCodes,
-                                  emptyRequestMethods: emptyRequestMethods)
+            guard
+                let url = url
+            else { throw ModelBuildError(errorDescription: "Dynamic request URL is nil") }
+            return .init(url: url,
+                         validate: validate,
+                         method: method,
+                         decoder: decoder,
+                         encoder: encoder,
+                         parameters: parameters,
+                         encoding: encoding,
+                         headers: headers,
+                         serializer: serializer,
+                         interceptors: interceptors,
+                         emptyResponseCodes: emptyResponseCodes,
+                         emptyRequestMethods: emptyRequestMethods)
         }
     }
 }

@@ -14,7 +14,7 @@ extension String {
 
     /// Возвращает локализованную строку вставляя в ней заданные аргументы
     /// - Parameter arg: Аргументы
-    /// - Returns:  Локализованную строку с аргументами
+    /// - Returns: Локализованную строку с аргументами
     func localized(args: CVarArg...) -> String {
         withVaList(args) { NSString(format: self.localized, arguments: $0) } as String
     }

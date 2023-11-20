@@ -62,8 +62,8 @@ public final class CombineAlamofireRestIO: CombineRestIO {
             }.eraseToAnyPublisher()
     }
     
-    public func perform<Response>(_ request: DynamicRequest,
-                                  response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response {
+    public func dynamicPerform<Response>(_ request: DynamicRequest,
+                                         response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
@@ -102,8 +102,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                 progressSubject.send(completion: .finished)
             }
         }
-        return .init(response: responsePublisher.eraseToAnyPublisher(),
-                     progress: progressSubject.eraseToAnyPublisher())
+        return .init(response: responsePublisher.eraseToAnyPublisher(), progress: progressSubject.eraseToAnyPublisher())
     }
     
     public func upload<Response>(from source: Source,
@@ -130,8 +129,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                 progressSubject.send(completion: .finished)
             }
         }
-        return .init(response: responsePublisher.eraseToAnyPublisher(),
-                     progress: progressSubject.eraseToAnyPublisher())
+        return .init(response: responsePublisher.eraseToAnyPublisher(), progress: progressSubject.eraseToAnyPublisher())
     }
 }
 

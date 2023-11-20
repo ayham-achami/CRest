@@ -5,6 +5,7 @@
 import Foundation
 
 /// Наблюдатель прогресса загрузки
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 public final class ProgressObserver<Owner: AnyObject, Argument> {
 
     /// Источник контроля

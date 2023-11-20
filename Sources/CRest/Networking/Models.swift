@@ -2,25 +2,28 @@
 //  Models.swift
 //
 
-import CFoundation
 import Foundation
 
 /// Любой ответ любого запроса
-public typealias Response = Model & Decodable
+public typealias Response = Decodable
 
 /// Любые параметры любого запроса
-public typealias Parameters = Model & Encodable
+public typealias Parameters = Encodable
 
 /// Любые параметры/ответ любого запроса
-public typealias UniversalModel = Model & Codable
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+public typealias UniversalModel = Codable
 
 /// Любой ответ любого запроса в виде массива
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 public typealias CollectionResponse = Response & CollectionRepresented
 
 /// Любые параметры любого запроса в виде массива
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 public typealias CollectionParameters = Parameters & CollectionRepresented
 
 /// Протокол представления объекта модели в виде массива
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 public protocol CollectionRepresented: Collection {
 
     /// Тип элемента массива
@@ -31,7 +34,8 @@ public protocol CollectionRepresented: Collection {
 }
 
 // MARK: - CollectionRepresented + Model
-extension CollectionRepresented where Item: Model, Index == Int {
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+extension CollectionRepresented where Index == Int {
 
     public var startIndex: Int {
         list.startIndex
@@ -51,7 +55,7 @@ extension CollectionRepresented where Item: Model, Index == Int {
 }
 
 /// Протокол реализующий логику парсинга дефолтное значение для `Enum`
-public protocol RawResponse: Response, RawRepresentable {
+public protocol RawResponse: Response, RawRepresentable where RawValue: Response {
 
     /// Дефолтное значение
     static var `default`: Self { get }
@@ -77,11 +81,7 @@ public extension RawResponse {
         guard let rawValueOrNil = rawValueOrNil else { return nil }
         self.init(rawValue: rawValueOrNil)
     }
-}
-
-// MARK: - RawResponse + Response
-public extension RawResponse where RawValue: Response {
-
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let rawValue = try container.decode(RawValue.self)
@@ -101,21 +101,8 @@ public protocol ParametersBuilder: AnyObject {
 }
 
 /// Пустой объект модели
-@frozen public struct Empty: UniversalModel {
+@frozen public struct Empty: Response, Parameters {
     
     /// Инициализация
     public init() {}
-
-    public init(from decoder: Decoder) throws {
-        guard let container = try? decoder.singleValueContainer() else { return }
-        if let response = try? container.decode([String: String].self), !response.isEmpty {
-            throw NetworkError.parsing(Data())
-        } else if let response = try? container.decode(String.self), !response.isEmpty || response != "{}" {
-            if let data = response.data(using: .utf8) {
-                throw NetworkError.parsing(data)
-            } else {
-                throw NetworkError.parsing(Data())
-            }
-        }
-    }
 }

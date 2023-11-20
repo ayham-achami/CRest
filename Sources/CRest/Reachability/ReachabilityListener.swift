@@ -27,16 +27,6 @@ public protocol ReachabilityListener: AnyObject {
     /// Текущее состояние сети
     var currentState: Connection { get }
     
-    /// Начать наблюдение за состояние сети
-    func startWatchReachabilityState()
-
-    /// Остановить наблюдение за состояние сети
-    func stopWatchReachabilityState()
-
-    /// Вызывается когда меняется состояние сети
-    /// - Parameter connection: Новое состояние сети
-    func networkReachabilityStateDidChange(_ connection: Connection)
-    
     /// Подписать на состояние сети
     /// - Returns: `AnyPublisher<Connection, Never>`
     func subscribeReachabilityState() -> AnyPublisher<Connection, Never>

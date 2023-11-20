@@ -2,7 +2,6 @@
 //  NetworkInformant.swift
 //
 
-import CFoundation
 import Foundation
 
 /// Логирование сетевых запросов
@@ -19,13 +18,44 @@ public protocol ResponseLog: CustomCURLStringConvertible {
     var responseDescription: String { get }
 }
 
+/// логирования
+public protocol NetworkLogger {
+    
+    /// Вывод сообщения уровня дибаг
+    /// - Parameters:
+    ///   - tag: таг сообщения для фильтрации
+    ///   - message: сообщение для вывода в консоле
+    ///   - file: название файла
+    ///   - function: название функции или метода
+    ///   - line: номер строки
+    func debug(with tag: String, _ message: @autoclosure () -> Any, _ file: StaticString, _ function: StaticString, _ line: Int)
+    
+    /// Вывод сообщения уровня ошбики
+    /// - Parameters:
+    ///   - tag: таг сообщения для фильтрации
+    ///   - message: сообщение для вывода в консоле
+    ///   - file: название файла
+    ///   - function: название функции или метода
+    ///   - line: номер строки
+    func error(with tag: String, _ message: @autoclosure () -> Any, _ file: StaticString, _ function: StaticString, _ line: Int)
+    
+    /// Вывод JSON уровня информации дибаг
+    /// - Parameters:
+    ///   - tag: таг сообщения для фильтрации
+    ///   - data: `Data` JSON
+    ///   - file: название файла
+    ///   - function: название функции или метода
+    ///   - line: номер строки
+    func json(with tag: String, _ data: Data, _ file: StaticString, _ function: StaticString, _ line: Int)
+}
+
 // Объект реализующий логирование Network клиента
 public final class NetworkInformant {
 
-    private let logger: Logger
     private let tag = "Network"
+    private let logger: NetworkLogger
 
-    public init(logger: Logger) {
+    public init(logger: NetworkLogger) {
         self.logger = logger
     }
 
@@ -83,20 +113,20 @@ public final class NetworkInformant {
                     _ file: StaticString = #file,
                     _ function: StaticString = #function,
                     _ line: Int = #line) {
-        logger.json(data, file, function, line)
+        logger.json(with: "JSONDebug", data, file, function, line)
     }
 
     public func log(debug message: @autoclosure () -> Any,
                     _ file: StaticString = #file,
                     _ function: StaticString = #function,
                     _ line: Int = #line) {
-        logger.debug(message(), file, function, line)
+        logger.debug(with: "Debug", message(), file, function, line)
     }
 
     public func log(error message: @autoclosure () -> Any,
                     _ file: StaticString = #file,
                     _ function: StaticString = #function,
                     _ line: Int = #line) {
-        logger.error(message(), file, function, line)
+        logger.error(with: "Error", message(), file, function, line)
     }
 }

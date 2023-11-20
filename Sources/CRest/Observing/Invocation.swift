@@ -5,6 +5,7 @@
 import Foundation
 
 /// Исполняемый объект
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 public protocol Invocation {
 
     /// Выполнить любое значение
@@ -13,6 +14,7 @@ public protocol Invocation {
 }
 
 // MARK: - Invocation + ObserverProtocol
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 public extension Invocation where Self: ObserverProtocol {
 
     func invoke(_ argument: Any) {

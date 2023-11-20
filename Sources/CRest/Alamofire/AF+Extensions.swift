@@ -6,6 +6,7 @@ import Alamofire
 import Foundation
 
 // MARK: - DownloadRequest + ProgressController
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 extension Alamofire.DownloadRequest: ProgressController {
 
     public func pauseProgress() {
@@ -22,6 +23,7 @@ extension Alamofire.DownloadRequest: ProgressController {
 }
 
 // MARK: - UploadRequest + ProgressController
+@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
 extension Alamofire.UploadRequest: ProgressController {
 
     public func pauseProgress() {
