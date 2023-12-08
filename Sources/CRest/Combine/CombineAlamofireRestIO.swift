@@ -56,6 +56,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                     self?.configuration.informant.log(response: response)
                     return model
                 case let .failure(error):
+                    self?.configuration.informant.log(error: error)
                     self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode, responseData: response.data)
                 }
@@ -73,6 +74,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                     self?.configuration.informant.log(response: response)
                     return .init(model, response.response)
                 case let .failure(error):
+                    self?.configuration.informant.log(error: error)
                     self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode, responseData: response.data)
                 }
@@ -91,6 +93,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                     self?.configuration.informant.log(response: response)
                     return model
                 case let .failure(error):
+                    self?.configuration.informant.log(error: error)
                     self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode)
                 }
@@ -118,6 +121,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                     self?.configuration.informant.log(response: response)
                     return model
                 case let .failure(error):
+                    self?.configuration.informant.log(error: error)
                     self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode)
                 }
