@@ -35,7 +35,7 @@ public extension KeyedDecodingContainer {
         guard
             let base64 = Data(base64Encoded: string, options: [])
         else { throw Base64Error.decoding }
-        return try T.decoder.decode(T.self, from: try Z.init(base64).zip)
+        return try T.decoder.decode(T.self, from: try Z.init(base64).unzip)
     }
 }
 
@@ -43,7 +43,7 @@ public extension KeyedDecodingContainer {
 public extension KeyedEncodingContainer {
     
     mutating func encode<T, Z>(_ object: T, forKey key: KeyedEncodingContainer<K>.Key, using: Z.Type) throws where T: Base64GZipEncodable, T: Encodable, Z: Base64GZippier {
-        let base64 = try Z.init(T.encoder.encode(object)).unzip.base64EncodedString()
+        let base64 = try Z.init(T.encoder.encode(object)).zip.base64EncodedString()
         try encode(base64, forKey: key)
     }
 }
