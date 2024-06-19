@@ -26,7 +26,7 @@ let package = Package(
         .package(url: "https://github.com/realm/SwiftLint", from: "0.53.0"),
         .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
         .package(url: "https://github.com/Alamofire/Alamofire.git", from: .init(5, 8, 0)),
-        .package(url: "https://github.com/ayham-achami/CFoundation.git", branch: "mainline")
+        .package(url: "https://github.com/ayham-achami/CFoundation.git", revision: "1f2b721a29c9cba5202a3c4389a702033f7f7373")
     ],
     targets: [
         .macro(
