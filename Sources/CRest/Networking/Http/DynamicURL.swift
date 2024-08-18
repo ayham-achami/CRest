@@ -55,6 +55,18 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
             return self
         }
         
+        /// Добавить набор значений под ключом
+        /// - Parameters:
+        ///   - values: набор значений
+        ///   - key: ключ значения
+        public func with(values: [Value?], key: Key) -> Self {
+            values.forEach { value in
+                guard let value else { return }
+                items.append(URLQueryItem(name: String(describing: key.rawValue), value: "\(value)"))
+            }
+            return self
+        }
+        
         /// Добавить новый параметр с ключом используя `URLQueryItem`
         /// - Parameter query: Новый пармер
         public func with(_ query: URLQueryItem) -> Self {
