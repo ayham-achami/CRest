@@ -25,6 +25,8 @@ import Foundation
     public let headers: [String: String]
     /// Серилизатор ответа
     public let serializer: IOSerializer
+    /// Поведение и логика кэширования данных запросов
+    public let cacheBehavior: IOCacheBehavior?
     /// Наблюдатели запроса
     public let interceptors: [IOInterceptor]
     /// http коды с которыми разрешено пустой ответ
@@ -43,6 +45,7 @@ import Foundation
         private var headers: [String: String] = [:]
         private var decoder: JSONDecoder = JSONDecoder()
         private var encoder: JSONEncoder = JSONEncoder()
+        private var cacheBehavior: IOCacheBehavior?
         private var serializer: IOSerializer = DefaultSerializer()
         private var interceptors: [IOInterceptor] = [DefaultInterceptor()]
         private var emptyResponseCodes: Set<Int> = [204]
@@ -54,7 +57,7 @@ import Foundation
             self.parameters = nil
         }
         
-        /// Добвить URL
+        /// Добавить URL
         /// - Parameter url: урль
         public func with(url: String) -> Self {
             self.url = url
@@ -117,6 +120,13 @@ import Foundation
             return self
         }
         
+        /// Добавить поведение и логика кэширования данных запросов
+        /// - Parameter cacheBehavior: Поведение и логика кэширования данных запросов
+        public func with(cacheBehavior: IOCacheBehavior) -> Self {
+            self.cacheBehavior = cacheBehavior
+            return self
+        }
+        
         /// Добавить сериализтор ответа
         /// - Parameter serializer: Сериализтор ответа
         public func with(serializer: IOSerializer) -> Self {
@@ -124,18 +134,22 @@ import Foundation
             return self
         }
         
-        ///  Добавить наблюдатели запрса
+        ///  Добавить наблюдатель запроса
         /// - Parameter interceptor: наблюдатели запрса
         public func with(interceptors: [IOInterceptor]) -> Self {
             self.interceptors = interceptors
             return self
         }
         
+        /// Добавить http коды с которыми разрешено пустой ответ
+        /// - Parameter emptyResponseCodes: http коды с которыми разрешено пустой ответ
         public func with(emptyResponseCodes: Set<Int>) -> Self {
             self.emptyResponseCodes = emptyResponseCodes
             return self
         }
         
+        /// Добавить http методы с которыми разрешено пустой ответ
+        /// - Parameter emptyRequestMethods: http методы с которыми разрешено пустой ответ
         public func with(emptyRequestMethods: Set<Http.Method>) -> Self {
             self.emptyRequestMethods = emptyRequestMethods
             return self
@@ -155,6 +169,7 @@ import Foundation
                          encoding: encoding,
                          headers: headers,
                          serializer: serializer,
+                         cacheBehavior: cacheBehavior,
                          interceptors: interceptors,
                          emptyResponseCodes: emptyResponseCodes,
                          emptyRequestMethods: emptyRequestMethods)

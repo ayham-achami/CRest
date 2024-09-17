@@ -36,6 +36,7 @@ struct IO {
                                    encoder: configuration.URLEncoded,
                                    headers: request.afHeders,
                                    interceptor: request.afInterceptor)
+            .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         case .JSON:
             return session.request(request.url,
@@ -44,6 +45,7 @@ struct IO {
                                    encoder: request.afJSONEncoder,
                                    headers: request.afHeders,
                                    interceptor: request.afInterceptor)
+            .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         case .multipart:
             return session.upload(multipartFormData: request.encode(into:),
@@ -51,6 +53,7 @@ struct IO {
                                   method: request.afMethod,
                                   headers: request.afHeders,
                                   interceptor: request.afInterceptor)
+            .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         }
     }
@@ -71,6 +74,7 @@ struct IO {
                                     headers: request.afHeders,
                                     interceptor: request.afInterceptor,
                                     to: afDestination)
+            .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         case .JSON:
             return session.download(request.url,
@@ -80,6 +84,7 @@ struct IO {
                                     headers: request.afHeders,
                                     interceptor: request.afInterceptor,
                                     to: afDestination)
+            .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         case .multipart:
             preconditionFailure("Download request not support multipart parameters")
@@ -99,6 +104,7 @@ struct IO {
                                   method: request.afMethod,
                                   headers: request.afHeders,
                                   interceptor: request.afInterceptor)
+            .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         case .multipart:
             return session.upload(multipartFormData: request.encode(into:),
@@ -106,7 +112,18 @@ struct IO {
                                   method: request.afMethod,
                                   headers: request.afHeders,
                                   interceptor: request.afInterceptor)
+            .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         }
+    }
+}
+
+// MARK: - Request + IOCachePolicy
+private extension Alamofire.Request {
+    
+    func cacheResponse(with cacheBehavior: IOCacheBehavior?) -> Self {
+        guard let cacheBehavior else { return self }
+        cacheResponse(using: IOResponseCacher(behavior: cacheBehavior))
+        return self
     }
 }

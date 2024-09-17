@@ -31,7 +31,8 @@ extension URLRequest: CustomCURLStringConvertible {
             let headers = allHeaders.map { "-H \"\($0.key): \($0.value.replacingOccurrences(of: "\"", with: "\\\""))\"" }
             components.append(contentsOf: headers)
         }
-        if let data = httpBody, let body = String(data: data, encoding: .utf8) {
+        if let data = httpBody {
+            let body = String(decoding: data, as: UTF8.self)
             var escapedBody = body.replacingOccurrences(of: "\\\"", with: "\\\\\"")
             escapedBody = escapedBody.replacingOccurrences(of: "\"", with: "\\\"")
             components.append("-d \"\(escapedBody)\"")
