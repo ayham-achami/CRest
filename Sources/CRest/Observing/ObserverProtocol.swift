@@ -4,7 +4,7 @@
 
 import Foundation
 
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public protocol ObserverProtocol: AnyObject {
 
     associatedtype Argument
@@ -53,7 +53,7 @@ public protocol ObserverProtocol: AnyObject {
 }
 
 // MARK: - ObserverProtocol + Default
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public extension ObserverProtocol {
 
     func tryDone(_ argument: Argument) {

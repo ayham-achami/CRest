@@ -5,7 +5,7 @@
 import Foundation
 
 /// Источник контроля
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public final class ObserverSource<Owner: AnyObject, Argument>: ObserverProtocol, Invocation {
 
     public typealias Owner = Owner

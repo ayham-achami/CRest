@@ -5,7 +5,7 @@
 import Foundation
 
 // Наблюдатель
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public final class Observer<Owner: AnyObject, Argument> {
 
     /// Источник контроля

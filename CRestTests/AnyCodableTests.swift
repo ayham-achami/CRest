@@ -8,7 +8,7 @@ import XCTest
 class AnyCodableTests: XCTestCase {
     
     func testJSONDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "boolean": true,
             "integer": 42,
@@ -22,8 +22,8 @@ class AnyCodableTests: XCTestCase {
             },
             "null": null
         }
-        """.data(using: .utf8)!
-
+        """.utf8)
+        
         let decoder = JSONDecoder()
         let response = try decoder.decode(AnyResponse.self, from: json)
 

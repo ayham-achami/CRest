@@ -38,13 +38,15 @@ extension DynamicRequest {
     private func wrapping(bearer: IOBearerAuthenticator) -> RequestInterceptor {
         AuthenticationInterceptor<BearerAuthAuthentificatorWrapper>(
             authenticator: BearerAuthAuthentificatorWrapper(bearer),
-            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(bearer.provider.credential))
+            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(bearer.provider.credential)
+        )
     }
     
     private func wrapping(encryptor: IOHandshakeAuthenticator) -> RequestInterceptor {
         AuthenticationInterceptor<HandshakeAuthentificatorWrapper>(
             authenticator: HandshakeAuthentificatorWrapper(encryptor),
-            credential: HandshakeAuthentificatorWrapper.SessionWrapper(encryptor.provider.session))
+            credential: HandshakeAuthentificatorWrapper.SessionWrapper(encryptor.provider.session)
+        )
     }
     
     private func wrapping(interceptor: IOInterceptor) -> RequestInterceptor {

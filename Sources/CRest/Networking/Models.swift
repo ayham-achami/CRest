@@ -11,19 +11,19 @@ public typealias Response = Decodable
 public typealias Parameters = Encodable
 
 /// Любые параметры/ответ любого запроса
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public typealias UniversalModel = Codable
 
 /// Любой ответ любого запроса в виде массива
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public typealias CollectionResponse = Response & CollectionRepresented
 
 /// Любые параметры любого запроса в виде массива
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public typealias CollectionParameters = Parameters & CollectionRepresented
 
 /// Протокол представления объекта модели в виде массива
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public protocol CollectionRepresented: Collection {
 
     /// Тип элемента массива
@@ -34,7 +34,7 @@ public protocol CollectionRepresented: Collection {
 }
 
 // MARK: - CollectionRepresented + Model
-@available(*, deprecated, message: "This feature has be deprecated and will be removed in future release")
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 extension CollectionRepresented where Index == Int {
 
     public var startIndex: Int {
