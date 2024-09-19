@@ -15,7 +15,7 @@ public enum IOCacheBehavior {
     case never
     /// Кэшировать данные запросов смотри `URLCache`
     case `default`
-    /// Кастомнее кастомизацие
+    /// Кастомное кеширование
     case costume(Controller)
 }
 
