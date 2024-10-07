@@ -23,7 +23,13 @@ public enum IORetry {
     /// Запрос
     public let request: URLRequest
     
-    /// Добавить Хейдар
+    /// Инициализация
+    /// - Parameter request: `URLRequest`
+    public init(request: URLRequest) {
+        self.request = request
+    }
+    
+    /// Добавить хейдар
     /// - Parameters:
     ///   - header: Ключ хейдара
     ///   - field: Значение хейдара
@@ -32,6 +38,16 @@ public enum IORetry {
     public func append(header: String, field: String) -> Self {
         var request = self.request
         request.addValue(header, forHTTPHeaderField: field)
+        return .init(request: request)
+    }
+    
+    /// Добавить хейдар
+    /// - Parameter headers: Словарь с закладками
+    /// - Returns: `AdaptedRequest`
+    @discardableResult
+    public func append(headers: [String: String]) -> Self {
+        var request = self.request
+        headers.forEach { field, header in request.addValue(header, forHTTPHeaderField: field) }
         return .init(request: request)
     }
     
@@ -44,6 +60,16 @@ public enum IORetry {
     public func set(header: String, field: String) -> Self {
         var request = self.request
         request.setValue(header, forHTTPHeaderField: field)
+        return .init(request: request)
+    }
+    
+    /// Обновить URL запроса
+    /// - Parameter url: Новый URL
+    /// - Returns: `AdaptedRequest`
+    @discardableResult
+    public func set(_ url: URL) -> Self {
+        var request = self.request
+        request.url = url
         return .init(request: request)
     }
     

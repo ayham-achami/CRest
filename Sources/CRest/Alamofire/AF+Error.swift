@@ -18,7 +18,7 @@ extension AFError {
             return .server(serverError)
         } else if isServerTrustEvaluationError {
                 return .ssl(errorDescription ?? "\(String(describing: destinationURL))")
-        } else if let statusCode = statusCode, !(200..<300).contains(statusCode) {
+        } else if let statusCode = statusCode {
             return .http(statusCode, data: responseData)
         } else if case let .sessionTaskFailed(error as NSError) = self {
             if error.code == NSURLErrorNotConnectedToInternet {
@@ -33,5 +33,17 @@ extension AFError {
         } else {
             return .io(localizedDescription)
         }
+    }
+}
+
+// MARK: - Error + Session task failed
+extension Error {
+    
+    var sessionFailed: NSError? {
+        guard
+            let afError = self as? AFError,
+            case let AFError.sessionTaskFailed(error as NSError) = afError
+        else { return nil }
+        return error
     }
 }

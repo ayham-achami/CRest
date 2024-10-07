@@ -23,8 +23,7 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
     
     func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> Response {
         if let error {
-            let error = serializer.encountered(error, for: request, and: response, data: data)
-            throw error
+             throw serializer.encountered(error, request, response, decoder, data)
         } else if let empty = CRest.Empty() as? Response {
             guard
                 emptyResponseAllowed(forRequest: request, response: response)

@@ -14,13 +14,33 @@ public protocol IOErrorSerializationController {
     ///   - response: Ответ
     ///   - data: Байты ответа
     /// - Returns: Ошибка
+    @available(*, deprecated, renamed: "encountered(error:request:response:decoder:data:)")
     func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error
+    
+    /// Обработка ошибки происходящей при сериализации ответа
+    /// - Parameters:
+    ///   - error: Обишка
+    ///   - request: Запрос
+    ///   - response: Ответ
+    ///   - decoder: Дикодер ответа
+    ///   - data: Байты ответа
+    /// - Returns: Ошибка
+    func encountered(_ error: Error, _ request: URLRequest?, _ response: HTTPURLResponse?, _ decoder: JSONDecoder, _ data: Data?) -> Error
 }
 
 // MARK: - IOErrorSerializationController + Default
 public extension IOErrorSerializationController {
     
+    @available(*, deprecated, renamed: "encountered(error:request:response:decoder:data:)")
     func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error {
+        error
+    }
+    
+    func encountered(_ error: Error,
+                     _ request: URLRequest?,
+                     _ response: HTTPURLResponse?,
+                     _ decoder: JSONDecoder,
+                     _ data: Data?) -> Error {
         error
     }
 }

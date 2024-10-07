@@ -70,7 +70,9 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
             guard
                 var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
             else { preconditionFailure("The url components of \(url) is nil") }
-            components.queryItems = items
+            if !items.isEmpty {
+                components.queryItems = items
+            }
             guard
                 let queryURL = components.url
             else { preconditionFailure("URL of components is nil \(components)") }

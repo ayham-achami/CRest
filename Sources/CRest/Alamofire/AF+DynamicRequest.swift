@@ -24,12 +24,14 @@ extension DynamicRequest {
         .init(interceptors: interceptors.map(afInterceptors(_:)))
     }
     
-    func afInterceptors(_ interceptor: IOInterceptor) -> Alamofire.RequestInterceptor {
+    private func afInterceptors(_ interceptor: IOInterceptor) -> Alamofire.RequestInterceptor {
         switch interceptor {
         case let authenticator as IOBearerAuthenticator:
             return wrapping(bearer: authenticator)
         case let authenticator as IOHandshakeAuthenticator:
             return wrapping(encryptor: authenticator)
+        case let authenticator as IOSessionInterceptor:
+            return authenticator.afInterceptor
         default:
             return wrapping(interceptor: interceptor)
         }
@@ -57,7 +59,27 @@ extension DynamicRequest {
 // MARK: - DynamicRequest + Alamofire
 extension DynamicRequest {
     
-    public struct Wrapper: Encodable {
+    var afHeders: Alamofire.HTTPHeaders {
+        HTTPHeaders(headers)
+    }
+
+    var afMethod: Alamofire.HTTPMethod {
+        HTTPMethod(rawValue: method.rawValue)
+    }
+    
+    var afJSONEncoder: Alamofire.JSONParameterEncoder {
+        JSONParameterEncoder(encoder: encoder)
+    }
+    
+    var afEmptyRequestMethods: Set<Alamofire.HTTPMethod> {
+        Set(emptyRequestMethods.compactMap { .init(rawValue: $0.rawValue) })
+    }
+}
+
+// MARK: - DynamicRequest + Alamofire + Parameters
+extension DynamicRequest {
+    
+    struct Wrapper: Encodable {
         
         let parameters: Parameters
         
@@ -70,20 +92,8 @@ extension DynamicRequest {
             try parameters.encode(to: encoder)
         }
     }
-
-    public var afHeders: Alamofire.HTTPHeaders {
-        HTTPHeaders(headers)
-    }
-
-    public var afMethod: Alamofire.HTTPMethod {
-        HTTPMethod(rawValue: method.rawValue)
-    }
     
-    public var afEmptyRequestMethods: Set<Alamofire.HTTPMethod> {
-        Set(emptyRequestMethods.compactMap { .init(rawValue: $0.rawValue) })
-    }
-
-    public var afParameters: Wrapper? {
+    var afParameters: Wrapper? {
         switch encoding {
         case .URL, .JSON:
             return Wrapper(parameters)
@@ -91,12 +101,12 @@ extension DynamicRequest {
             return nil
         }
     }
+}
 
-    public var afJSONEncoder: Alamofire.JSONParameterEncoder {
-        JSONParameterEncoder(encoder: encoder)
-    }
+// MARK: - DynamicRequest + Alamofire + Multipart
+extension DynamicRequest {
     
-    public func encode(into data: MultipartFormData) {
+    func encode(into data: MultipartFormData) {
         guard let parameters = parameters as? MultipartParameters  else { return }
         if let adapter = interceptors.multipartAdapter() {
             encode(parameters, into: data, with: adapter)
@@ -205,7 +215,6 @@ extension Http.EncodingConfiguration {
 private extension Array where Element == any IOInterceptor {
     
     func multipartAdapter() -> IORequestMultipartAdapter? {
-        guard !isEmpty else { return nil }
-        return compactMap { $0 as? IORequestMultipartAdapter }.first
+        compactMap { $0 as? IORequestMultipartAdapter }.first
     }
 }

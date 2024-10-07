@@ -16,6 +16,8 @@ public final class CombineAlamofireRestIO: CombineRestIO {
         .init(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
               rootQueue: networkQueue,
               requestQueue: requestsQueue,
+              serializationQueue: serializationQueue,
+              interceptor: configuration.sessionInterceptor?.afInterceptor,
               serverTrustManager: configuration.serverTrustManager,
               cachedResponseHandler: configuration.cachedResponseHandler)
     }()

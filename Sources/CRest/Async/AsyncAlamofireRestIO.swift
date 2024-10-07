@@ -17,6 +17,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
               rootQueue: networkQueue,
               requestQueue: requestsQueue,
               serializationQueue: serializationQueue,
+              interceptor: configuration.sessionInterceptor?.afInterceptor,
               serverTrustManager: configuration.serverTrustManager,
               cachedResponseHandler: configuration.cachedResponseHandler)
     }()

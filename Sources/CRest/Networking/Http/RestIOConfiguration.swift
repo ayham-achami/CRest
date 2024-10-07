@@ -36,6 +36,9 @@ public protocol RestIOConfiguration {
     
     /// Поведение и логика кэширования данных запросов
     var cacheBehavior: IOCacheBehavior { get }
+    
+    /// Сессионный интерцептор
+    var sessionInterceptor: IOSessionInterceptor? { get }
 }
 
 // MARK: - RestIOConfiguration + Default
@@ -46,4 +49,38 @@ public extension RestIOConfiguration {
     var trustEvaluating: TrustEvaluating? { nil }
     
     var cacheBehavior: IOCacheBehavior { .default }
+    
+    var sessionInterceptor: IOSessionInterceptor? { nil }
+}
+
+/// Создатель сессионного интерцептор
+public enum RestIOSession {
+    
+    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при 
+    /// повторном вызове возвращается тоже объектов, что было создано до этого
+    /// - Parameter bearer: Контроля статус авторизации по BearerToken
+    /// - Returns: `IOSessionInterceptor`
+    static public func interceptor(bearer: IOBearerAuthenticator) -> IOSessionInterceptor {
+        if let bearerAuthentication {
+            return bearerAuthentication
+        } else {
+            let bearerAuthentication = create(bearer: bearer)
+            Self.bearerAuthentication = bearerAuthentication
+            return bearerAuthentication
+        }
+    }
+    
+    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при 
+    /// повторном вызове возвращается тоже объектов, что было создано до этого
+    /// - Parameter handshake: Авторизации на уровне рукопожатия
+    /// - Returns: `IOHandshakeAuthenticator`
+    static public func interceptor(handshake: IOHandshakeAuthenticator) -> IOSessionInterceptor {
+        if let handshakeAuthentication {
+            return handshakeAuthentication
+        } else {
+            let handshakeAuthentication = create(handshake: handshake)
+            Self.handshakeAuthentication = handshakeAuthentication
+            return handshakeAuthentication
+        }
+    }
 }

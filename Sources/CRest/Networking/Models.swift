@@ -10,50 +10,6 @@ public typealias Response = Decodable
 /// Любые параметры любого запроса
 public typealias Parameters = Encodable
 
-/// Любые параметры/ответ любого запроса
-@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
-public typealias UniversalModel = Codable
-
-/// Любой ответ любого запроса в виде массива
-@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
-public typealias CollectionResponse = Response & CollectionRepresented
-
-/// Любые параметры любого запроса в виде массива
-@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
-public typealias CollectionParameters = Parameters & CollectionRepresented
-
-/// Протокол представления объекта модели в виде массива
-@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
-public protocol CollectionRepresented: Collection {
-
-    /// Тип элемента массива
-    associatedtype Item: Any
-
-    /// Массив объектов модели
-    var list: [Item] { get }
-}
-
-// MARK: - CollectionRepresented + Model
-@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
-extension CollectionRepresented where Index == Int {
-
-    public var startIndex: Int {
-        list.startIndex
-    }
-
-    public var endIndex: Int {
-        list.endIndex
-    }
-
-    public subscript(_ index: Index) -> Item {
-        list[index]
-    }
-    
-    public func index(after i: Int) -> Int {
-        list.index(after: i)
-    }
-}
-
 /// Протокол реализующий логику парсинга дефолтное значение для `Enum`
 public protocol RawResponse: Response, RawRepresentable where RawValue: Response {
 

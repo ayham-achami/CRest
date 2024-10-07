@@ -113,3 +113,19 @@ public extension Error {
         }
     }
 }
+
+// MARK: - Error + Temporary
+public extension Error {
+    
+    /// Временная сетевая ошибка
+    var isTemporaryNetworkError: Bool {
+        if let sessionFailed {
+            return sessionFailed.code == NSURLErrorNotConnectedToInternet ||
+                   sessionFailed.code == NSURLErrorNetworkConnectionLost
+        }
+        if let networkError = self as? NetworkError {
+            return networkError == .notConnected || networkError == .connectionLost
+        }
+        return false
+    }
+}
