@@ -115,7 +115,7 @@ public protocol IORequestAdapter {
     /// Адаптация запроса
     /// - Parameter adapted: Адаптируемый запрос
     /// - Returns: `Result<AdaptedRequest, Error>`
-    @available(*, deprecated, renamed: "adapt(adapted:completion:)")
+    @available(*, deprecated, renamed: "adapt(adapted:completion:)", message: "This method not invoked more")
     func adapt(_ adapted: AdaptedRequest) -> Result<AdaptedRequest, Error>
     
     /// Адаптация запроса асинхронный вызывает обработчик завершения с результатом.
@@ -128,7 +128,7 @@ public protocol IORequestAdapter {
 // MARK: - IORequestAdapter + Default
 public extension IORequestAdapter {
     
-    @available(*, deprecated, renamed: "adapt(adapted:completion:)")
+    @available(*, deprecated, renamed: "adapt(adapted:completion:)", message: "This method not invoked more")
     func adapt(_ adapted: AdaptedRequest) -> Result<AdaptedRequest, Error> {
         .success(adapted)
     }
@@ -189,4 +189,9 @@ public extension IORequestRetrier {
 public protocol IOInterceptor: IORequestAdapter, IORequestRetrier {}
 
 /// Наблюдать за запросами по умолчанию
-@frozen public struct DefaultInterceptor: IOInterceptor {}
+@frozen public struct DefaultInterceptor: IOInterceptor {
+    
+    public func adapt(_ adapted: AdaptedRequest, completion: @escaping (Result<AdaptedRequest, any Error>) -> Void) {
+        completion(.success(adapted))
+    }
+}

@@ -14,7 +14,7 @@ public protocol IOErrorSerializationController {
     ///   - response: Ответ
     ///   - data: Байты ответа
     /// - Returns: Ошибка
-    @available(*, deprecated, renamed: "encountered(error:request:response:decoder:data:)")
+    @available(*, deprecated, renamed: "encountered(error:request:response:decoder:data:)", message: "This method not invoked more")
     func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error
     
     /// Обработка ошибки происходящей при сериализации ответа
@@ -31,7 +31,7 @@ public protocol IOErrorSerializationController {
 // MARK: - IOErrorSerializationController + Default
 public extension IOErrorSerializationController {
     
-    @available(*, deprecated, renamed: "encountered(error:request:response:decoder:data:)")
+    @available(*, deprecated, renamed: "encountered(error:request:response:decoder:data:)", message: "This method not invoked more")
     func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error {
         error
     }
