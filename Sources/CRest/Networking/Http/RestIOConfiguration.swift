@@ -27,7 +27,10 @@ public protocol RestIOConfiguration {
 
     /// Объект реализующий логирование Network клиента
     var informant: NetworkInformant { get }
-
+    
+    /// Оценщик доверии к серверу
+    var trustEvaluator: TrustEvaluator? { get }
+    
     /// Оценщик доверии к серверу
     var trustEvaluating: TrustEvaluating? { get }
     
@@ -46,6 +49,10 @@ public extension RestIOConfiguration {
 
     var sessionConfiguration: URLSessionConfiguration? { nil }
 
+    var allHostsMustBeEvaluated: Bool { false }
+    
+    var trustEvaluator: TrustEvaluator? { nil }
+    
     var trustEvaluating: TrustEvaluating? { nil }
     
     var cacheBehavior: IOCacheBehavior { .default }

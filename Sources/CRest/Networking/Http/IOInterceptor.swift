@@ -115,14 +115,26 @@ public protocol IORequestAdapter {
     /// Адаптация запроса
     /// - Parameter adapted: Адаптируемый запрос
     /// - Returns: `Result<AdaptedRequest, Error>`
+    @available(*, deprecated, renamed: "adapt(adapted:completion:)")
     func adapt(_ adapted: AdaptedRequest) -> Result<AdaptedRequest, Error>
+    
+    /// Адаптация запроса асинхронный вызывает обработчик завершения с результатом.
+    /// - Parameters:
+    ///   - adapted: Адаптируемый запрос
+    ///   - completion: Обработчик завершения
+    func adapt(_ adapted: AdaptedRequest, completion: @escaping (Result<AdaptedRequest, Error>) -> Void)
 }
 
 // MARK: - IORequestAdapter + Default
 public extension IORequestAdapter {
     
+    @available(*, deprecated, renamed: "adapt(adapted:completion:)")
     func adapt(_ adapted: AdaptedRequest) -> Result<AdaptedRequest, Error> {
         .success(adapted)
+    }
+    
+    func adapt(_ adapted: AdaptedRequest, completion: @escaping (Result<AdaptedRequest, Error>) -> Void) {
+        completion(.success(adapted))
     }
 }
 

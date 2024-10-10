@@ -26,7 +26,16 @@ class TrustEvaluatorWrapper: ServerTrustEvaluating {
 extension RestIOConfiguration {
     
     public var serverTrustManager: ServerTrustManager? {
-        guard let trustEvaluating = trustEvaluating else { return nil }
+        evaluator ?? evaluating
+    }
+    
+    private var evaluator: ServerTrustManager? {
+        guard let trustEvaluator else { return nil }
+        return EvaluatorManager(evaluator: trustEvaluator)
+    }
+    
+    private var evaluating: ServerTrustManager? {
+        guard let trustEvaluating else { return nil }
         let applies: [String: ServerTrustEvaluating] = trustEvaluating.reduce([:]) { result, evaluating in
             guard let key = URLComponents(string: evaluating.key.rawValue)?.host else { return [:] }
             var applies = [String: ServerTrustEvaluating]()
@@ -49,6 +58,21 @@ extension RestIOConfiguration {
             return applies.merging(result) { (_, new) in new }
         }
         return ServerTrustManager(allHostsMustBeEvaluated: allHostsMustBeEvaluated, evaluators: applies)
+    }
+}
+
+// MARK: - EvaluatorManager
+private final class EvaluatorManager: ServerTrustManager {
+    
+    private let wrapper: TrustEvaluatorWrapper
+    
+    init(evaluator: TrustEvaluator) {
+        self.wrapper = TrustEvaluatorWrapper(evaluator)
+        super.init(allHostsMustBeEvaluated: false, evaluators: [:])
+    }
+    
+    override func serverTrustEvaluator(forHost host: String) throws -> (any ServerTrustEvaluating)? {
+        wrapper
     }
 }
 

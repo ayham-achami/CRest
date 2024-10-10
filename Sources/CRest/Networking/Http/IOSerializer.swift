@@ -133,4 +133,7 @@ public extension IODownloadResponseSerializer where Self: IOSerializer {
 public protocol IOSerializer: IOResponseSerializer & IODownloadResponseSerializer {}
 
 /// Сериализатор по умолчанию
-@frozen public struct DefaultSerializer: IOSerializer {}
+@frozen public struct DefaultSerializer: IOSerializer {
+    
+    public init() {}
+}
