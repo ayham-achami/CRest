@@ -5,48 +5,48 @@
 import Combine
 import Foundation
 
-/// <#Description#>
+/// Publisher процесса выгрузки или загрузки
 public final class ProgressPublisher<Response> where Response: CRest.Response {
     
-    /// <#Description#>
+    /// Ответ операции
     public let response: AnyPublisher<Response, Error>
     
-    /// <#Description#>
+    /// Процесс выгрузки или загрузки
     public let progress: AnyPublisher<Progress, Never>
     
-    /// <#Description#>
+    /// Инициализация
     /// - Parameters:
-    ///   - response: <#response description#>
-    ///   - progress: <#progress description#>
+    ///   - response: Ответ операции
+    ///   - progress: Процесс выгрузки или загрузки
     public init(response: AnyPublisher<Response, Error>, progress: AnyPublisher<Progress, Never>) {
         self.response = response
         self.progress = progress
     }
     
-    /// <#Description#>
+    /// Возвращает процесс
     /// - Parameters:
-    ///   - subscription: <#subscription description#>
-    ///   - receive: <#receive description#>
-    /// - Returns: <#description#>
+    ///   - subscription: Set подписок
+    ///   - receive: Замыкание процесса
+    /// - Returns: `ProgressPublisher`
     @discardableResult
-    public func progress(for subscription: inout Set<AnyCancellable>, _ receive: @escaping (Progress) -> Void) -> Self {
-        progress.sink(receiveValue: receive).store(in: &subscription)
+    public func progress(for subscriptions: inout Set<AnyCancellable>, _ receive: @escaping (Progress) -> Void) -> Self {
+        progress.sink(receiveValue: receive).store(in: &subscriptions)
         return self
     }
     
-    /// <#Description#>
+    /// Возвращает процесс
     /// - Parameters:
-    ///   - subscription: <#subscription description#>
-    ///   - receive: <#receive description#>
-    /// - Returns: <#description#>
+    ///   - subscription: Set подписок
+    ///   - receive: Замыкание получения ответа
+    /// - Returns: `ProgressPublisher`
     @discardableResult
-    public func response(for subscription: inout Set<AnyCancellable>, _ receive: @escaping (Result<Response, Error>) -> Void) -> Self {
+    public func response(for subscriptions: inout Set<AnyCancellable>, _ receive: @escaping (Result<Response, Error>) -> Void) -> Self {
         response.sink { completion in
             guard case let .failure(error) = completion else { return }
             receive(.failure(error))
         } receiveValue: { response in
             receive(.success(response))
-        }.store(in: &subscription)
+        }.store(in: &subscriptions)
         return self
     }
 }

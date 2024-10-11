@@ -69,7 +69,102 @@ public protocol CombineRestIOSendable {
                                     encoding: Http.Encoding) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters
 }
 
+// MARK: - CombineRestIOSendable + Default
+extension CombineRestIOSendable {
+    
+    /// Отправить Get запрос
+    /// - Parameters:
+    ///   - request: Запрос
+    ///   - parameters: Параметры запроса
+    ///   - response: Тип ответа
+    ///   - encoding: Енкоденг запроса `Http.Method`
+    /// - Returns: Ответ сервера
+    func fetch<Response, Parameters>(for request: Request,
+                                     parameters: Parameters = Empty.value,
+                                     response: Response.Type = Empty.self,
+                                     encoding: Http.Encoding) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+        send(for: request, parameters: parameters, response: response, method: .get, encoding: encoding)
+    }
+    
+    /// Отправить Post запрос
+    /// - Parameters:
+    ///   - request: Запрос
+    ///   - parameters: Параметры запроса
+    ///   - response: Тип ответа
+    ///   - encoding: Енкоденг запроса `Http.Method`
+    /// - Returns: Ответ сервера
+    func submit<Response, Parameters>(for request: Request,
+                                      parameters: Parameters = Empty.value,
+                                      response: Response.Type = Empty.self,
+                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+        send(for: request, parameters: parameters, response: response, method: .post, encoding: encoding)
+    }
+    
+    /// Отправить Put запрос
+    /// - Parameters:
+    ///   - request: Запрос
+    ///   - parameters: Параметры запроса
+    ///   - response: Тип ответа
+    ///   - encoding: Енкоденг запроса `Http.Method`
+    /// - Returns: Ответ сервера
+    func update<Response, Parameters>(for request: Request,
+                                      parameters: Parameters = Empty.value,
+                                      response: Response.Type = Empty.self,
+                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+        send(for: request, parameters: parameters, response: response, method: .put, encoding: encoding)
+    }
+    
+    /// Отправить Patch запрос
+    /// - Parameters:
+    ///   - request: Запрос
+    ///   - parameters: Параметры запроса
+    ///   - response: Тип ответа
+    ///   - encoding: Енкоденг запроса `Http.Method`
+    /// - Returns: Ответ сервера
+    func change<Response, Parameters>(for request: Request,
+                                      parameters: Parameters = Empty.value,
+                                      response: Response.Type = Empty.self,
+                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+        send(for: request, parameters: parameters, response: response, method: .patch, encoding: encoding)
+    }
+    
+    /// Отправить Delete запрос
+    /// - Parameters:
+    ///   - request: Запрос
+    ///   - response: Тип ответа
+    ///   - parameters: Параметры запроса
+    ///   - encoding: Енкоденг запроса `Http.Method`
+    /// - Returns: Ответ сервера
+    func delete<Response>(for request: Request,
+                          parameters: Parameters = Empty.value,
+                          response: Response.Type = Empty.self,
+                          encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Response, Error> where Response: CRest.Response {
+        send(for: request, parameters: parameters, response: response, method: .delete, encoding: encoding)
+    }
+    
+    /// Отправить head запрос
+    /// - Parameters:
+    ///   - request: Запрос
+    ///   - encoding: Енкоденг запроса `Http.Method`
+    func prepare(for request: Request, encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Empty, Error> {
+        send(for: request, parameters: Empty.value, response: Empty.self, method: .head, encoding: encoding)
+    }
+    
+    /// Отправить Options запрос
+    /// - Parameters:
+    ///   - request: Запрос
+    ///   - response: Тип ответа
+    ///   - encoding: Енкоденг запроса `Http.Method`
+    /// - Returns: Ответ сервера
+    func setup<Response>(for request: Request,
+                         response: Response.Type = Empty.self,
+                         encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Response, Error> where Response: CRest.Response {
+        send(for: request, parameters: Empty.value, response: response, method: .options, encoding: encoding)
+    }
+}
+
 // MARK: - CombineRestIO + CombineRestIOSendable
+@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
 public extension CombineRestIO where Self: CombineRestIOSendable {
     
     /// Отправить Get запрос
