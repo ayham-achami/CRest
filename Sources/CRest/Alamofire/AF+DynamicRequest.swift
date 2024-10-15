@@ -32,6 +32,8 @@ extension DynamicRequest {
             return wrapping(encryptor: authenticator)
         case let authenticator as IOSessionInterceptor:
             return authenticator.afInterceptor
+        case let requestInterceptor as RequestInterceptor:
+            return requestInterceptor
         default:
             return wrapping(interceptor: interceptor)
         }

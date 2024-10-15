@@ -73,7 +73,7 @@ public extension DynamicRequest.Builder {
 }
 
 // MARK: - AnyPublisher + CRest.Response
-public extension AnyPublisher where Output: CRest.Response, Failure: Error {
+public extension AnyPublisher {
     
     /// Возвращает пустой Publisher, у которого немедленно будет вызван блок завершения
     static var empty: Self {

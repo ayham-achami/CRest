@@ -5,7 +5,7 @@
 import Foundation
 
 /// Протокол реализующий логику оценки доверии
-public protocol TrustEvaluator {
+public protocol TrustEvaluator: Sendable {
 
     /// Оценивает `SecTrust` для данного `EndPoint`.
     /// - Parameters:

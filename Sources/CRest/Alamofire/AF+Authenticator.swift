@@ -43,10 +43,10 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
     }
     
     func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
-        Task {
+        Task(priority: .high) {
             do {
-                let refreshed = try await authenticator.provider.refresh()
-                completion(.success(.init(refreshed)))
+                let refreshedCredential = try await authenticator.provider.refresh()
+                completion(.success(.init(refreshedCredential)))
             } catch {
                 completion(.failure(error))
             }
@@ -115,7 +115,7 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
     }
     
     func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
-        Task {
+        Task(priority: .high) {
             do {
                 let handshake = try await authenticator.provider.handshake()
                 completion(.success(.init(handshake)))

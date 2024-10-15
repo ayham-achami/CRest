@@ -5,7 +5,7 @@
 import Foundation
 
 /// Протокол создания рукопожатия
-public protocol IOHandshake: AnyObject, IOInterceptor {
+public protocol IOHandshake: IOInterceptor {
     
     /// Запрос рукопожатия
     var handshakeRequest: Request { get }
@@ -28,7 +28,7 @@ public protocol HandshakeSession {
 }
 
 /// Протокол создателя рукопожатия
-public protocol HandshakeSessionProvider {
+public protocol HandshakeSessionProvider: Sendable {
     
     /// Сессия рукопожатия
     var session: HandshakeSession { get }
@@ -40,7 +40,7 @@ public protocol HandshakeSessionProvider {
 }
 
 /// Протокол авторизации на уровне рукопожатия
-public protocol IOHandshakeAuthenticator: IOHandshake {
+public protocol IOHandshakeAuthenticator: Sendable, IOHandshake {
     
     /// Провайдер рукопожатия
     var provider: HandshakeSessionProvider { get }

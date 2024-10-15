@@ -5,7 +5,7 @@
 import Foundation
 
 /// Протокол контроля статус авторизации
-public protocol IOAuthenticator: AnyObject, IOInterceptor {
+public protocol IOAuthenticator: IOInterceptor {
     
     /// Запрос обновления
     var refreshRequest: Request { get }
@@ -25,19 +25,18 @@ public protocol BearerCredential {
 }
 
 /// Учетные данные аутентификации
-public protocol BearerCredentialProvider {
+public protocol BearerCredentialProvider: Sendable {
     
     /// Учетные данные аутентификации
     var credential: BearerCredential { get }
     
     /// Запрос обновления учетных данных аутентификации
     /// - Returns: `BearerCredential`
-    @discardableResult
     func refresh() async throws -> BearerCredential
 }
 
 /// Протокол контроля статус авторизации по BearerToken
-public protocol IOBearerAuthenticator: IOAuthenticator {
+public protocol IOBearerAuthenticator: Sendable, IOAuthenticator {
     
     /// Провайдер авторизации
     var provider: BearerCredentialProvider { get }

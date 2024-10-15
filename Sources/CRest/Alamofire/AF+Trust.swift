@@ -6,7 +6,7 @@ import Alamofire
 import Foundation
 
 /// Обертка `TrustEvaluator` в `ServerTrustEvaluating`
-class TrustEvaluatorWrapper: ServerTrustEvaluating {
+final class TrustEvaluatorWrapper: ServerTrustEvaluating {
     
     /// Логика оценки доверии
     let evaluator: TrustEvaluator

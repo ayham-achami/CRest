@@ -5,7 +5,7 @@
 import Foundation
 
 /// Протокол обработки ошибки происходящей при стерилизации ответа
-public protocol IOErrorSerializationController {
+public protocol IOErrorSerializationController: Sendable {
     
     /// Обработка ошибки происходящей при сериализации ответа
     /// - Parameters:
@@ -46,7 +46,7 @@ public extension IOErrorSerializationController {
 }
 
 /// Протокол контроля ответа (обработка ответа на уровне байтов)
-public protocol HTTPBodyController {
+public protocol HTTPBodyController: Sendable {
     
     /// Контроля ответа
     /// - Parameter body: ответ

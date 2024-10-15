@@ -57,7 +57,7 @@ public protocol ParametersBuilder: AnyObject {
 }
 
 /// Пустой объект модели
-@frozen public struct Empty: Response, Parameters {
+@frozen public struct Empty: Sendable, Response, Parameters {
     
     /// Инициализация
     public init() {}

@@ -110,7 +110,7 @@ public enum IORetry {
 }
 
 /// Протокол адаптации запроса
-public protocol IORequestAdapter {
+public protocol IORequestAdapter: Sendable {
     
     /// Адаптация запроса
     /// - Parameter adapted: Адаптируемый запрос
@@ -139,7 +139,7 @@ public extension IORequestAdapter {
 }
 
 /// Протокол адаптации запроса MultiPart
-public protocol IORequestMultipartAdapter {
+public protocol IORequestMultipartAdapter: Sendable {
     
     /// Адаптация часть тела запроса
     /// - Parameter data: Часть тела запроса
@@ -165,7 +165,7 @@ extension IORequestMultipartAdapter {
 }
 
 /// Протокол повторения запроса
-public protocol IORequestRetrier {
+public protocol IORequestRetrier: Sendable {
     
     /// Получить решение о повторении запроса
     /// - Parameters:

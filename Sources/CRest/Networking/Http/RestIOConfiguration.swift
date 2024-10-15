@@ -5,11 +5,11 @@
 import Foundation
 
 /// Поведение и логика кэширования данных запросов
-public enum IOCacheBehavior {
+public enum IOCacheBehavior: Sendable {
     
     /// Замыкание кастомизация кэширования
     /// Если данное замыкание возвращает nil данные не будет закэшированными
-    public typealias Controller = (URLSessionDataTask, CachedURLResponse) -> CachedURLResponse?
+    public typealias Controller = @Sendable (URLSessionDataTask, CachedURLResponse) -> CachedURLResponse?
 
     /// Не кэшировать данные запросов
     case never
@@ -20,7 +20,7 @@ public enum IOCacheBehavior {
 }
 
 /// Общие настройки REST клиента
-public protocol RestIOConfiguration {
+public protocol RestIOConfiguration: Sendable {
 
     /// Объект конфигурации, который определяет поведение и политики для сеанса URL
     var sessionConfiguration: URLSessionConfiguration? { get }

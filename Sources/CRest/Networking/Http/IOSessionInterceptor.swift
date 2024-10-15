@@ -4,4 +4,4 @@
 
 import Foundation
 
-public protocol IOSessionInterceptor: AnyObject {}
+public protocol IOSessionInterceptor: AnyObject, IOInterceptor {}

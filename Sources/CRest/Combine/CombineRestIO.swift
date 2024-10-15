@@ -70,7 +70,7 @@ public protocol CombineRestIOSendable {
 }
 
 // MARK: - CombineRestIOSendable + Default
-extension CombineRestIOSendable {
+public extension CombineRestIOSendable {
     
     /// Отправить Get запрос
     /// - Parameters:
