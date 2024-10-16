@@ -18,15 +18,18 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
         }
         
         var isValidated: Bool {
-            credential.isValidated
+            isValidatedCredential(self)
         }
         
         public var requiresRefresh: Bool {
             !isValidated
         }
         
-        init(_ credential: any BearerCredential) {
+        private let isValidatedCredential: (any BearerCredential) -> Bool
+        
+        init(_ credential: any BearerCredential, isValidatedCredential: @escaping (any BearerCredential) -> Bool) {
             self.credential = credential
+            self.isValidatedCredential = isValidatedCredential
         }
     }
     
@@ -44,12 +47,29 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
     
     func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
         if let credential = try? authenticator.provider.match(credential) {
-            completion(.success(.init(credential)))
+            completion(
+                .success(
+                    .init(
+                        credential,
+                        isValidatedCredential: { [weak authenticator] credential in
+                            authenticator?.provider.isValidated(credential: credential) ?? false
+                        }
+                    )
+                )
+            )
         } else {
             Task(priority: .high) {
                 do {
-                    let refreshedCredential = try await authenticator.provider.refresh()
-                    completion(.success(.init(refreshedCredential)))
+                    completion(
+                        .success(
+                            .init(
+                                try await authenticator.provider.refresh(),
+                                isValidatedCredential: { [weak authenticator] credential in
+                                    authenticator?.provider.isValidated(credential: credential) ?? false
+                                }
+                            )
+                        )
+                    )
                 } catch {
                     completion(.failure(error))
                 }
@@ -101,8 +121,11 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
             !self.isValidated
         }
         
-        init(_ session: any HandshakeSession) {
+        private let isValidatedCredential: (any HandshakeSession) -> Bool
+        
+        init(_ session: any HandshakeSession, isValidatedCredential: @escaping (any HandshakeSession) -> Bool) {
             self.session = session
+            self.isValidatedCredential = isValidatedCredential
         }
     }
     
@@ -119,13 +142,31 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
     }
     
     func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
-        if let handshake = try? authenticator.provider.match(credential) {
-            completion(.success(.init(handshake)))
+        if let credential = try? authenticator.provider.match(credential) {
+            completion(
+                .success(
+                    .init(
+                        credential,
+                        isValidatedCredential: { [weak authenticator] credential in
+                            authenticator?.provider.isValidated(credential: credential) ?? false
+                        }
+                    )
+                )
+            )
         } else {
             Task(priority: .high) {
                 do {
                     let handshake = try await authenticator.provider.handshake()
-                    completion(.success(.init(handshake)))
+                    completion(
+                        .success(
+                            .init(
+                                try await authenticator.provider.handshake(),
+                                isValidatedCredential: { [weak authenticator] credential in
+                                    authenticator?.provider.isValidated(credential: credential) ?? false
+                                }
+                            )
+                        )
+                    )
                 } catch {
                     completion(.failure(error))
                 }

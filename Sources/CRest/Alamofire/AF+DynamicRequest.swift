@@ -42,14 +42,24 @@ extension DynamicRequest {
     private func wrapping(bearer: IOBearerAuthenticator) -> RequestInterceptor {
         AuthenticationInterceptor<BearerAuthAuthentificatorWrapper>(
             authenticator: BearerAuthAuthentificatorWrapper(bearer),
-            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(bearer.provider.credential)
+            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(
+                bearer.provider.credential,
+                isValidatedCredential: { [weak bearer] credential in
+                    bearer?.provider.isValidated(credential: credential) ?? false
+                }
+            )
         )
     }
     
     private func wrapping(encryptor: IOHandshakeAuthenticator) -> RequestInterceptor {
         AuthenticationInterceptor<HandshakeAuthentificatorWrapper>(
             authenticator: HandshakeAuthentificatorWrapper(encryptor),
-            credential: HandshakeAuthentificatorWrapper.SessionWrapper(encryptor.provider.session)
+            credential: HandshakeAuthentificatorWrapper.SessionWrapper(
+                encryptor.provider.session,
+                isValidatedCredential: { [weak encryptor] session in
+                    encryptor?.provider.isValidated(credential: session) ?? false
+                }
+            )
         )
     }
     

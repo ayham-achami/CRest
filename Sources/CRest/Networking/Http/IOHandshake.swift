@@ -5,7 +5,7 @@
 import Foundation
 
 /// Протокол создания рукопожатия
-public protocol IOHandshake: IOInterceptor {
+public protocol IOHandshake: AnyObject, IOInterceptor {
     
     /// Запрос рукопожатия
     var handshakeRequest: Request { get }
@@ -40,6 +40,11 @@ public protocol HandshakeSessionProvider: Sendable {
     
     /// Сессия рукопожатия
     var session: any HandshakeSession { get }
+    
+    /// Проверить, является ли используемые учетные данные корректные
+    /// - Parameter credential: Учетные данные аутентификатора
+    /// - Returns: Учетные данные из хранилища приложения nil если совпадают
+    func isValidated(credential: any HandshakeSession) -> Bool
     
     /// Проверить, совпадают ли используемые учетные данные с данными в хранилище приложения.
     /// - Parameter credential: Учетные данные аутентификатора

@@ -31,7 +31,12 @@ extension RestIOSession {
     static func create(bearer: IOBearerAuthenticator) -> IOSessionInterceptor {
         AuthenticationInterceptor<BearerAuthAuthentificatorWrapper>(
             authenticator: BearerAuthAuthentificatorWrapper(bearer),
-            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(bearer.provider.credential)
+            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(
+                bearer.provider.credential,
+                isValidatedCredential: { [weak bearer] credential in
+                    bearer?.provider.isValidated(credential: credential) ?? false
+                }
+            )
         )
     }
     
@@ -41,7 +46,12 @@ extension RestIOSession {
     static func create(handshake: IOHandshakeAuthenticator) -> IOSessionInterceptor {
         AuthenticationInterceptor<HandshakeAuthentificatorWrapper>(
             authenticator: HandshakeAuthentificatorWrapper(handshake),
-            credential: HandshakeAuthentificatorWrapper.SessionWrapper(handshake.provider.session)
+            credential: HandshakeAuthentificatorWrapper.SessionWrapper(
+                handshake.provider.session,
+                isValidatedCredential: { [weak handshake] session in
+                    handshake?.provider.isValidated(credential: session) ?? false
+                }
+            )
         )
     }
 }

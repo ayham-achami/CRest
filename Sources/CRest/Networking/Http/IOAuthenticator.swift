@@ -5,7 +5,7 @@
 import Foundation
 
 /// Протокол контроля статус авторизации
-public protocol IOAuthenticator: IOInterceptor {
+public protocol IOAuthenticator: AnyObject, IOInterceptor {
     
     /// Запрос обновления
     var refreshRequest: Request { get }
@@ -36,7 +36,12 @@ public protocol BearerCredentialProvider: Sendable {
     
     /// Учетные данные аутентификации
     var credential: any BearerCredential { get }
-        
+    
+    /// Проверить, является ли используемые учетные данные корректные
+    /// - Parameter credential: Учетные данные аутентификатора
+    /// - Returns: Учетные данные из хранилища приложения nil если совпадают
+    func isValidated(credential: any BearerCredential) -> Bool
+    
     /// Проверить, совпадают ли используемые учетные данные с данными в хранилище приложения.
     /// - Parameter credential: Учетные данные аутентификатора
     /// - Returns: Учетные данные из хранилища приложения nil если совпадают
