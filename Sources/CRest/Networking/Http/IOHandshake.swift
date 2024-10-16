@@ -15,7 +15,7 @@ public protocol IOHandshake: IOInterceptor {
 }
 
 /// Сессия рукопожатия
-public protocol HandshakeSession {
+public protocol HandshakeSession: Equatable {
     
     /// Идентификатор сессии
     var id: String { get }
@@ -27,16 +27,29 @@ public protocol HandshakeSession {
     var isValidated: Bool { get }
 }
 
+// MARK: - HandshakeSession + Default
+public extension HandshakeSession {
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 /// Протокол создателя рукопожатия
 public protocol HandshakeSessionProvider: Sendable {
     
     /// Сессия рукопожатия
-    var session: HandshakeSession { get }
+    var session: any HandshakeSession { get }
+    
+    /// Проверить, совпадают ли используемые учетные данные с данными в хранилище приложения.
+    /// - Parameter credential: Учетные данные аутентификатора
+    /// - Returns: Учетные данные из хранилища приложения nil если совпадают
+    func match(_ credential: any HandshakeSession) throws -> (any HandshakeSession)?
     
     /// Создать сессию рукопожатия
     /// - Returns: `HandshakeSession`
     @discardableResult
-    func handshake() async throws -> HandshakeSession
+    func handshake() async throws -> any HandshakeSession
 }
 
 /// Протокол авторизации на уровне рукопожатия

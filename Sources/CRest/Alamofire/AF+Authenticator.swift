@@ -11,7 +11,7 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
     /// Обертка поверх `AuthenticationCredential`
     struct CredentialWrapper: AuthenticationCredential, BearerCredential {
         
-        private let credential: BearerCredential
+        private let credential: any BearerCredential
         
         var access: String {
             credential.access
@@ -25,7 +25,7 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
             !isValidated
         }
         
-        init(_ credential: BearerCredential) {
+        init(_ credential: any BearerCredential) {
             self.credential = credential
         }
     }
@@ -43,12 +43,16 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
     }
     
     func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
-        Task(priority: .high) {
-            do {
-                let refreshedCredential = try await authenticator.provider.refresh()
-                completion(.success(.init(refreshedCredential)))
-            } catch {
-                completion(.failure(error))
+        if let credential = try? authenticator.provider.match(credential) {
+            completion(.success(.init(credential)))
+        } else {
+            Task(priority: .high) {
+                do {
+                    let refreshedCredential = try await authenticator.provider.refresh()
+                    completion(.success(.init(refreshedCredential)))
+                } catch {
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -68,7 +72,7 @@ extension HTTPHeader {
     /// Хедар для хандшека
     /// - Parameter session: Сессия хандшека
     /// - Returns: `HTTPHeader`
-    static func encryptorSession(_ session: HandshakeSession) -> Self {
+    static func encryptorSession(_ session: any HandshakeSession) -> Self {
         .init(name: session.headerKey, value: session.id)
     }
 }
@@ -79,7 +83,7 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
     /// Обертка поверх `AuthenticationCredential`
     struct SessionWrapper: AuthenticationCredential, HandshakeSession {
         
-        private let session: HandshakeSession
+        private let session: any HandshakeSession
         
         var id: String {
             session.id
@@ -97,7 +101,7 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
             !self.isValidated
         }
         
-        init(_ session: HandshakeSession) {
+        init(_ session: any HandshakeSession) {
             self.session = session
         }
     }
@@ -115,12 +119,16 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
     }
     
     func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
-        Task(priority: .high) {
-            do {
-                let handshake = try await authenticator.provider.handshake()
-                completion(.success(.init(handshake)))
-            } catch {
-                completion(.failure(error))
+        if let handshake = try? authenticator.provider.match(credential) {
+            completion(.success(.init(handshake)))
+        } else {
+            Task(priority: .high) {
+                do {
+                    let handshake = try await authenticator.provider.handshake()
+                    completion(.success(.init(handshake)))
+                } catch {
+                    completion(.failure(error))
+                }
             }
         }
     }

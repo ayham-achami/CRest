@@ -15,7 +15,7 @@ public protocol IOAuthenticator: IOInterceptor {
 }
 
 /// Авторизации по BearerToken
-public protocol BearerCredential {
+public protocol BearerCredential: Equatable {
     
     /// Токен
     var access: String { get }
@@ -24,15 +24,27 @@ public protocol BearerCredential {
     var isValidated: Bool { get }
 }
 
+public extension BearerCredential {
+ 
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.access == rhs.access
+    }
+}
+
 /// Учетные данные аутентификации
 public protocol BearerCredentialProvider: Sendable {
     
     /// Учетные данные аутентификации
-    var credential: BearerCredential { get }
+    var credential: any BearerCredential { get }
+        
+    /// Проверить, совпадают ли используемые учетные данные с данными в хранилище приложения.
+    /// - Parameter credential: Учетные данные аутентификатора
+    /// - Returns: Учетные данные из хранилища приложения nil если совпадают
+    func match(_ credential: any BearerCredential) throws -> (any BearerCredential)?
     
     /// Запрос обновления учетных данных аутентификации
     /// - Returns: `BearerCredential`
-    func refresh() async throws -> BearerCredential
+    func refresh() async throws -> any BearerCredential
 }
 
 /// Протокол контроля статус авторизации по BearerToken
