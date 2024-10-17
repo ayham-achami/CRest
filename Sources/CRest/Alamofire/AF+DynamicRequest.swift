@@ -21,7 +21,15 @@ extension CRest.Empty: EmptyResponse {
 extension DynamicRequest {
 
     var afInterceptor: Alamofire.Interceptor {
-        .init(interceptors: interceptors.map(afInterceptors(_:)))
+        .init(interceptors: interceptors.map(afInterceptors(_:)) + afSessionInterceptors())
+    }
+    
+    private func afSessionInterceptors() -> [RequestInterceptor] {
+        guard let sessionInterceptor else { return [] }
+        guard
+            let sessionInterceptor = sessionInterceptor as? RequestInterceptor
+        else { preconditionFailure("SessionInterceptor must be an instance of RequestInterceptor") }
+        return [sessionInterceptor]
     }
     
     private func afInterceptors(_ interceptor: IOInterceptor) -> Alamofire.RequestInterceptor {
@@ -30,8 +38,6 @@ extension DynamicRequest {
             return wrapping(bearer: authenticator)
         case let authenticator as IOHandshakeAuthenticator:
             return wrapping(encryptor: authenticator)
-        case let authenticator as IOSessionInterceptor:
-            return authenticator.afInterceptor
         case let requestInterceptor as RequestInterceptor:
             return requestInterceptor
         default:

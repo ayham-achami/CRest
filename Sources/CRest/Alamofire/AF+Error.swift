@@ -26,7 +26,7 @@ extension AFError {
             } else if error.code == NSURLErrorNetworkConnectionLost {
                 return .connectionLost
             } else {
-                return .io(error.asAFError?.errorDescription ?? error.localizedDescription)
+                return .io(error.asAFError?.errorDescription ?? error.localizedError?.errorDescription ?? error.localizedDescription)
             }
         } else if let description = errorDescription {
             return .io(description)
@@ -45,5 +45,13 @@ extension Error {
             case let AFError.sessionTaskFailed(error as NSError) = afError
         else { return nil }
         return error
+    }
+}
+
+// MARK: - Error + LocalizedError
+private extension Error {
+    
+    var localizedError: LocalizedError? {
+        self as? LocalizedError
     }
 }
