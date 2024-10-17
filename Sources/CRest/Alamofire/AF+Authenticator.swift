@@ -17,12 +17,8 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
             credential.access
         }
         
-        var isValidated: Bool {
-            isValidatedCredential(self)
-        }
-        
-        public var requiresRefresh: Bool {
-            !isValidated
+        var requiresRefresh: Bool {
+            !isValidatedCredential(self)
         }
         
         private let isValidatedCredential: (any BearerCredential) -> Bool
@@ -113,12 +109,8 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
             session.headerKey
         }
         
-        var isValidated: Bool {
-            session.isValidated
-        }
-        
-        public var requiresRefresh: Bool {
-            !self.isValidated
+        var requiresRefresh: Bool {
+            !isValidatedCredential(self)
         }
         
         private let isValidatedCredential: (any HandshakeSession) -> Bool
@@ -156,7 +148,6 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
         } else {
             Task(priority: .high) {
                 do {
-                    let handshake = try await authenticator.provider.handshake()
                     completion(
                         .success(
                             .init(

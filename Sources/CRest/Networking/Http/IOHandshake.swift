@@ -22,9 +22,6 @@ public protocol HandshakeSession: Equatable {
     
     /// Ключ хедера
     var headerKey: String { get }
-    
-    /// Валидная ли текущая сессия
-    var isValidated: Bool { get }
 }
 
 // MARK: - HandshakeSession + Default

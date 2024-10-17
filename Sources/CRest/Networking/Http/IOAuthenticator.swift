@@ -19,9 +19,6 @@ public protocol BearerCredential: Equatable {
     
     /// Токен
     var access: String { get }
-    
-    /// Валидный ли токен 
-    var isValidated: Bool { get }
 }
 
 public extension BearerCredential {
