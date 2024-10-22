@@ -10,12 +10,32 @@ import Foundation
 open class PublisherRestIO: CombineRestIOSendable {
     
     /// Http клиент с использованием Combine
-    public let io: CombineRestIO
+    private let io: CombineRestIO
     
     /// Инициализация
     /// - Parameter io: `CombineRestIO`
     public init(io: CombineRestIO) {
         self.io = io
+    }
+    
+    /// Выполняет REST http запроса
+    /// - Parameters:
+    ///   - request: Динамический запрос
+    ///   - response: Тип ответа
+    /// - Returns: ответ на запрос
+    open func perform<Response>(_ request: DynamicRequest,
+                                response: Response.Type) -> AnyPublisher<Response, any Error> where Response: CRest.Response {
+        io.perform(request, response: response)
+    }
+    
+    /// Выполняет REST http запроса
+    /// - Parameters:
+    ///   - request: Динамический запрос
+    ///   - response: Тип ответа
+    /// - Returns: `DynamicResponse` c ответом на запрос
+    open func dynamicPerform<Response>(_ request: DynamicRequest,
+                                       response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, any Error> where Response: CRest.Response {
+        io.dynamicPerform(request, response: response)
     }
     
     /// Скачает данные и сохраняет их на диске
@@ -36,16 +56,17 @@ open class PublisherRestIO: CombineRestIOSendable {
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
-    final public func upload<Response>(from source: CombineRestIO.Source,
-                                       with request: DynamicRequest,
-                                       response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
+    open func upload<Response>(from source: CombineRestIO.Source,
+                               with request: DynamicRequest,
+                               response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
         io.upload(from: source, with: request, response: response)
     }
     
     open func send<Response, Parameters>(for request: Request,
                                          parameters: Parameters?,
                                          response: Response.Type,
-                                         method: Http.Method, encoding: Http.Encoding) -> AnyPublisher<Response, any Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+                                         method: Http.Method,
+                                         encoding: Http.Encoding) -> AnyPublisher<Response, any Error> where Response: CRest.Response, Parameters: CRest.Parameters {
         DynamicRequest
             .Builder()
             .with(method: method)
@@ -54,7 +75,7 @@ open class PublisherRestIO: CombineRestIOSendable {
             .with(parameters: parameters)
             .publishBuild()
             .flatMap { [weak self] request in
-                self?.io.perform(request, response: response) ?? .empty
+                self?.perform(request, response: response) ?? .empty
             }.eraseToAnyPublisher()
     }
 }

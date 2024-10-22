@@ -22,25 +22,29 @@ private extension CharacterSet {
     /// у каждой части разные требования. Этот набор полезен для проверки
     /// символов Юникода, которые необходимо закодировать в процентах перед
     /// выполнением проверки достоверности отдельных компонентов URL.
-    static var URLAllowedCharacters: CharacterSet {
-        let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
-        let subDelimitersToEncode = "!$&'()*+,;="
-        let encodableDelimiters = CharacterSet(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
-        return CharacterSet.urlQueryAllowed.subtracting(encodableDelimiters)
-    }
-}
+    static var urlAllowedCharacters: CharacterSet {
+         var characters = CharacterSet(charactersIn: "#")
+         characters.formUnion(.urlUserAllowed)
+         characters.formUnion(.urlPasswordAllowed)
+         characters.formUnion(.urlHostAllowed)
+         characters.formUnion(.urlPathAllowed)
+         characters.formUnion(.urlQueryAllowed)
+         characters.formUnion(.urlFragmentAllowed)
+         return characters
+     }
+ }
 
-// MARK: - String + UnicodeEncodedString
-extension String {
-    
-    /// Возвращает экранированные символы URL
-    var unicodeEncodedString: String {
-        guard
-            let unicodeEncodedString = removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .URLAllowedCharacters)
-        else { preconditionFailure("Content unencoding character") }
-        return unicodeEncodedString
-    }
-}
+ // MARK: - String + UnicodeEncodedString
+ private extension String {
+     
+     /// Возвращает экранированные символы URL
+     var unicodeEncodedString: String {
+         guard
+             let unicodeEncodedString = removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .urlAllowedCharacters)
+         else { preconditionFailure("Content unencoding character") }
+         return unicodeEncodedString
+     }
+ }
 
 /// REST запрос
 @frozen public struct Request: Sendable, Hashable {
@@ -52,13 +56,13 @@ extension String {
     ///   - endPoint: `endPoint`
     ///   - path: Путь запроса
     public init(endPoint: EndPoint, path: String) {
-        self.rawValue = "\(endPoint.rawValue)\(path.unicodeEncodedString)"
+        self.rawValue = "\(endPoint.rawValue)\(path)".unicodeEncodedString
     }
     
     /// Инициализация
     /// - Parameter dynamicURL: Динамический запрос
     public init(_ dynamicURL: DynamicURL) {
-        self.rawValue = dynamicURL.row
+        self.rawValue = dynamicURL.row.unicodeEncodedString
     }
 }
 

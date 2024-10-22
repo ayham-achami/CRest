@@ -41,7 +41,7 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
         /// Добавляет компонент пути к URL.
         /// - Parameter pathComponent: Компонент пути для добавления.
         public func with(pathComponent: Any) -> Self {
-            self.url?.appendPathComponent(.init(describing: pathComponent).unicodeEncodedString)
+            self.url?.appendPathComponent(.init(describing: pathComponent))
             return self
         }
 
@@ -51,7 +51,7 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
         ///   - key: ключ значения
         public func with(value: Value?, key: Key) -> Self {
             guard let value else { return self }
-            items.append(.init(name: .init(describing: key.rawValue), value: .init(describing: value).unicodeEncodedString))
+            items.append(.init(name: key.rawValue, value: .init(describing: value)))
             return self
         }
         
@@ -61,15 +61,14 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
         ///   - key: ключ значения
         public func with(values: [Value], key: Key) -> Self {
             guard !values.isEmpty else { return self }
-            values.forEach { items.append(.init(name: .init(describing: key.rawValue), value: .init(describing: $0).unicodeEncodedString)) }
+            values.forEach { items.append(.init(name: key.rawValue, value: .init(describing: $0))) }
             return self
         }
         
         /// Добавить новый параметр с ключом используя `URLQueryItem`
         /// - Parameter query: Новый пармер
         public func with(_ query: URLQueryItem) -> Self {
-            guard let value = query.value?.unicodeEncodedString else { return self }
-            items.append(.init(name: query.name, value: value))
+            items.append(query)
             return self
         }
 
