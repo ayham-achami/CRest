@@ -6,7 +6,7 @@ import Alamofire
 import Foundation
 
 // MARK: - CRest.Empty + Alamofire
-extension CRest.Empty: EmptyResponse {
+extension CRest.Empty: @unchecked Sendable, EmptyResponse {
     
     public static var value: Self {
         .init()
@@ -94,30 +94,39 @@ extension DynamicRequest {
     }
 }
 
-// MARK: - DynamicRequest + Alamofire + Parameters
+// MARK: - DynamicRequest + Parameters
 extension DynamicRequest {
     
-    struct Wrapper: Encodable {
+    struct Wrapper: Parameters {
         
         let parameters: Parameters
         
-        init?(_ parameters: Parameters?) {
-            guard let parameters = parameters else { return nil }
+        init(parameters: Parameters) {
             self.parameters = parameters
         }
         
-        public func encode(to encoder: Encoder) throws {
+        func encode(to encoder: any Encoder) throws {
             try parameters.encode(to: encoder)
         }
     }
-    
+
     var afParameters: Wrapper? {
         switch encoding {
         case .URL, .JSON:
-            return Wrapper(parameters)
+            guard let parameters else { return nil }
+            return Wrapper(parameters: parameters)
         case .multipart:
             return nil
         }
+    }
+}
+
+// MARK: - DynamicRequest + IORequestMultipartAdapter
+extension DynamicRequest {
+    
+    /// Возвращает адаптер запроса MultiPart
+    var multipartAdapter: IORequestMultipartAdapter? {
+        interceptors.compactMap { $0 as? IORequestMultipartAdapter }.first
     }
 }
 
@@ -125,15 +134,7 @@ extension DynamicRequest {
 extension DynamicRequest {
     
     func encode(into data: MultipartFormData) {
-        guard let parameters = parameters as? MultipartParameters  else { return }
-        if let adapter = interceptors.multipartAdapter() {
-            encode(parameters, into: data, with: adapter)
-        } else {
-            encode(parameters, into: data)
-        }
-    }
-    
-    private func encode(_ parameters: MultipartParameters, into data: MultipartFormData) {
+        guard let parameters = parameters as? MultipartParameters else { return }
         parameters.forEach {
             switch $0 {
             case let parameter as DataMultipartParameter:
@@ -147,26 +148,6 @@ extension DynamicRequest {
             #endif
             case let parameter as StreamMultipartParameter:
                 data.append(parameter.url, withName: parameter.name)
-            default:
-                preconditionFailure("Not supported MultipartParameters type")
-            }
-        }
-    }
-    
-    private func encode(_ parameters: MultipartParameters, into data: MultipartFormData, with adapter: IORequestMultipartAdapter) {
-        parameters.forEach {
-            switch $0 {
-            case let parameter as DataMultipartParameter:
-                data.append(adapter.adapt(parameter.data), withName: parameter.name)
-            #if canImport(UIKit)
-            case let parameter as ImageMultipartParameter:
-                data.append(adapter.adapt(parameter.data),
-                            withName: parameter.name,
-                            fileName: parameter.fileName,
-                            mimeType: parameter.mime)
-            #endif
-            case let parameter as StreamMultipartParameter:
-                data.append(adapter.adapt(parameter.url), withName: parameter.name)
             default:
                 preconditionFailure("Not supported MultipartParameters type")
             }
@@ -226,13 +207,5 @@ extension Http.EncodingConfiguration {
                                     boolEncoding: boolEncoding,
                                     dataEncoding: dataEncoding,
                                     dateEncoding: dateEncoding))
-    }
-}
-
-// MARK: - Array + IOInterceptor
-private extension Array where Element == any IOInterceptor {
-    
-    func multipartAdapter() -> IORequestMultipartAdapter? {
-        compactMap { $0 as? IORequestMultipartAdapter }.first
     }
 }

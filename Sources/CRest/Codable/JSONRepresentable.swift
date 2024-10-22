@@ -16,7 +16,7 @@ public extension JSONRepresentable where Self: Baseable {
     
     subscript<Base>(key: String, type: Base.Type) -> Base? {
         guard
-            let json = base as? [String: Any],
+            let json = base as? [String: Sendable],
             let value = json[key] as? Base
         else { return nil }
         return value

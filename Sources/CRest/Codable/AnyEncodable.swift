@@ -49,7 +49,7 @@ extension AnyEncodable {
 /// Любые параметры запроса
 @frozen public struct AnyParameters: Parameters, AnyEncodable, JSONRepresentable {
     
-    public let base: Any
+    public let base: Sendable
     
     public init<Base>(_ base: Base?) {
         self.base = base ?? ()

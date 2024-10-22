@@ -5,40 +5,6 @@
 import Alamofire
 import Foundation
 
-// MARK: - DownloadRequest + ProgressController
-@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
-extension Alamofire.DownloadRequest: ProgressController {
-
-    public func pauseProgress() {
-        suspend()
-    }
-
-    public func resumeProgress() {
-        resume()
-    }
-
-    public func cancelProgress() {
-        cancel(producingResumeData: true)
-    }
-}
-
-// MARK: - UploadRequest + ProgressController
-@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
-extension Alamofire.UploadRequest: ProgressController {
-
-    public func pauseProgress() {
-        suspend()
-    }
-
-    public func resumeProgress() {
-        resume()
-    }
-
-    public func cancelProgress() {
-        cancel()
-    }
-}
-
 // MARK: - DataResponse + ResponseLog
 extension Alamofire.DataResponse: ResponseLog {
 

@@ -38,7 +38,7 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
     
     func serializeDownload(request: URLRequest?, response: HTTPURLResponse?, fileURL: URL?, error: Error?) throws -> Response {
         if let error {
-            throw error
+            throw serializer.encountered(error, request, response, decoder, nil)
         } else if let empty = CRest.Empty() as? Response {
             guard
                 emptyResponseAllowed(forRequest: request, response: response)

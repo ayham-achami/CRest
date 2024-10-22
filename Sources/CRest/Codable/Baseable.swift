@@ -8,7 +8,7 @@ import Foundation
 public protocol Baseable {
     
     /// Базовый объект
-    var base: Any { get }
+    var base: Sendable { get }
     
     /// Инициализация
     /// - Parameter base: Базовый объект

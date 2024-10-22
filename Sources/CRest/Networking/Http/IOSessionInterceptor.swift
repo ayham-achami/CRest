@@ -4,4 +4,5 @@
 
 import Foundation
 
-public protocol IOSessionInterceptor: AnyObject {}
+/// Перехватчик запросов на уровне сессии
+public protocol IOSessionInterceptor: AnyObject, Sendable {}

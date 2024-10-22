@@ -2,6 +2,7 @@
 //  ProgressPublisher.swift
 //
 
+#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -29,7 +30,7 @@ public final class ProgressPublisher<Response> where Response: CRest.Response {
     ///   - receive: Замыкание процесса
     /// - Returns: `ProgressPublisher`
     @discardableResult
-    public func progress(for subscriptions: inout Set<AnyCancellable>, _ receive: @escaping (Progress) -> Void) -> Self {
+    public func progress(for subscriptions: inout Set<AnyCancellable>, _ receive: @Sendable @escaping (Progress) -> Void) -> Self {
         progress.sink(receiveValue: receive).store(in: &subscriptions)
         return self
     }
@@ -40,7 +41,7 @@ public final class ProgressPublisher<Response> where Response: CRest.Response {
     ///   - receive: Замыкание получения ответа
     /// - Returns: `ProgressPublisher`
     @discardableResult
-    public func response(for subscriptions: inout Set<AnyCancellable>, _ receive: @escaping (Result<Response, Error>) -> Void) -> Self {
+    public func response(for subscriptions: inout Set<AnyCancellable>, _ receive: @Sendable @escaping (Result<Response, Error>) -> Void) -> Self {
         response.sink { completion in
             guard case let .failure(error) = completion else { return }
             receive(.failure(error))
@@ -50,3 +51,4 @@ public final class ProgressPublisher<Response> where Response: CRest.Response {
         return self
     }
 }
+#endif

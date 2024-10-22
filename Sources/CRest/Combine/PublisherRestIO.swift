@@ -2,6 +2,7 @@
 //  PublisherRestIO.swift
 //
 
+#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -35,9 +36,9 @@ open class PublisherRestIO: CombineRestIOSendable {
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
-    func upload<Response>(from source: CombineRestIO.Source,
-                          with request: DynamicRequest,
-                          response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
+    final public func upload<Response>(from source: CombineRestIO.Source,
+                                       with request: DynamicRequest,
+                                       response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
         io.upload(from: source, with: request, response: response)
     }
     
@@ -52,7 +53,7 @@ open class PublisherRestIO: CombineRestIOSendable {
             .with(url: request.rawValue)
             .with(parameters: parameters)
             .publishBuild()
-            .flatMap(maxPublishers: .max(1)) { [weak self] request in
+            .flatMap { [weak self] request in
                 self?.io.perform(request, response: response) ?? .empty
             }.eraseToAnyPublisher()
     }
@@ -80,3 +81,4 @@ public extension AnyPublisher {
         Combine.Empty<Output, Failure>(completeImmediately: true).eraseToAnyPublisher()
     }
 }
+#endif

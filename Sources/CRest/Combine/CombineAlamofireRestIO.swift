@@ -2,6 +2,7 @@
 //  CombineAlamofireRestIO.swift
 //
 
+#if canImport(Combine)
 import Alamofire
 import Combine
 import Foundation
@@ -151,3 +152,4 @@ private extension NetworkInformant {
         }
     }
 }
+#endif

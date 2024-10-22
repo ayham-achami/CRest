@@ -21,14 +21,16 @@ public protocol AsyncRestIO: AnyObject {
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
-    func perform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> Response where Response: CRest.Response
+    func perform<Response>(_ request: DynamicRequest,
+                           response: Response.Type) async throws -> Response where Response: CRest.Response
     
     /// Выполняет REST http запроса
     /// - Parameters:
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: `DynamicResponse` c ответом на запрос
-    func dynamicPerform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response
+    func dynamicPerform<Response>(_ request: DynamicRequest,
+                                  response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response
     
     /// Скачает данные и сохраняет их на диске
     /// - Parameters:
@@ -75,107 +77,6 @@ public protocol AsyncRestIOSendable {
 
 // MARK: - AsyncRestIOSendable + Default
 public extension AsyncRestIOSendable {
-    
-    /// Отправить Get запрос
-    /// - Parameters:
-    ///   - request: Запрос
-    ///   - parameters: Параметры запроса
-    ///   - response: Тип ответа
-    ///   - encoding: Енкоденг запроса `Http.Method`
-    /// - Returns: Ответ сервера
-    @discardableResult
-    func fetch<Response, Parameters>(for request: Request,
-                                     parameters: Parameters = Empty.value,
-                                     response: Response.Type = Empty.self,
-                                     encoding: Http.Encoding = .URL(.default)) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
-        try await send(for: request, parameters: parameters, response: response, method: .get, encoding: encoding)
-    }
-    
-    /// Отправить Post запрос
-    /// - Parameters:
-    ///   - request: Запрос
-    ///   - parameters: Параметры запроса
-    ///   - response: Тип ответа
-    ///   - encoding: Енкоденг запроса `Http.Method`
-    /// - Returns: Ответ сервера
-    @discardableResult
-    func submit<Response, Parameters>(for request: Request,
-                                      parameters: Parameters = Empty.value,
-                                      response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
-        try await send(for: request, parameters: parameters, response: response, method: .post, encoding: encoding)
-    }
-    
-    /// Отправить Put запрос
-    /// - Parameters:
-    ///   - request: Запрос
-    ///   - parameters: Параметры запроса
-    ///   - response: Тип ответа
-    ///   - encoding: Енкоденг запроса `Http.Method`
-    /// - Returns: Ответ сервера
-    @discardableResult
-    func update<Response, Parameters>(for request: Request,
-                                      parameters: Parameters = Empty.value,
-                                      response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
-        try await send(for: request, parameters: parameters, response: response, method: .put, encoding: encoding)
-    }
-    
-    /// Отправить Patch запрос
-    /// - Parameters:
-    ///   - request: Запрос
-    ///   - parameters: Параметры запроса
-    ///   - response: Тип ответа
-    ///   - encoding: Енкоденг запроса `Http.Method`
-    /// - Returns: Ответ сервера
-    @discardableResult
-    func change<Response, Parameters>(for request: Request,
-                                      parameters: Parameters = Empty.value,
-                                      response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
-        try await send(for: request, parameters: parameters, response: response, method: .patch, encoding: encoding)
-    }
-    
-    /// Отправить Delete запрос
-    /// - Parameters:
-    ///   - request: Запрос
-    ///   - response: Тип ответа
-    ///   - parameters: Параметры запроса
-    ///   - encoding: Енкоденг запроса `Http.Method`
-    /// - Returns: Ответ сервера
-    @discardableResult
-    func delete<Response>(for request: Request,
-                          parameters: Parameters = Empty.value,
-                          response: Response.Type = Empty.self,
-                          encoding: Http.Encoding = .URL(.default)) async throws -> Response where Response: CRest.Response {
-        try await send(for: request, parameters: parameters, response: response, method: .delete, encoding: encoding)
-    }
-    
-    /// Отправить head запрос
-    /// - Parameters:
-    ///   - request: Запрос
-    ///   - encoding: Енкоденг запроса `Http.Method`
-    func prepare(for request: Request, encoding: Http.Encoding = .URL(.default)) async throws {
-        _ = try await send(for: request, parameters: Empty.value, response: Empty.self, method: .head, encoding: encoding)
-    }
-    
-    /// Отправить Options запрос
-    /// - Parameters:
-    ///   - request: Запрос
-    ///   - response: Тип ответа
-    ///   - encoding: Енкоденг запроса `Http.Method`
-    /// - Returns: Ответ сервера
-    @discardableResult
-    func setup<Response>(for request: Request,
-                         response: Response.Type = Empty.self,
-                         encoding: Http.Encoding = .URL(.default)) async throws -> Response where Response: CRest.Response {
-        try await send(for: request, parameters: Empty.value, response: response, method: .options, encoding: encoding)
-    }
-}
-
-// MARK: - AsyncRestIO + AsyncRestIOSendable
-@available(*, deprecated, message: "This feature has been deprecated and will be removed in future release")
-public extension AsyncRestIO where Self: AsyncRestIOSendable {
     
     /// Отправить Get запрос
     /// - Parameters:

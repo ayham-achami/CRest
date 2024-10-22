@@ -5,10 +5,13 @@
 import Foundation
 
 /// Любой ответ любого запроса
-public typealias Response = Decodable
+public typealias Response = Decodable & Sendable
 
 /// Любые параметры любого запроса
-public typealias Parameters = Encodable
+public typealias Parameters = Encodable & Sendable
+
+/// Любые ответ и параметры любого запроса
+public typealias Transferable = Codable & Sendable
 
 /// Протокол реализующий логику парсинга дефолтное значение для `Enum`
 public protocol RawResponse: Response, RawRepresentable where RawValue: Response {
@@ -57,7 +60,7 @@ public protocol ParametersBuilder: AnyObject {
 }
 
 /// Пустой объект модели
-@frozen public struct Empty: Sendable, Response, Parameters {
+public struct Empty: Codable {
     
     /// Инициализация
     public init() {}

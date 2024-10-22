@@ -55,6 +55,28 @@ import Foundation
         private var emptyRequestMethods: Set<Http.Method> = [.head]
         
         /// Инициализация
+        public init() {}
+        
+        /// Инициализация
+        /// - Parameter request: Динамический http запрос
+        public init(_ request: DynamicRequest) {
+            self.url = request.url
+            self.validate = request.validate
+            self.parameters = request.parameters
+            self.method = request.method
+            self.encoding = request.encoding
+            self.headers = request.headers
+            self.decoder = request.decoder
+            self.encoder = request.encoder
+            self.cacheBehavior = request.cacheBehavior
+            self.sessionInterceptor = request.sessionInterceptor
+            self.serializer = request.serializer
+            self.interceptors = request.interceptors
+            self.emptyResponseCodes = request.emptyResponseCodes
+            self.emptyRequestMethods = request.emptyRequestMethods
+        }
+        
+        /// Инициализация
         /// - Parameter parameters: Прпметры запроса
         public init(parameters: Parameters? = nil) {
             self.parameters = nil

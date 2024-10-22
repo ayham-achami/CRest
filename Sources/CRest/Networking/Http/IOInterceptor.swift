@@ -18,7 +18,7 @@ public enum IORetry {
 }
 
 /// Адаптируемый запрос
-@frozen public struct AdaptedRequest {
+@frozen public struct AdaptedRequest: Sendable {
     
     /// Запрос
     public let request: URLRequest
@@ -62,12 +62,23 @@ public enum IORetry {
         request.setValue(header, forHTTPHeaderField: field)
         return .init(request: request)
     }
+ 
+    /// Обновить хейдер
+    /// - Parameters:
+    ///   - headers: Словарь с закладками
+    /// - Returns: `AdaptedRequest`
+    @discardableResult
+    public func set(headers: [String: String]) -> Self {
+        var request = self.request
+        headers.forEach { field, header in request.setValue(header, forHTTPHeaderField: field) }
+        return .init(request: request)
+    }
     
     /// Обновить URL запроса
     /// - Parameter url: Новый URL
     /// - Returns: `AdaptedRequest`
     @discardableResult
-    public func set(_ url: URL) -> Self {
+    public func set(url: URL) -> Self {
         var request = self.request
         request.url = url
         return .init(request: request)
@@ -77,7 +88,7 @@ public enum IORetry {
     /// - Parameter httpBody: Тела запроса
     /// - Returns: `AdaptedRequest`
     @discardableResult
-    public func set(_ httpBody: Data) -> Self {
+    public func set(httpBody: Data?) -> Self {
         var request = self.request
         request.httpBody = httpBody
         return .init(request: request)
@@ -87,7 +98,7 @@ public enum IORetry {
     /// - Parameter request: Новый запрос
     /// - Returns: `AdaptedRequest`
     @discardableResult
-    public func set(_ request: URLRequest) -> Self {
+    public func set(request: URLRequest) -> Self {
         .init(request: request)
     }
     
@@ -95,7 +106,7 @@ public enum IORetry {
     /// - Parameter service: Новое качество сервиса
     /// - Returns: `AdaptedRequest`
     @discardableResult
-    public func set(_ service: URLRequest.NetworkServiceType) -> Self {
+    public func set(service: URLRequest.NetworkServiceType) -> Self {
         var request = self.request
         request.networkServiceType = service
         return .init(request: request)
@@ -112,28 +123,17 @@ public enum IORetry {
 /// Протокол адаптации запроса
 public protocol IORequestAdapter: Sendable {
     
-    /// Адаптация запроса
-    /// - Parameter adapted: Адаптируемый запрос
-    /// - Returns: `Result<AdaptedRequest, Error>`
-    @available(*, deprecated, renamed: "adapt(adapted:completion:)", message: "This method not invoked more")
-    func adapt(_ adapted: AdaptedRequest) -> Result<AdaptedRequest, Error>
-    
     /// Адаптация запроса асинхронный вызывает обработчик завершения с результатом.
     /// - Parameters:
     ///   - adapted: Адаптируемый запрос
     ///   - completion: Обработчик завершения
-    func adapt(_ adapted: AdaptedRequest, completion: @escaping (Result<AdaptedRequest, Error>) -> Void)
+    func adapt(_ adapted: AdaptedRequest, completion: @Sendable @escaping (Result<AdaptedRequest, Error>) -> Void)
 }
 
 // MARK: - IORequestAdapter + Default
 public extension IORequestAdapter {
     
-    @available(*, deprecated, renamed: "adapt(adapted:completion:)", message: "This method not invoked more")
-    func adapt(_ adapted: AdaptedRequest) -> Result<AdaptedRequest, Error> {
-        .success(adapted)
-    }
-    
-    func adapt(_ adapted: AdaptedRequest, completion: @escaping (Result<AdaptedRequest, Error>) -> Void) {
+    func adapt(_ adapted: AdaptedRequest, completion: @Sendable @escaping (Result<AdaptedRequest, Error>) -> Void) {
         completion(.success(adapted))
     }
 }
@@ -143,24 +143,24 @@ public protocol IORequestMultipartAdapter: Sendable {
     
     /// Адаптация часть тела запроса
     /// - Parameter data: Часть тела запроса
-    /// - Returns: `Data`
-    func adapt(_ data: Data) -> Data
+    /// - Parameter completion: Обработчик завершения
+    func adapt(_ data: Data, completion: @Sendable @escaping (Result<Data, Error>) -> Void)
     
     /// Адаптация часть тела запроса по ссылки
     /// - Parameter url: Часть тела запроса по ссылки
-    /// - Returns: `URL`
-    func adapt(_ url: URL) -> URL
+    /// - Parameter completion: Обработчик завершения
+    func adapt(_ url: URL, completion: @Sendable @escaping (Result<URL, Error>) -> Void)
 }
 
 // MARK: - IORequestMultipartAdapter + Default
-extension IORequestMultipartAdapter {
+public extension IORequestMultipartAdapter {
     
-    public func adapt(_ data: Data) -> Data {
-        data
+    func adapt(_ data: Data, completion: @Sendable @escaping (Result<Data, Error>) -> Void) {
+        completion(.success(data))
     }
     
-    public func adapt(_ url: URL) -> URL {
-        url
+    func adapt(_ url: URL, completion: @Sendable @escaping (Result<URL, Error>) -> Void) {
+        completion(.success(url))
     }
 }
 
@@ -188,10 +188,8 @@ public extension IORequestRetrier {
 /// Протокол модификации запроса
 public protocol IOInterceptor: IORequestAdapter, IORequestRetrier {}
 
-/// Наблюдать за запросами по умолчанию
+/// Перехватчик по умолчанию
 @frozen public struct DefaultInterceptor: IOInterceptor {
     
-    public func adapt(_ adapted: AdaptedRequest, completion: @escaping (Result<AdaptedRequest, any Error>) -> Void) {
-        completion(.success(adapted))
-    }
+    public init() {}
 }

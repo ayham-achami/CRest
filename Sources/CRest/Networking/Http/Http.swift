@@ -12,7 +12,7 @@ extension Http {
     
     /// Определения Http методов
     /// See https://tools.ietf.org/html/rfc7231#section-4.3
-    public enum Method: String, CaseIterable {
+    public enum Method: String, Equatable, CaseIterable {
         
         case options = "OPTIONS"
         case get     = "GET"

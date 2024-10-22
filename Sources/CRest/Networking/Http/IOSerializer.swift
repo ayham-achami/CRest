@@ -12,16 +12,6 @@ public protocol IOErrorSerializationController: Sendable {
     ///   - error: Обишка
     ///   - request: Запрос
     ///   - response: Ответ
-    ///   - data: Байты ответа
-    /// - Returns: Ошибка
-    @available(*, deprecated, renamed: "encountered(error:request:response:decoder:data:)", message: "This method not invoked more")
-    func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error
-    
-    /// Обработка ошибки происходящей при сериализации ответа
-    /// - Parameters:
-    ///   - error: Обишка
-    ///   - request: Запрос
-    ///   - response: Ответ
     ///   - decoder: Дикодер ответа
     ///   - data: Байты ответа
     /// - Returns: Ошибка
@@ -30,11 +20,6 @@ public protocol IOErrorSerializationController: Sendable {
 
 // MARK: - IOErrorSerializationController + Default
 public extension IOErrorSerializationController {
-    
-    @available(*, deprecated, renamed: "encountered(error:request:response:decoder:data:)", message: "This method not invoked more")
-    func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error {
-        error
-    }
     
     func encountered(_ error: Error,
                      _ request: URLRequest?,
