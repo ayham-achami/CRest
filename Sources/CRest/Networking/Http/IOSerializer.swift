@@ -15,17 +15,17 @@ public protocol IOErrorSerializationController: Sendable {
     ///   - decoder: Дикодер ответа
     ///   - data: Байты ответа
     /// - Returns: Ошибка
-    func encountered(_ error: Error, _ request: URLRequest?, _ response: HTTPURLResponse?, _ decoder: JSONDecoder, _ data: Data?) -> Error
+    func encountered(_ error: NetworkError, _ request: URLRequest?, _ response: HTTPURLResponse?, _ decoder: JSONDecoder, _ data: Data?) -> NetworkError
 }
 
 // MARK: - IOErrorSerializationController + Default
 public extension IOErrorSerializationController {
     
-    func encountered(_ error: Error,
+    func encountered(_ error: NetworkError,
                      _ request: URLRequest?,
                      _ response: HTTPURLResponse?,
                      _ decoder: JSONDecoder,
-                     _ data: Data?) -> Error {
+                     _ data: Data?) -> NetworkError {
         error
     }
 }

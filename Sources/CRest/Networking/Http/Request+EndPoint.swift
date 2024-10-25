@@ -15,7 +15,7 @@ import Foundation
 }
 
 // MARK: - CharacterSet + URLAllowedCharacters
-private extension CharacterSet {
+public extension CharacterSet {
     
     /// Допустимые символы хотя бы в одной части URL-адреса.
     /// Эти символы нельзя использовать во ВСЕХ частях URL-адреса
@@ -35,12 +35,19 @@ private extension CharacterSet {
  }
 
  // MARK: - String + UnicodeEncodedString
- private extension String {
+ public extension String {
      
      /// Возвращает экранированные символы URL
      var unicodeEncodedString: String {
+         unicodeEncodedString(with: .urlAllowedCharacters)
+     }
+     
+     /// Возвращает экранированные символы URL
+     /// - Parameter allowedCharacters: Допустимые символы хотя бы в одной части URL-адреса.
+     /// - Returns: Экранированные символы URL
+     func unicodeEncodedString(with allowedCharacters: CharacterSet) -> String {
          guard
-             let unicodeEncodedString = removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .urlAllowedCharacters)
+             let unicodeEncodedString = removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: allowedCharacters)
          else { preconditionFailure("Content unencoding character") }
          return unicodeEncodedString
      }
@@ -52,17 +59,9 @@ private extension CharacterSet {
     public let rawValue: String
     
     /// Инициализация
-    /// - Parameters:
-    ///   - endPoint: `endPoint`
-    ///   - path: Путь запроса
-    public init(endPoint: EndPoint, path: String) {
-        self.rawValue = "\(endPoint.rawValue)\(path)".unicodeEncodedString
-    }
-    
-    /// Инициализация
     /// - Parameter dynamicURL: Динамический запрос
     public init(_ dynamicURL: DynamicURL) {
-        self.rawValue = dynamicURL.row.unicodeEncodedString
+        self.rawValue = dynamicURL.row
     }
 }
 

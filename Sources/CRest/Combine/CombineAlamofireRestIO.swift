@@ -62,7 +62,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                 case let .failure(error):
                     self?.configuration.informant.log(error: error)
                     self?.configuration.informant.logError(response: response)
-                    throw error.reason(with: response.response?.statusCode, responseData: response.data)
+                    throw error
                 }
             }.eraseToAnyPublisher()
     }
@@ -80,7 +80,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                 case let .failure(error):
                     self?.configuration.informant.log(error: error)
                     self?.configuration.informant.logError(response: response)
-                    throw error.reason(with: response.response?.statusCode, responseData: response.data)
+                    throw error
                 }
             }.eraseToAnyPublisher()
     }
@@ -99,7 +99,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                 case let .failure(error):
                     self?.configuration.informant.log(error: error)
                     self?.configuration.informant.logError(response: response)
-                    throw error.reason(with: response.response?.statusCode)
+                    throw error
                 }
             }
         let progressSubject = PassthroughSubject<Progress, Swift.Never>()
@@ -127,7 +127,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                 case let .failure(error):
                     self?.configuration.informant.log(error: error)
                     self?.configuration.informant.logError(response: response)
-                    throw error.reason(with: response.response?.statusCode)
+                    throw error
                 }
             }
         let progressSubject = PassthroughSubject<Progress, Swift.Never>()
