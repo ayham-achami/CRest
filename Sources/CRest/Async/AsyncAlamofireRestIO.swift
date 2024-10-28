@@ -68,7 +68,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         case let .failure(error):
             configuration.informant.log(error: error)
             configuration.informant.logError(response: response)
-            throw error
+            throw error.reason(with: response.response?.statusCode, responseData: response.data)
         }
     }
     
@@ -89,7 +89,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         case .failure(let error):
             configuration.informant.log(error: error)
             configuration.informant.logError(response: downloadResponse)
-            throw error
+            throw error.reason(with: downloadResponse.response?.statusCode)
         }
     }
     
@@ -110,7 +110,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         case .failure(let error):
             configuration.informant.log(error: error)
             configuration.informant.logError(response: uploadResponse)
-            throw error
+            throw error.reason(with: uploadResponse.response?.statusCode)
         }
     }
     
