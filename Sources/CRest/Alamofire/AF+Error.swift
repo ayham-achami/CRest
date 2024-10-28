@@ -53,7 +53,9 @@ private extension AFError {
         case .decodingFailed(let error),
              .jsonSerializationFailed(let error),
              .customSerializationFailed(let error):
-            if let error = error as? ServerError {
+            if let error = error as? NetworkError {
+                error
+            } else if let error = error as? ServerError {
                 .server(error)
             } else {
                 .io("Serialization failed \(error.message)")
@@ -104,7 +106,11 @@ private extension Error {
         self as? LocalizedError
     }
     
+    var networkErrorErrorDescription: String? {
+        (self as? NetworkError).map { $0.errorDescription }
+    }
+    
     var message: String {
-        asAFError?.errorDescription ?? localizedError?.errorDescription ?? localizedDescription
+        networkErrorErrorDescription ?? asAFError?.errorDescription ?? localizedError?.errorDescription ?? localizedDescription
     }
 }
