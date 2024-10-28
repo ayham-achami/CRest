@@ -5,6 +5,7 @@
 import Alamofire
 import Foundation
 
+// MARK: - AFError + Reason
 extension AFError {
  
     /// Конвертирует `AFError` в `NetworkError`
@@ -26,7 +27,7 @@ extension AFError {
             } else if error.code == NSURLErrorNetworkConnectionLost {
                 .connectionLost
             } else {
-                .io(error.asAFError?.errorDescription ?? error.localizedError?.errorDescription ?? error.localizedDescription)
+                .io(error.message)
             }
         } else if let description = errorDescription {
             .io(description)
@@ -36,6 +37,7 @@ extension AFError {
     }
 }
 
+// MARK: - AFError + NetworkError
 private extension AFError {
     
     func networkError(from reason: ResponseSerializationFailureReason) -> NetworkError {
@@ -48,12 +50,14 @@ private extension AFError {
             .io("File \(at.lastPathComponent) unreadable")
         case .stringSerializationFailed(let encoding):
             .io("Serialization failed \(encoding)")
-        case .jsonSerializationFailed(let error):
-            .io("Serialization failed \(error.localizedDescription)")
-        case .decodingFailed(let error):
-            .io("Decoding failed \(error.localizedDescription)")
-        case .customSerializationFailed(let error):
-            .io("Serialization failed \(error.localizedDescription)")
+        case .decodingFailed(let error),
+             .jsonSerializationFailed(let error),
+             .customSerializationFailed(let error):
+            if let error = error as? ServerError {
+                .server(error)
+            } else {
+                .io("Serialization failed \(error.message)")
+            }
         case .invalidEmptyResponse(let type):
             .io("Invalid empty for \(type)")
         }
@@ -72,7 +76,7 @@ private extension AFError {
         case .unacceptableStatusCode(let code):
             .http(code, data: responseData)
         case .customValidationFailed(let error):
-            .io("Validation failed \(error.localizedDescription)")
+            .io("Validation failed \(error.message)")
         }
     }
 }
@@ -98,5 +102,9 @@ private extension Error {
     
     var localizedError: LocalizedError? {
         self as? LocalizedError
+    }
+    
+    var message: String {
+        asAFError?.errorDescription ?? localizedError?.errorDescription ?? localizedDescription
     }
 }

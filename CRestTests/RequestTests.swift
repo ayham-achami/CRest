@@ -21,7 +21,12 @@ extension Request {
     /// Инициализация
     /// - Parameter path: Путь запроса
     init(pathAPI: String) {
-        self.init(endPoint: Request.endPointAPI, path: pathAPI)
+        enum Keys: String, URLQueryKeys {
+            case none
+        }
+        self.init(DynamicURL.Builder(keyedBy: Keys.self)
+            .with(base: Request.endPoint.rawValue)
+            .with(pathComponent: pathAPI).build())
     }
 }
 

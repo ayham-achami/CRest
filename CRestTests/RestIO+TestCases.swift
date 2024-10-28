@@ -39,10 +39,20 @@ extension EndPoint {
 
 extension Request {
     
-    static let echo: Self = .init(endPoint: .restEndPoint, path: "v1/echo")
-    static let crypto: Self = .init(endPoint: .restEndPoint, path: "/v1/crypto")
-    static let upload: Self = .init(endPoint: .restEndPoint, path: "/v1/upload")
-    static let download: Self = .init(endPoint: .restEndPoint, path: "/v1/download")
+    static let echo: Self = .init(path: "v1/echo")
+    static let crypto: Self = .init(path: "/v1/crypto")
+    static let upload: Self = .init(path: "/v1/upload")
+    static let download: Self = .init(path: "/v1/download")
+    
+    init(path: String) {
+        enum Keys: String, URLQueryKeys {
+            case none
+        }
+        self.init(DynamicURL.Builder(keyedBy: Keys.self)
+            .with(base: EndPoint.restEndPoint.rawValue)
+            .with(pathComponent: path)
+            .build())
+    }
 }
 
 extension Http {
