@@ -50,8 +50,18 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
         ///   - value: значение
         ///   - key: ключ значения
         public func with(value: Value?, key: Key) -> Self {
-            guard let value = value else { return self }
-            items.append(URLQueryItem(name: String(describing: key.rawValue), value: "\(value)"))
+            guard let value else { return self }
+            items.append(.init(name: key.rawValue, value: .init(describing: value)))
+            return self
+        }
+        
+        /// Добавить значение под ключом
+        /// - Parameters:
+        ///   - value: массив значения
+        ///   - key: ключ значения
+        public func with(values: [Value], key: Key) -> Self {
+            guard !values.isEmpty else { return self }
+            values.forEach { items.append(.init(name: key.rawValue, value: .init(describing: $0))) }
             return self
         }
         
@@ -70,7 +80,9 @@ public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == Strin
             guard
                 var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
             else { preconditionFailure("The url components of \(url) is nil") }
-            components.queryItems = items
+            if !items.isEmpty {
+                components.queryItems = items
+            }
             guard
                 let queryURL = components.url
             else { preconditionFailure("URL of components is nil \(components)") }

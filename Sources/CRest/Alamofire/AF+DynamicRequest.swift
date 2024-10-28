@@ -6,7 +6,7 @@ import Alamofire
 import Foundation
 
 // MARK: - CRest.Empty + Alamofire
-extension CRest.Empty: EmptyResponse {
+extension CRest.Empty: @unchecked Sendable, EmptyResponse {
     
     public static var value: Self {
         .init()
@@ -21,15 +21,25 @@ extension CRest.Empty: EmptyResponse {
 extension DynamicRequest {
 
     var afInterceptor: Alamofire.Interceptor {
-        .init(interceptors: interceptors.map(afInterceptors(_:)))
+        .init(interceptors: interceptors.map(afInterceptors(_:)) + afSessionInterceptors())
     }
     
-    func afInterceptors(_ interceptor: IOInterceptor) -> Alamofire.RequestInterceptor {
+    private func afSessionInterceptors() -> [RequestInterceptor] {
+        guard let sessionInterceptor else { return [] }
+        guard
+            let sessionInterceptor = sessionInterceptor as? RequestInterceptor
+        else { preconditionFailure("SessionInterceptor must be an instance of RequestInterceptor") }
+        return [sessionInterceptor]
+    }
+    
+    private func afInterceptors(_ interceptor: IOInterceptor) -> Alamofire.RequestInterceptor {
         switch interceptor {
         case let authenticator as IOBearerAuthenticator:
             return wrapping(bearer: authenticator)
         case let authenticator as IOHandshakeAuthenticator:
             return wrapping(encryptor: authenticator)
+        case let requestInterceptor as RequestInterceptor:
+            return requestInterceptor
         default:
             return wrapping(interceptor: interceptor)
         }
@@ -38,14 +48,24 @@ extension DynamicRequest {
     private func wrapping(bearer: IOBearerAuthenticator) -> RequestInterceptor {
         AuthenticationInterceptor<BearerAuthAuthentificatorWrapper>(
             authenticator: BearerAuthAuthentificatorWrapper(bearer),
-            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(bearer.provider.credential)
+            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(
+                bearer.provider.credential,
+                isValidatedCredential: { [weak bearer] credential in
+                    bearer?.provider.isValidated(credential: credential) ?? false
+                }
+            )
         )
     }
     
     private func wrapping(encryptor: IOHandshakeAuthenticator) -> RequestInterceptor {
         AuthenticationInterceptor<HandshakeAuthentificatorWrapper>(
             authenticator: HandshakeAuthentificatorWrapper(encryptor),
-            credential: HandshakeAuthentificatorWrapper.SessionWrapper(encryptor.provider.session)
+            credential: HandshakeAuthentificatorWrapper.SessionWrapper(
+                encryptor.provider.session,
+                isValidatedCredential: { [weak encryptor] session in
+                    encryptor?.provider.isValidated(credential: session) ?? false
+                }
+            )
         )
     }
     
@@ -57,55 +77,64 @@ extension DynamicRequest {
 // MARK: - DynamicRequest + Alamofire
 extension DynamicRequest {
     
-    public struct Wrapper: Encodable {
+    var afHeders: Alamofire.HTTPHeaders {
+        HTTPHeaders(headers)
+    }
+
+    var afMethod: Alamofire.HTTPMethod {
+        HTTPMethod(rawValue: method.rawValue)
+    }
+    
+    var afJSONEncoder: Alamofire.JSONParameterEncoder {
+        JSONParameterEncoder(encoder: encoder)
+    }
+    
+    var afEmptyRequestMethods: Set<Alamofire.HTTPMethod> {
+        Set(emptyRequestMethods.compactMap { .init(rawValue: $0.rawValue) })
+    }
+}
+
+// MARK: - DynamicRequest + Parameters
+extension DynamicRequest {
+    
+    struct Wrapper: Parameters {
         
         let parameters: Parameters
         
-        init?(_ parameters: Parameters?) {
-            guard let parameters = parameters else { return nil }
+        init(parameters: Parameters) {
             self.parameters = parameters
         }
         
-        public func encode(to encoder: Encoder) throws {
+        func encode(to encoder: any Encoder) throws {
             try parameters.encode(to: encoder)
         }
     }
 
-    public var afHeders: Alamofire.HTTPHeaders {
-        HTTPHeaders(headers)
-    }
-
-    public var afMethod: Alamofire.HTTPMethod {
-        HTTPMethod(rawValue: method.rawValue)
-    }
-    
-    public var afEmptyRequestMethods: Set<Alamofire.HTTPMethod> {
-        Set(emptyRequestMethods.compactMap { .init(rawValue: $0.rawValue) })
-    }
-
-    public var afParameters: Wrapper? {
+    var afParameters: Wrapper? {
         switch encoding {
         case .URL, .JSON:
-            return Wrapper(parameters)
+            guard let parameters else { return nil }
+            return Wrapper(parameters: parameters)
         case .multipart:
             return nil
         }
     }
+}
 
-    public var afJSONEncoder: Alamofire.JSONParameterEncoder {
-        JSONParameterEncoder(encoder: encoder)
-    }
+// MARK: - DynamicRequest + IORequestMultipartAdapter
+extension DynamicRequest {
     
-    public func encode(into data: MultipartFormData) {
-        guard let parameters = parameters as? MultipartParameters  else { return }
-        if let adapter = interceptors.multipartAdapter() {
-            encode(parameters, into: data, with: adapter)
-        } else {
-            encode(parameters, into: data)
-        }
+    /// Возвращает адаптер запроса MultiPart
+    var multipartAdapter: IORequestMultipartAdapter? {
+        interceptors.compactMap { $0 as? IORequestMultipartAdapter }.first
     }
+}
+
+// MARK: - DynamicRequest + Alamofire + Multipart
+extension DynamicRequest {
     
-    private func encode(_ parameters: MultipartParameters, into data: MultipartFormData) {
+    func encode(into data: MultipartFormData) {
+        guard let parameters = parameters as? MultipartParameters else { return }
         parameters.forEach {
             switch $0 {
             case let parameter as DataMultipartParameter:
@@ -119,26 +148,6 @@ extension DynamicRequest {
             #endif
             case let parameter as StreamMultipartParameter:
                 data.append(parameter.url, withName: parameter.name)
-            default:
-                preconditionFailure("Not supported MultipartParameters type")
-            }
-        }
-    }
-    
-    private func encode(_ parameters: MultipartParameters, into data: MultipartFormData, with adapter: IORequestMultipartAdapter) {
-        parameters.forEach {
-            switch $0 {
-            case let parameter as DataMultipartParameter:
-                data.append(adapter.adapt(parameter.data), withName: parameter.name)
-            #if canImport(UIKit)
-            case let parameter as ImageMultipartParameter:
-                data.append(adapter.adapt(parameter.data),
-                            withName: parameter.name,
-                            fileName: parameter.fileName,
-                            mimeType: parameter.mime)
-            #endif
-            case let parameter as StreamMultipartParameter:
-                data.append(adapter.adapt(parameter.url), withName: parameter.name)
             default:
                 preconditionFailure("Not supported MultipartParameters type")
             }
@@ -198,14 +207,5 @@ extension Http.EncodingConfiguration {
                                     boolEncoding: boolEncoding,
                                     dataEncoding: dataEncoding,
                                     dateEncoding: dateEncoding))
-    }
-}
-
-// MARK: - Array + IOInterceptor
-private extension Array where Element == any IOInterceptor {
-    
-    func multipartAdapter() -> IORequestMultipartAdapter? {
-        guard !isEmpty else { return nil }
-        return compactMap { $0 as? IORequestMultipartAdapter }.first
     }
 }

@@ -2,6 +2,7 @@
 //  CombineAlamofireRestIO.swift
 //
 
+#if canImport(Combine)
 import Alamofire
 import Combine
 import Foundation
@@ -16,6 +17,8 @@ public final class CombineAlamofireRestIO: CombineRestIO {
         .init(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
               rootQueue: networkQueue,
               requestQueue: requestsQueue,
+              serializationQueue: serializationQueue,
+              interceptor: configuration.sessionInterceptor?.afInterceptor,
               serverTrustManager: configuration.serverTrustManager,
               cachedResponseHandler: configuration.cachedResponseHandler)
     }()
@@ -149,3 +152,4 @@ private extension NetworkInformant {
         }
     }
 }
+#endif

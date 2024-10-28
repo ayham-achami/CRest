@@ -15,12 +15,13 @@ struct InterceptorWrapper: RequestInterceptor {
     }
     
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-        let result = interceptor.adapt(.init(request: urlRequest))
-        switch result {
-        case let .success(adapted):
-            completion(.success(adapted.request))
-        case let .failure(error):
-            completion(.failure(error))
+        interceptor.adapt(.init(request: urlRequest)) { result in
+            switch result {
+            case let .success(adapted):
+                completion(.success(adapted.request))
+            case let .failure(error):
+                completion(.failure(error))
+            }
         }
     }
     

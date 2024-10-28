@@ -58,12 +58,12 @@ public extension Http {
     }
 }
 
-/// <#Description#>
+/// Детектор заголовок
 public protocol HeadersDetection {
     
-    /// <#Description#>
-    /// - Parameter key: <#key description#>
-    /// - Returns: <#description#>
+    /// Получить заголовок по ключу
+    /// - Parameter key: Ключи
+    /// - Returns: Заголовок
     func value(for key: some HeaderKeys) -> String?
 }
 
@@ -78,7 +78,7 @@ public extension HeadersDetection {
 // MARK: - HTTPURLResponse + HeadersDetection
 extension HTTPURLResponse {
     
-    /// <#Description#>
+    /// Заголовки ответа
     @frozen public struct Headers: HeadersDetection {
         
         private let source: HTTPURLResponse
@@ -92,7 +92,7 @@ extension HTTPURLResponse {
         }
     }
     
-    /// <#Description#>
+    /// Заголовки ответа
     public var headersDetection: Headers {
         .init(source: self)
     }
@@ -101,8 +101,8 @@ extension HTTPURLResponse {
 // MARK: - URLRequest + HeadersDetection
 extension URLRequest {
     
-    /// <#Description#>
-    public struct Headers: HeadersDetection {
+    /// Заголовки запроса
+    @frozen public struct Headers: HeadersDetection {
         
         private let source: URLRequest
         
@@ -115,7 +115,7 @@ extension URLRequest {
         }
     }
     
-    /// <#Description#>
+    /// Заголовки запроса
     public var headersDetection: Headers {
         .init(source: self)
     }

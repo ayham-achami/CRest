@@ -36,7 +36,7 @@ extension AnyDecodable {
 /// Любой ответ
 @frozen public struct AnyResponse: Response, AnyDecodable, JSONRepresentable {
     
-    public let base: Any
+    public let base: Sendable
     
     public init<Base>(_ base: Base?) {
         self.base = base ?? ()

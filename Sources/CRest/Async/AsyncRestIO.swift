@@ -5,7 +5,7 @@
 #if compiler(>=5.6.0) && canImport(_Concurrency)
 import Foundation
 
-/// Http клиент
+/// Http клиент с использованием SwiftConcurrency
 public protocol AsyncRestIO: AnyObject {
     
     typealias Source = URL
@@ -21,14 +21,16 @@ public protocol AsyncRestIO: AnyObject {
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
-    func perform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> Response where Response: CRest.Response
+    func perform<Response>(_ request: DynamicRequest,
+                           response: Response.Type) async throws -> Response where Response: CRest.Response
     
     /// Выполняет REST http запроса
     /// - Parameters:
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: `DynamicResponse` c ответом на запрос
-    func dynamicPerform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response
+    func dynamicPerform<Response>(_ request: DynamicRequest,
+                                  response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response
     
     /// Скачает данные и сохраняет их на диске
     /// - Parameters:
@@ -73,8 +75,8 @@ public protocol AsyncRestIOSendable {
                                     encoding: Http.Encoding) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters
 }
 
-// MARK: - AsyncRestIO + AsyncRestIOSendable
-public extension AsyncRestIO where Self: AsyncRestIOSendable {
+// MARK: - AsyncRestIOSendable + Default
+public extension AsyncRestIOSendable {
     
     /// Отправить Get запрос
     /// - Parameters:

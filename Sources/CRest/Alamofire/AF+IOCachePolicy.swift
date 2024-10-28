@@ -8,7 +8,11 @@ import Foundation
 /// Объект, который управляет тем, должны ли данные ответа сохраняться в кэше.
 struct IOResponseCacher: CachedResponseHandler {
     
-    let behavior: IOCacheBehavior
+    private let behavior: IOCacheBehavior
+    
+    init(behavior: IOCacheBehavior) {
+        self.behavior = behavior
+    }
     
     func dataTask(_ task: URLSessionDataTask, willCacheResponse response: CachedURLResponse, completion: @escaping (CachedURLResponse?) -> Void) {
         switch behavior {

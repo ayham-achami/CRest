@@ -2,6 +2,7 @@
 //  CombineRestIO.swift
 //
 
+#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -21,14 +22,16 @@ public protocol CombineRestIO: AnyObject {
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
-    func perform<Response>(_ request: DynamicRequest, response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response
+    func perform<Response>(_ request: DynamicRequest,
+                           response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response
     
     /// Выполняет REST http запроса
     /// - Parameters:
     ///   - request: Динамический запрос
     ///   - response: Тип ответа
     /// - Returns: `DynamicResponse` c ответом на запрос
-    func dynamicPerform<Response>(_ request: DynamicRequest, response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response
+    func dynamicPerform<Response>(_ request: DynamicRequest,
+                                  response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response
     
     /// Скачает данные и сохраняет их на диске
     /// - Parameters:
@@ -69,8 +72,8 @@ public protocol CombineRestIOSendable {
                                     encoding: Http.Encoding) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters
 }
 
-// MARK: - CombineRestIO + CombineRestIOSendable
-public extension CombineRestIO where Self: CombineRestIOSendable {
+// MARK: - CombineRestIOSendable + Default
+public extension CombineRestIOSendable {
     
     /// Отправить Get запрос
     /// - Parameters:
@@ -197,3 +200,4 @@ public extension Publisher where Self.Output: CRest.Response {
         }
     }
 }
+#endif

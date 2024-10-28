@@ -14,10 +14,6 @@ public protocol ServerError: LocalizedError {
     var message: String { get }
 }
 
-public func == (lhs: ServerError, rhs: ServerError) -> Bool {
-    lhs.code == rhs.code
-}
-
 /// Типы сетевых ошибок
 public enum NetworkError: LocalizedError {
 
@@ -39,30 +35,34 @@ public enum NetworkError: LocalizedError {
     /// Ошибка что-то пошло не так
     case somethingWrong
     /// Серверная ошибка
-    case server(ServerError)
+    case server(any ServerError)
     /// Ошибка отмена запроса
     case explicitlyCancelled
+    /// Временная сетевая ошибка
+    case temporaryNetworkError
 
     public var errorDescription: String {
         switch self {
         case .io(let reason):
-            return "IO error %@".localized(args: reason)
+            "IO error %@".localized(args: reason)
         case .ssl(let reason):
-            return "SSL error: \(reason)".localized
+            "SSL error: \(reason)".localized
         case .parsing:
-            return "Incorrect answer format".localized
+            "Incorrect answer format".localized
         case .http(let code, _):
-            return "Http error %d %@".localized(args: code, HTTPURLResponse.localizedString(forStatusCode: code))
+            "Http error %d %@".localized(args: code, HTTPURLResponse.localizedString(forStatusCode: code))
         case .notConnected:
-            return "No internet connection".localized
+            "No internet connection".localized
         case .connectionLost:
-            return "Network connection was lost".localized
+            "Network connection was lost".localized
         case .somethingWrong:
-            return "Something went wrong".localized
+            "Something went wrong".localized
         case .server(let error):
-            return error.message
+            error.message
         case .explicitlyCancelled:
-            return "Request has concelled".localized
+            "Request has concelled".localized
+        case .temporaryNetworkError:
+            "Temporary network error".localized
         }
     }
 }
@@ -84,7 +84,7 @@ extension NetworkError: Equatable {
         case (.parsing(let lhs), .parsing(let rhs)):
             return lhs == rhs
         case (.server(let lhe), .server(let rhe)):
-                return lhe == rhe
+            return lhe.code == rhe.code
         case (.http(let lhc, let lhData), .http(let rhc, let rhData)):
                 return lhc == rhc && lhData == rhData
         default:
@@ -110,6 +110,21 @@ public extension Error {
         #else
             return false
         #endif
+        }
+    }
+}
+
+// MARK: - Error + Temporary
+public extension Error {
+    
+    /// Временная сетевая ошибка
+    var isTemporaryNetworkError: Bool {
+        if let sessionFailed {
+            sessionFailed.code == NSURLErrorNotConnectedToInternet || sessionFailed.code == NSURLErrorNetworkConnectionLost
+        } else if let networkError = self as? NetworkError {
+            networkError == .notConnected || networkError == .connectionLost || networkError == .temporaryNetworkError
+        } else {
+            false
         }
     }
 }

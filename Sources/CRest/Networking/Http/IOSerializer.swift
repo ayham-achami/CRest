@@ -5,28 +5,33 @@
 import Foundation
 
 /// Протокол обработки ошибки происходящей при стерилизации ответа
-public protocol IOErrorSerializationController {
+public protocol IOErrorSerializationController: Sendable {
     
     /// Обработка ошибки происходящей при сериализации ответа
     /// - Parameters:
     ///   - error: Обишка
     ///   - request: Запрос
     ///   - response: Ответ
+    ///   - decoder: Дикодер ответа
     ///   - data: Байты ответа
     /// - Returns: Ошибка
-    func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error
+    func encountered(_ error: NetworkError, _ request: URLRequest?, _ response: HTTPURLResponse?, _ decoder: JSONDecoder, _ data: Data?) -> NetworkError
 }
 
 // MARK: - IOErrorSerializationController + Default
 public extension IOErrorSerializationController {
     
-    func encountered(_ error: Error, for request: URLRequest?, and response: HTTPURLResponse?, data: Data?) -> Error {
+    func encountered(_ error: NetworkError,
+                     _ request: URLRequest?,
+                     _ response: HTTPURLResponse?,
+                     _ decoder: JSONDecoder,
+                     _ data: Data?) -> NetworkError {
         error
     }
 }
 
 /// Протокол контроля ответа (обработка ответа на уровне байтов)
-public protocol HTTPBodyController {
+public protocol HTTPBodyController: Sendable {
     
     /// Контроля ответа
     /// - Parameter body: ответ
@@ -113,4 +118,7 @@ public extension IODownloadResponseSerializer where Self: IOSerializer {
 public protocol IOSerializer: IOResponseSerializer & IODownloadResponseSerializer {}
 
 /// Сериализатор по умолчанию
-@frozen public struct DefaultSerializer: IOSerializer {}
+@frozen public struct DefaultSerializer: IOSerializer {
+    
+    public init() {}
+}

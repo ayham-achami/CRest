@@ -24,8 +24,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/realm/SwiftLint", from: "0.55.1"),
-        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.9.0"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.2")
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.2"),
+        .package(url: "https://github.com/Alamofire/Alamofire.git", exact: "5.10.1")
     ],
     targets: [
         .macro(
@@ -71,7 +71,7 @@ let package = Package(
     swiftLanguageVersions: [.v5]
 )
 
-let defaultSettings: [SwiftSetting] = [.enableExperimentalFeature("StrictConcurrency=minimal")]
+let defaultSettings: [SwiftSetting] = [.enableUpcomingFeature("StrictConcurrency")]
 package.targets.forEach { target in
     if var settings = target.swiftSettings, !settings.isEmpty {
         settings.append(contentsOf: defaultSettings)

@@ -29,6 +29,8 @@ import Foundation
     public let cacheBehavior: IOCacheBehavior?
     /// Наблюдатели запроса
     public let interceptors: [IOInterceptor]
+    /// Наблюдатели запроса для сессии
+    public let sessionInterceptor: IOSessionInterceptor?
     /// http коды с которыми разрешено пустой ответ
     public let emptyResponseCodes: Set<Int>
     /// http методы с которыми разрешено пустой ответ
@@ -46,10 +48,33 @@ import Foundation
         private var decoder: JSONDecoder = JSONDecoder()
         private var encoder: JSONEncoder = JSONEncoder()
         private var cacheBehavior: IOCacheBehavior?
+        private var sessionInterceptor: IOSessionInterceptor?
         private var serializer: IOSerializer = DefaultSerializer()
         private var interceptors: [IOInterceptor] = [DefaultInterceptor()]
         private var emptyResponseCodes: Set<Int> = [204]
         private var emptyRequestMethods: Set<Http.Method> = [.head]
+        
+        /// Инициализация
+        public init() {}
+        
+        /// Инициализация
+        /// - Parameter request: Динамический http запрос
+        public init(_ request: DynamicRequest) {
+            self.url = request.url
+            self.validate = request.validate
+            self.parameters = request.parameters
+            self.method = request.method
+            self.encoding = request.encoding
+            self.headers = request.headers
+            self.decoder = request.decoder
+            self.encoder = request.encoder
+            self.cacheBehavior = request.cacheBehavior
+            self.sessionInterceptor = request.sessionInterceptor
+            self.serializer = request.serializer
+            self.interceptors = request.interceptors
+            self.emptyResponseCodes = request.emptyResponseCodes
+            self.emptyRequestMethods = request.emptyRequestMethods
+        }
         
         /// Инициализация
         /// - Parameter parameters: Прпметры запроса
@@ -106,6 +131,13 @@ import Foundation
             return self
         }
         
+        /// Добавить загловки
+        /// - Parameter headers: Загловки
+        public func with(headers: [String: String]) -> Self {
+            self.headers = headers
+            return self
+        }
+        
         /// Добавить объект десерлизации
         /// - Parameter decoder: Объект десерлизации
         public func with(decoder: JSONDecoder) -> Self {
@@ -135,9 +167,16 @@ import Foundation
         }
         
         ///  Добавить наблюдатель запроса
-        /// - Parameter interceptor: наблюдатели запрса
+        /// - Parameter interceptor: Наблюдатели запрса
         public func with(interceptors: [IOInterceptor]) -> Self {
             self.interceptors = interceptors
+            return self
+        }
+        
+        ///  Добавить наблюдатель запроса для сессии
+        /// - Parameter sessionInterceptor: Наблюдатели запрса
+        public func with(sessionInterceptor: IOSessionInterceptor?) -> Self {
+            self.sessionInterceptor = sessionInterceptor
             return self
         }
         
@@ -171,6 +210,7 @@ import Foundation
                          serializer: serializer,
                          cacheBehavior: cacheBehavior,
                          interceptors: interceptors,
+                         sessionInterceptor: sessionInterceptor,
                          emptyResponseCodes: emptyResponseCodes,
                          emptyRequestMethods: emptyRequestMethods)
         }

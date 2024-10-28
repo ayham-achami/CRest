@@ -19,7 +19,7 @@ public protocol ResponseLog: CustomCURLStringConvertible {
 }
 
 /// логирования
-public protocol NetworkLogger {
+public protocol NetworkLogger: Sendable {
     
     /// Вывод сообщения уровня дибаг
     /// - Parameters:
@@ -50,7 +50,7 @@ public protocol NetworkLogger {
 }
 
 // Объект реализующий логирование Network клиента
-public final class NetworkInformant {
+public final class NetworkInformant: Sendable {
 
     private let tag = "Network"
     private let logger: NetworkLogger

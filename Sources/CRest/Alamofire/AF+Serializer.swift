@@ -23,8 +23,8 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
     
     func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> Response {
         if let error {
-            let error = serializer.encountered(error, for: request, and: response, data: data)
-            throw error
+            let networkError = error.networkError(default: .somethingWrong) { $0.reason(with: response?.statusCode, responseData: data) }
+            throw serializer.encountered(networkError, request, response, decoder, data)
         } else if let empty = CRest.Empty() as? Response {
             guard
                 emptyResponseAllowed(forRequest: request, response: response)
@@ -39,7 +39,9 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
     
     func serializeDownload(request: URLRequest?, response: HTTPURLResponse?, fileURL: URL?, error: Error?) throws -> Response {
         if let error {
-            throw error
+            let data = fileURL.map { try? Data(contentsOf: $0) }?.map { $0 } // swiftlint:disable:this array_init
+            let networkError = error.networkError(default: .somethingWrong) { $0.reason(with: response?.statusCode, responseData: data) }
+            throw serializer.encountered(networkError, request, response, decoder, data)
         } else if let empty = CRest.Empty() as? Response {
             guard
                 emptyResponseAllowed(forRequest: request, response: response)

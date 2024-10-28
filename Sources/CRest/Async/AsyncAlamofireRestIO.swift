@@ -17,6 +17,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
               rootQueue: networkQueue,
               requestQueue: requestsQueue,
               serializationQueue: serializationQueue,
+              interceptor: configuration.sessionInterceptor?.afInterceptor,
               serverTrustManager: configuration.serverTrustManager,
               cachedResponseHandler: configuration.cachedResponseHandler)
     }()
@@ -53,7 +54,8 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         try await dynamicPerform(request, response: response).response
     }
     
-    public func dynamicPerform<Response>(_ request: DynamicRequest, response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response {
+    public func dynamicPerform<Response>(_ request: DynamicRequest,
+                                         response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
         let response = await requester
