@@ -5,7 +5,7 @@
 import Foundation
 
 /// Протокол базовых объектов
-public protocol Baseable {
+public protocol Baseable: Sendable {
     
     /// Базовый объект
     var base: Sendable { get }

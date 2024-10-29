@@ -6,11 +6,10 @@
 import Foundation
 
 /// Http клиент с использованием SwiftConcurrency
-public protocol AsyncRestIO: AnyObject {
+public protocol AsyncRestIO: Sendable, AnyObject {
     
     typealias Source = URL
     typealias Destination = URL
-    typealias ProgressHandler = (Progress) -> Void
     
     /// Инициализация
     /// - Parameter configuration: Общие настройки REST клиента
@@ -22,7 +21,7 @@ public protocol AsyncRestIO: AnyObject {
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
     func perform<Response>(_ request: DynamicRequest,
-                           response: Response.Type) async throws -> Response where Response: CRest.Response
+                           response: Response.Type) async throws(NetworkError) -> Response where Response: CRest.Response
     
     /// Выполняет REST http запроса
     /// - Parameters:
@@ -30,7 +29,7 @@ public protocol AsyncRestIO: AnyObject {
     ///   - response: Тип ответа
     /// - Returns: `DynamicResponse` c ответом на запрос
     func dynamicPerform<Response>(_ request: DynamicRequest,
-                                  response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response
+                                  response: Response.Type) async throws(NetworkError) -> DynamicResponse<Response> where Response: CRest.Response
     
     /// Скачает данные и сохраняет их на диске
     /// - Parameters:
@@ -42,7 +41,7 @@ public protocol AsyncRestIO: AnyObject {
     func download<Response>(into destination: Destination,
                             with request: DynamicRequest,
                             response: Response.Type,
-                            progress: ProgressHandler?) async throws -> Response where Response: CRest.Response
+                            progress: (@Sendable (Progress) -> Void)?) async throws(NetworkError) -> Response where Response: CRest.Response
     
     /// Выгружает данные на сервер из указанного источника
     /// - Parameters:
@@ -54,11 +53,11 @@ public protocol AsyncRestIO: AnyObject {
     func upload<Response>(from source: Source,
                           with request: DynamicRequest,
                           response: Response.Type,
-                          progress: ProgressHandler?) async throws -> Response where Response: CRest.Response
+                          progress: (@Sendable (Progress) -> Void)?) async throws(NetworkError) -> Response where Response: CRest.Response
 }
 
 /// Протокол конфигурации общих запросов
-public protocol AsyncRestIOSendable {
+public protocol AsyncRestIOSendable: Sendable {
     
     /// Получает данные из сервера по логике `APIResponse`
     /// - Parameters:
@@ -72,7 +71,7 @@ public protocol AsyncRestIOSendable {
                                     parameters: Parameters?,
                                     response: Response.Type,
                                     method: Http.Method,
-                                    encoding: Http.Encoding) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters
+                                    encoding: Http.Encoding) async throws(NetworkError) -> Response where Response: CRest.Response, Parameters: CRest.Parameters
 }
 
 // MARK: - AsyncRestIOSendable + Default
@@ -89,7 +88,7 @@ public extension AsyncRestIOSendable {
     func fetch<Response, Parameters>(for request: Request,
                                      parameters: Parameters = Empty.value,
                                      response: Response.Type = Empty.self,
-                                     encoding: Http.Encoding = .URL(.default)) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
+                                     encoding: Http.Encoding = .URL(.default)) async throws(NetworkError) -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
         try await send(for: request, parameters: parameters, response: response, method: .get, encoding: encoding)
     }
     
@@ -104,7 +103,7 @@ public extension AsyncRestIOSendable {
     func submit<Response, Parameters>(for request: Request,
                                       parameters: Parameters = Empty.value,
                                       response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
+                                      encoding: Http.Encoding = .JSON) async throws(NetworkError) -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
         try await send(for: request, parameters: parameters, response: response, method: .post, encoding: encoding)
     }
     
@@ -119,7 +118,7 @@ public extension AsyncRestIOSendable {
     func update<Response, Parameters>(for request: Request,
                                       parameters: Parameters = Empty.value,
                                       response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
+                                      encoding: Http.Encoding = .JSON) async throws(NetworkError) -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
         try await send(for: request, parameters: parameters, response: response, method: .put, encoding: encoding)
     }
     
@@ -134,7 +133,7 @@ public extension AsyncRestIOSendable {
     func change<Response, Parameters>(for request: Request,
                                       parameters: Parameters = Empty.value,
                                       response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) async throws -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
+                                      encoding: Http.Encoding = .JSON) async throws(NetworkError) -> Response where Response: CRest.Response, Parameters: CRest.Parameters {
         try await send(for: request, parameters: parameters, response: response, method: .patch, encoding: encoding)
     }
     
@@ -149,7 +148,7 @@ public extension AsyncRestIOSendable {
     func delete<Response>(for request: Request,
                           parameters: Parameters = Empty.value,
                           response: Response.Type = Empty.self,
-                          encoding: Http.Encoding = .URL(.default)) async throws -> Response where Response: CRest.Response {
+                          encoding: Http.Encoding = .URL(.default)) async throws(NetworkError) -> Response where Response: CRest.Response {
         try await send(for: request, parameters: parameters, response: response, method: .delete, encoding: encoding)
     }
     
@@ -157,7 +156,7 @@ public extension AsyncRestIOSendable {
     /// - Parameters:
     ///   - request: Запрос
     ///   - encoding: Енкоденг запроса `Http.Method`
-    func prepare(for request: Request, encoding: Http.Encoding = .URL(.default)) async throws {
+    func prepare(for request: Request, encoding: Http.Encoding = .URL(.default)) async throws(NetworkError) {
         _ = try await send(for: request, parameters: Empty.value, response: Empty.self, method: .head, encoding: encoding)
     }
     
@@ -170,7 +169,7 @@ public extension AsyncRestIOSendable {
     @discardableResult
     func setup<Response>(for request: Request,
                          response: Response.Type = Empty.self,
-                         encoding: Http.Encoding = .URL(.default)) async throws -> Response where Response: CRest.Response {
+                         encoding: Http.Encoding = .URL(.default)) async throws(NetworkError) -> Response where Response: CRest.Response {
         try await send(for: request, parameters: Empty.value, response: response, method: .options, encoding: encoding)
     }
 }

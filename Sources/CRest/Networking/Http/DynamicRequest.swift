@@ -5,7 +5,7 @@
 import Foundation
 
 /// Динамический http запрос
-@frozen public struct DynamicRequest {
+@frozen public struct DynamicRequest: Sendable {
 
     /// Урль запроса
     public let url: String
@@ -37,7 +37,7 @@ import Foundation
     public let emptyRequestMethods: Set<Http.Method>
 
     /// Билдер
-    public final class Builder {
+    public final class Builder: @unchecked Sendable {
         
         private var url: String?
         private var validate: Bool = true
@@ -195,10 +195,10 @@ import Foundation
         }
         
         /// Создает запрос
-        public func build() throws -> DynamicRequest {
+        public func build() throws(NetworkError) -> DynamicRequest {
             guard
                 let url = url
-            else { throw ModelBuildError(errorDescription: "Dynamic request URL is nil") }
+            else { throw NetworkError.io("Dynamic request URL is nil") }
             return .init(url: url,
                          validate: validate,
                          method: method,

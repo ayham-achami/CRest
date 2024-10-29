@@ -6,7 +6,7 @@
 import Foundation
 
 /// Отправитель Http запросов с использованием SwiftConcurrency
-open class ConcurrencyRestIO: AsyncRestIOSendable {
+open class ConcurrencyRestIO: AsyncRestIOSendable, @unchecked Sendable {
     
     /// Http клиент с использованием SwiftConcurrency
     private let io: AsyncRestIO
@@ -23,7 +23,7 @@ open class ConcurrencyRestIO: AsyncRestIOSendable {
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
     open func perform<Response>(_ request: DynamicRequest,
-                                response: Response.Type) async throws -> Response where Response: CRest.Response {
+                                response: Response.Type) async throws(NetworkError) -> Response where Response: CRest.Response {
         try await io.perform(request, response: response)
     }
     
@@ -33,7 +33,7 @@ open class ConcurrencyRestIO: AsyncRestIOSendable {
     ///   - response: Тип ответа
     /// - Returns: `DynamicResponse` c ответом на запрос
     open func dynamicPerform<Response>(_ request: DynamicRequest,
-                                       response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response {
+                                       response: Response.Type) async throws(NetworkError) -> DynamicResponse<Response> where Response: CRest.Response {
         try await io.dynamicPerform(request, response: response)
     }
     
@@ -47,7 +47,7 @@ open class ConcurrencyRestIO: AsyncRestIOSendable {
     open func download<Response>(into destination: AsyncRestIO.Destination,
                                  with request: DynamicRequest,
                                  response: Response.Type,
-                                 progress: AsyncRestIO.ProgressHandler?) async throws -> Response where Response: CRest.Response {
+                                 progress: (@Sendable (Progress) -> Void)?) async throws(NetworkError) -> Response where Response: CRest.Response {
         try await io.download(into: destination, with: request, response: response, progress: progress)
     }
     
@@ -61,7 +61,7 @@ open class ConcurrencyRestIO: AsyncRestIOSendable {
     open func upload<Response>(from source: AsyncRestIO.Source,
                                with request: DynamicRequest,
                                response: Response.Type,
-                               progress: AsyncRestIO.ProgressHandler?) async throws -> Response where Response: CRest.Response {
+                               progress: (@Sendable (Progress) -> Void)?) async throws(NetworkError) -> Response where Response: CRest.Response {
         if let request = MultipartRequest(request) {
             try await io.upload(from: source, with: try await adapt(request), response: response, progress: progress)
         } else {
@@ -72,7 +72,7 @@ open class ConcurrencyRestIO: AsyncRestIOSendable {
     open func send<Response, Parameters>(for request: Request,
                                          parameters: Parameters?,
                                          response: Response.Type,
-                                         method: Http.Method, encoding: Http.Encoding) async throws -> Response where Parameters: CRest.Parameters, Response: CRest.Response {
+                                         method: Http.Method, encoding: Http.Encoding) async throws(NetworkError) -> Response where Parameters: CRest.Parameters, Response: CRest.Response {
         let request = try DynamicRequest
             .Builder()
             .with(method: method)
@@ -86,16 +86,16 @@ open class ConcurrencyRestIO: AsyncRestIOSendable {
 
 // MARK: - AsyncRestIO + MultipartRequest
 extension ConcurrencyRestIO {
-    
+
     /// Multipart запрос
-    public struct MultipartRequest {
+    public struct MultipartRequest: Sendable {
         
         /// Параметры Multipart
         public let parameters: MultipartParameters
+        /// Динамический http запрос
+        public let builder: DynamicRequest.Builder
         /// адаптер запроса MultiPart
         public let adapter: IORequestMultipartAdapter
-        /// Динамический http запрос с `MultipartParameters`
-        public let builder: DynamicRequest.Builder
         
         public init?(_ request: DynamicRequest) {
             guard
@@ -108,16 +108,30 @@ extension ConcurrencyRestIO {
         }
     }
     
-    public func adapt(_ request: MultipartRequest) async throws -> DynamicRequest {
+    /// Адаптация запроса
+    /// - Parameter request: Multipart запрос
+    public func adapt(_ request: MultipartRequest) async throws(NetworkError) -> DynamicRequest {
+        do {
+            return try await run(adapt: request)
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            preconditionFailure("MultipartRequest adapting should throw NetworkError")
+        }
+    }
+    
+    /// Адаптация запроса
+    /// - Parameter request: Multipart запрос
+    /// - Returns: Динамический http запрос
+    private func run(adapt request: MultipartRequest) async throws -> DynamicRequest {
         try await withThrowingTaskGroup(of: MultipartParameter.self) { taskGroup in
-            try await request.parameters
-                .reduce(into: taskGroup) { group, parameter in
-                    group.addTask { try await request.adapter.adapt(parameter) }
-                }.reduce(into: MultipartParameters()) { result, parameter in
-                    result.append(parameter)
-                }.touch { parameters in
-                    try request.builder.with(parameters: parameters).build()
-                }
+            try await request.parameters.reduce(into: taskGroup) { group, parameter in
+                group.addTask { try await request.adapter.adapt(parameter) }
+            }.reduce(into: MultipartParameters()) { result, parameter in
+                result.append(parameter)
+            }.touch { parameters in
+                try request.builder.with(parameters: parameters).build()
+            }
         }
     }
 }

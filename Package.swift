@@ -20,7 +20,7 @@ let package = Package(
             targets: [
                 "CRest"
             ]
-        ),
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/realm/SwiftLint", from: "0.55.1"),
@@ -66,7 +66,7 @@ let package = Package(
             plugins: [
                 .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")
             ]
-        ),
+        )
     ],
     swiftLanguageVersions: [.v5]
 )

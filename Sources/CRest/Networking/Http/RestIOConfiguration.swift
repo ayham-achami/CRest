@@ -61,20 +61,16 @@ public extension RestIOConfiguration {
 }
 
 /// Создатель сессионного интерцептор
-public enum RestIOSession {
+public enum RestIOSession: Sendable {
     
-    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при 
+    private static let repository = Repository()
+    
+    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при
     /// повторном вызове возвращается тоже объектов, что было создано до этого
     /// - Parameter bearer: Контроля статус авторизации по BearerToken
     /// - Returns: `IOSessionInterceptor`
     static public func interceptor(bearer: IOBearerAuthenticator) -> IOSessionInterceptor {
-        if let bearerAuthentication {
-            return bearerAuthentication
-        } else {
-            let bearerAuthentication = create(bearer: bearer)
-            Self.bearerAuthentication = bearerAuthentication
-            return bearerAuthentication
-        }
+        repository.bearerAuthentication(bearer: bearer)
     }
     
     /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при 
@@ -82,12 +78,6 @@ public enum RestIOSession {
     /// - Parameter handshake: Авторизации на уровне рукопожатия
     /// - Returns: `IOHandshakeAuthenticator`
     static public func interceptor(handshake: IOHandshakeAuthenticator) -> IOSessionInterceptor {
-        if let handshakeAuthentication {
-            return handshakeAuthentication
-        } else {
-            let handshakeAuthentication = create(handshake: handshake)
-            Self.handshakeAuthentication = handshakeAuthentication
-            return handshakeAuthentication
-        }
+        repository.handshakeAuthentication(handshake: handshake)
     }
 }

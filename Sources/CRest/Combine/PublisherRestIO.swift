@@ -7,7 +7,7 @@ import Combine
 import Foundation
 
 /// Отправитель Http запросов с использованием Combine
-open class PublisherRestIO: CombineRestIOSendable {
+open class PublisherRestIO: @unchecked Sendable, CombineRestIOSendable {
     
     /// Http клиент с использованием Combine
     private let io: CombineRestIO
@@ -24,7 +24,7 @@ open class PublisherRestIO: CombineRestIOSendable {
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
     open func perform<Response>(_ request: DynamicRequest,
-                                response: Response.Type) -> AnyPublisher<Response, any Error> where Response: CRest.Response {
+                                response: Response.Type) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response {
         io.perform(request, response: response)
     }
     
@@ -34,7 +34,7 @@ open class PublisherRestIO: CombineRestIOSendable {
     ///   - response: Тип ответа
     /// - Returns: `DynamicResponse` c ответом на запрос
     open func dynamicPerform<Response>(_ request: DynamicRequest,
-                                       response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, any Error> where Response: CRest.Response {
+                                       response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, NetworkError> where Response: CRest.Response {
         io.dynamicPerform(request, response: response)
     }
     
@@ -66,7 +66,7 @@ open class PublisherRestIO: CombineRestIOSendable {
                                          parameters: Parameters?,
                                          response: Response.Type,
                                          method: Http.Method,
-                                         encoding: Http.Encoding) -> AnyPublisher<Response, any Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+                                         encoding: Http.Encoding) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response, Parameters: CRest.Parameters {
         DynamicRequest
             .Builder()
             .with(method: method)
@@ -74,7 +74,7 @@ open class PublisherRestIO: CombineRestIOSendable {
             .with(url: request.rawValue)
             .with(parameters: parameters)
             .publishBuild()
-            .flatMap { [weak self] request in
+            .flatMap { [weak self] (request: DynamicRequest) -> AnyPublisher<Response, NetworkError> in
                 self?.perform(request, response: response) ?? .empty
             }.eraseToAnyPublisher()
     }
@@ -85,9 +85,9 @@ public extension DynamicRequest.Builder {
     
     /// Создает запрос
     /// - Returns: `AnyPublisher<DynamicRequest, Error>`
-    func publishBuild() -> AnyPublisher<DynamicRequest, Error> {
+    func publishBuild() -> AnyPublisher<DynamicRequest, NetworkError> {
         do {
-            return Just(try build()).setFailureType(to: Error.self).eraseToAnyPublisher()
+            return Just(try build()).setFailureType(to: NetworkError.self).eraseToAnyPublisher()
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }

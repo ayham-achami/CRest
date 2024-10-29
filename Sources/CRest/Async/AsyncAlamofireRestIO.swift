@@ -9,53 +9,41 @@ import Foundation
 /// Имплементация RestIO с Alamofire
 public final class AsyncAlamofireRestIO: AsyncRestIO {
     
-    // MARK: - Lazy
-    
     /// Сессия запросов
-    private lazy var session: Session = {
-        .init(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
-              rootQueue: networkQueue,
-              requestQueue: requestsQueue,
-              serializationQueue: serializationQueue,
-              interceptor: configuration.sessionInterceptor?.afInterceptor,
-              serverTrustManager: configuration.serverTrustManager,
-              cachedResponseHandler: configuration.cachedResponseHandler)
-    }()
-    
+    private let session: Session
     /// Очередь запросов
-    private lazy var networkQueue: DispatchQueue = {
-        .init(label: "RestIO.concurrency.networkQueue", qos: .default)
-    }()
-    
+    private let networkQueue: DispatchQueue
     /// Очередь запросов
-    private lazy var requestsQueue: DispatchQueue = {
-        .init(label: "RestIO.concurrency.requestsQueue", qos: .default, attributes: .concurrent, target: networkQueue)
-    }()
-    
+    private let requestsQueue: DispatchQueue
     /// Очередь десериализации
-    private lazy var serializationQueue: DispatchQueue = {
-        .init(label: "RestIO.concurrency.serializationQueue", qos: .default, attributes: .concurrent, target: networkQueue)
-    }()
-    
-    // MARK: - Private properties
-    
+    private let serializationQueue: DispatchQueue
+    /// Общие настройки REST клиента
     private let configuration: RestIOConfiguration
-    
-    // MARK: - Init
     
     public init(_ configuration: RestIOConfiguration) {
         self.configuration = configuration
+        let networkQueue = DispatchQueue(label: "RestIO.concurrency.networkQueue", qos: .default)
+        let requestsQueue = DispatchQueue(label: "RestIO.concurrency.requestsQueue", qos: .default, attributes: .concurrent, target: networkQueue)
+        let serializationQueue = DispatchQueue(label: "RestIO.concurrency.serializationQueue", qos: .default, attributes: .concurrent, target: networkQueue)
+        self.session = .init(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
+                             rootQueue: networkQueue,
+                             requestQueue: requestsQueue,
+                             serializationQueue: serializationQueue,
+                             interceptor: configuration.sessionInterceptor?.afInterceptor,
+                             serverTrustManager: configuration.serverTrustManager,
+                             cachedResponseHandler: configuration.cachedResponseHandler)
+        self.networkQueue = networkQueue
+        self.requestsQueue = requestsQueue
+        self.serializationQueue = serializationQueue
     }
-    
-    // MARK: - Public
-    
+        
     public func perform<Response>(_ request: DynamicRequest,
-                                  response: Response.Type) async throws -> Response where Response: CRest.Response {
+                                  response: Response.Type) async throws(NetworkError) -> Response where Response: CRest.Response {
         try await dynamicPerform(request, response: response).response
     }
     
     public func dynamicPerform<Response>(_ request: DynamicRequest,
-                                         response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response {
+                                         response: Response.Type) async throws(NetworkError) -> DynamicResponse<Response> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
         let response = await requester
@@ -75,7 +63,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
     public func download<Response>(into destination: Destination,
                                    with request: DynamicRequest,
                                    response: Response.Type,
-                                   progress: ProgressHandler?) async throws -> Response where Response: CRest.Response {
+                                   progress: (@Sendable (Progress) -> Void)?) async throws(NetworkError) -> Response where Response: CRest.Response {
         let downloader = IO.with(session).downloadRequest(for: request, into: destination)
         configuration.informant.log(request: downloader)
         invoke(progress, from: downloader.downloadProgress())
@@ -96,7 +84,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
     public func upload<Response>(from source: Source,
                                  with request: DynamicRequest,
                                  response: Response.Type,
-                                 progress: ProgressHandler?) async throws -> Response where Response: CRest.Response {
+                                 progress: (@Sendable (Progress) -> Void)?) async throws(NetworkError) -> Response where Response: CRest.Response {
         let uploader = IO.with(session).uploadRequest(for: request, from: source)
         configuration.informant.log(request: uploader)
         invoke(progress, from: uploader.uploadProgress())
@@ -113,14 +101,16 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
             throw error.reason(with: uploadResponse.response?.statusCode)
         }
     }
-    
-    // MARK: - Private
+}
+
+// MARK: - AsyncAlamofireRestIO + Private
+extension AsyncAlamofireRestIO {
     
     /// Вызвать прогресс загрузки из асинхронного стрима
     /// - Parameters:
     ///   - progress: Обработчик прогресса
     ///   - stream: Стрим загрузки
-    private func invoke(_ progress: ProgressHandler?, from stream: StreamOf<Progress>) {
+    func invoke(_ progress: (@Sendable (Progress) -> Void)?, from stream: sending StreamOf<Progress>) {
         guard let progress else { return }
         Task {
             for await current in stream {

@@ -12,7 +12,7 @@ public extension UIImage {
     ///
     /// - PNG: PNG формат
     /// - JPEG: JPEG формат
-    enum Serialization: String {
+    enum Serialization: String, Sendable {
         
         case png
         case jpeg
@@ -30,7 +30,9 @@ public extension UIImage {
         case .jpeg:
             data = jpegData(compressionQuality: compressionQuality)
         }
-        guard let data else { throw SerializationError(UIImage.self) }
+        guard
+            let data
+        else { throw NetworkError.io("Could't to serialize \(serialization) to UIImage") }
         return data
     }
 }

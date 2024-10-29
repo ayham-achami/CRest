@@ -34,8 +34,8 @@ public protocol MultipartParameter: Sendable {}
 
     public let data: Data
     public let name: String
-    public let fileName: String?
     public let mime: String
+    public let fileName: String?
 
     public init(_ image: UIImage,
                 _ name: String,
@@ -88,7 +88,7 @@ public protocol MultipartParameter: Sendable {}
     /// Преобразует параметры в новый тип
     /// - Parameter transform: Замыкание преобразования
     /// - Returns: Новый тип
-    func touch<Result>(_ transform: (MultipartParameters) throws -> Result) rethrows -> Result {
+    func touch<Result>(_ transform: @Sendable (MultipartParameters) throws -> Result) rethrows -> Result {
         try transform(self)
     }
     
@@ -176,7 +176,7 @@ private extension IORequestMultipartAdapter {
             case .success(let data):
                 continuation.resume(returning: DataMultipartParameter(data, parameter.name))
             case .failure(let error):
-                continuation.resume(throwing: error)
+                continuation.resume(throwing: NetworkError.io("DataMultipartParameter adapt error \(error)"))
             }
         }
     }
@@ -188,7 +188,7 @@ private extension IORequestMultipartAdapter {
             case .success(let data):
                 continuation.resume(returning: ImageMultipartParameter(data, parameter.name, parameter.fileName, parameter.mime))
             case .failure(let error):
-                continuation.resume(throwing: error)
+                continuation.resume(throwing: NetworkError.io("ImageMultipartParameter adapt error \(error)"))
             }
         }
     }
@@ -200,7 +200,7 @@ private extension IORequestMultipartAdapter {
             case .success(let url):
                 continuation.resume(returning: StreamMultipartParameter(url, parameter.name))
             case .failure(let error):
-                continuation.resume(throwing: error)
+                continuation.resume(throwing: NetworkError.io("StreamMultipartParameter adapt error \(error)"))
             }
         }
     }

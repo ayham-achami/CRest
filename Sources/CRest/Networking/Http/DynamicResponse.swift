@@ -5,10 +5,10 @@
 import Foundation
 
 /// Динамический ответ
-@frozen public struct DynamicResponse<Response: CRest.Response> {
+@frozen public struct DynamicResponse<Response: CRest.Response>: @unchecked Sendable {
     
     /// Состояние ответа
-    public enum State {
+    public enum State: Sendable {
         
         /// Ошибочный
         case invalid(Response)
