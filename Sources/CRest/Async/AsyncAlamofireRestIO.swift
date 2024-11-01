@@ -8,43 +8,34 @@ import Foundation
 
 /// Имплементация RestIO с Alamofire
 public final class AsyncAlamofireRestIO: AsyncRestIO {
-    
-    // MARK: - Lazy
-    
+
     /// Сессия запросов
-    private lazy var session: Session = {
-        .init(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
-              rootQueue: networkQueue,
-              requestQueue: requestsQueue,
-              serializationQueue: serializationQueue,
-              interceptor: configuration.sessionInterceptor?.afInterceptor,
-              serverTrustManager: configuration.serverTrustManager,
-              cachedResponseHandler: configuration.cachedResponseHandler)
-    }()
-    
+    private let session: Session
     /// Очередь запросов
-    private lazy var networkQueue: DispatchQueue = {
-        .init(label: "RestIO.concurrency.networkQueue", qos: .default)
-    }()
-    
+    private let networkQueue: DispatchQueue
     /// Очередь запросов
-    private lazy var requestsQueue: DispatchQueue = {
-        .init(label: "RestIO.concurrency.requestsQueue", qos: .default, attributes: .concurrent, target: networkQueue)
-    }()
-    
+    private let requestsQueue: DispatchQueue
     /// Очередь десериализации
-    private lazy var serializationQueue: DispatchQueue = {
-        .init(label: "RestIO.concurrency.serializationQueue", qos: .default, attributes: .concurrent, target: networkQueue)
-    }()
-    
-    // MARK: - Private properties
-    
+    private let serializationQueue: DispatchQueue
+    /// Общие настройки REST клиента
     private let configuration: RestIOConfiguration
-    
-    // MARK: - Init
     
     public init(_ configuration: RestIOConfiguration) {
         self.configuration = configuration
+        let id = UUID().uuidString
+        let networkQueue = DispatchQueue(label: "RestIO.concurrency.networkQueue.\(id)", qos: .default)
+        let requestsQueue = DispatchQueue(label: "RestIO.concurrency.requestsQueue.\(id)", qos: .default, attributes: .concurrent, target: networkQueue)
+        let serializationQueue = DispatchQueue(label: "RestIO.concurrency.serializationQueue.\(id)", qos: .default, attributes: .concurrent, target: networkQueue)
+        self.session = Session(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
+                               rootQueue: networkQueue,
+                               requestQueue: requestsQueue,
+                               serializationQueue: serializationQueue,
+                               interceptor: configuration.sessionInterceptor?.afInterceptor,
+                               serverTrustManager: configuration.serverTrustManager,
+                               cachedResponseHandler: configuration.cachedResponseHandler)
+        self.networkQueue = networkQueue
+        self.requestsQueue = requestsQueue
+        self.serializationQueue = serializationQueue
     }
     
     // MARK: - Public
