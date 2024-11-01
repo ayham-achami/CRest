@@ -26,20 +26,20 @@ public enum NetworkError: LocalizedError {
     case ssl(String)
     /// Ошибка парсинга данных
     case parsing(Data)
-    /// Ошибка протокола http
-    case http(Code, data: Data? = nil)
     /// Ошибка подключения к интернету
     case notConnected
     /// Подключения к интернету было потеряно
     case connectionLost
     /// Ошибка что-то пошло не так
     case somethingWrong
-    /// Серверная ошибка
-    case server(any ServerError)
     /// Ошибка отмена запроса
     case explicitlyCancelled
     /// Временная сетевая ошибка
     case temporaryNetworkError
+    /// Серверная ошибка
+    case server(any ServerError)
+    /// Ошибка протокола http
+    case http(Code, data: Data? = nil)
 
     public var errorDescription: String {
         switch self {

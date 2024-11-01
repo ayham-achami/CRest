@@ -12,7 +12,7 @@ extension Http {
     
     /// Определения Http методов
     /// See https://tools.ietf.org/html/rfc7231#section-4.3
-    public enum Method: String, Equatable, CaseIterable {
+    public enum Method: String, Sendable, Equatable, CaseIterable {
         
         case options = "OPTIONS"
         case get     = "GET"
@@ -30,7 +30,7 @@ extension Http {
 extension Http {
     
     /// Типы игодинга данных
-    public enum Encoding {
+    public enum Encoding: Sendable {
         
         case JSON
         case multipart
@@ -42,39 +42,39 @@ extension Http {
 extension Http {
     
     /// Объект, кодирующий в строки запроса в URL.
-    @frozen public struct EncodingConfiguration {
+    @frozen public struct EncodingConfiguration: Sendable {
     
         /// Кодировка, используемая для значений `Array`
-        public enum ArrayEncoding {
+        public enum ArrayEncoding: Sendable {
             
             case brackets
             case noBrackets
         }
         
         /// Кодировка, используемая для значений `Bool`
-        public enum BoolEncoding {
+        public enum BoolEncoding: Sendable {
             
             case numeric
             case literal
         }
         
         /// Кодировка, используемая для значений `Data`
-        public enum DataEncoding {
+        public enum DataEncoding: Sendable {
             
             case base64
             case deferredToData
-            case custom((Data) throws -> String)
+            case custom(@Sendable (Data) throws -> String)
         }
         
         /// Кодировка, используемая для значений `Date`
-        public enum DateEncoding {
+        public enum DateEncoding: Sendable {
             
             case iso8601
             case deferredToDate
             case secondsSince1970
             case millisecondsSince1970
             case formatted(DateFormatter)
-            case custom((Date) throws -> String)
+            case custom(@Sendable (Date) throws -> String)
         }
         
         /// Конфигурация по умолчанию

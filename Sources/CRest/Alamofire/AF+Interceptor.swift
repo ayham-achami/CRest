@@ -14,7 +14,7 @@ struct InterceptorWrapper: RequestInterceptor {
         self.interceptor = interceptor
     }
     
-    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping @Sendable (Result<URLRequest, Error>) -> Void) {
         interceptor.adapt(.init(request: urlRequest)) { result in
             switch result {
             case let .success(adapted):
@@ -25,7 +25,7 @@ struct InterceptorWrapper: RequestInterceptor {
         }
     }
     
-    func retry(_ request: Alamofire.Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+    func retry(_ request: Alamofire.Request, for session: Session, dueTo error: Error, completion: @escaping @Sendable (RetryResult) -> Void) {
         if let urlRequest = request.request, let httpResponse = request.response {
             let result = interceptor.retry(urlRequest, httpResponse, request.retryCount, dueTo: error)
             switch result {

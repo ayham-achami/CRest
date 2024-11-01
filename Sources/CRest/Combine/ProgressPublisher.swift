@@ -10,7 +10,7 @@ import Foundation
 public final class ProgressPublisher<Response> where Response: CRest.Response {
     
     /// Ответ операции
-    public let response: AnyPublisher<Response, Error>
+    public let response: AnyPublisher<Response, NetworkError>
     
     /// Процесс выгрузки или загрузки
     public let progress: AnyPublisher<Progress, Never>
@@ -19,7 +19,7 @@ public final class ProgressPublisher<Response> where Response: CRest.Response {
     /// - Parameters:
     ///   - response: Ответ операции
     ///   - progress: Процесс выгрузки или загрузки
-    public init(response: AnyPublisher<Response, Error>, progress: AnyPublisher<Progress, Never>) {
+    public init(response: AnyPublisher<Response, NetworkError>, progress: AnyPublisher<Progress, Never>) {
         self.response = response
         self.progress = progress
     }
@@ -41,7 +41,7 @@ public final class ProgressPublisher<Response> where Response: CRest.Response {
     ///   - receive: Замыкание получения ответа
     /// - Returns: `ProgressPublisher`
     @discardableResult
-    public func response(for subscriptions: inout Set<AnyCancellable>, _ receive: @Sendable @escaping (Result<Response, Error>) -> Void) -> Self {
+    public func response(for subscriptions: inout Set<AnyCancellable>, _ receive: @Sendable @escaping (Result<Response, NetworkError>) -> Void) -> Self {
         response.sink { completion in
             guard case let .failure(error) = completion else { return }
             receive(.failure(error))

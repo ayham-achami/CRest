@@ -15,7 +15,7 @@ public protocol IOHandshake: AnyObject, IOInterceptor {
 }
 
 /// Сессия рукопожатия
-public protocol HandshakeSession: Equatable {
+public protocol HandshakeSession: Sendable, Equatable {
     
     /// Идентификатор сессии
     var id: String { get }

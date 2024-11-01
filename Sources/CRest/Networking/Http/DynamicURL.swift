@@ -5,12 +5,12 @@
 import Foundation
 
 /// Ключи параметров по ссылке
-public protocol URLQueryKeys: RawRepresentable, Hashable where RawValue == String {}
+public protocol URLQueryKeys: RawRepresentable, Hashable, Sendable where RawValue == String {}
 
 // MARK: - DynamicURL
 
 /// Динамическая REST ссылка
-@frozen public struct DynamicURL {
+@frozen public struct DynamicURL: Sendable {
     
     /// Билдер ссылки
     public final class Builder<Key> where Key: URLQueryKeys {

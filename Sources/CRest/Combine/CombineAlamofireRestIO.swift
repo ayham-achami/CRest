@@ -4,7 +4,7 @@
 
 #if canImport(Combine)
 import Alamofire
-import Combine
+@preconcurrency import Combine
 import Foundation
 
 /// Имплементация RestIO с Alamofire и Combine
@@ -40,7 +40,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     }
     
     public func perform<Response>(_ request: DynamicRequest,
-                                  response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response {
+                                  response: Response.Type) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
@@ -55,11 +55,13 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                     self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode, responseData: response.data)
                 }
-            }.eraseToAnyPublisher()
+            }
+            .setFailureNetworkError()
+            .eraseToAnyPublisher()
     }
     
     public func dynamicPerform<Response>(_ request: DynamicRequest,
-                                         response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response {
+                                         response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, NetworkError> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
         configuration.informant.log(request: requester)
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
@@ -73,7 +75,9 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                     self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode, responseData: response.data)
                 }
-            }.eraseToAnyPublisher()
+            }
+            .setFailureNetworkError()
+            .eraseToAnyPublisher()
     }
     
     public func download<Response>(into destination: Destination,
@@ -92,7 +96,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                     self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode)
                 }
-            }
+            }.setFailureNetworkError()
         let progressSubject = PassthroughSubject<Progress, Swift.Never>()
         downloader.downloadProgress { progress in
             progressSubject.send(progress)
@@ -100,7 +104,8 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                 progressSubject.send(completion: .finished)
             }
         }
-        return .init(response: responsePublisher.eraseToAnyPublisher(), progress: progressSubject.eraseToAnyPublisher())
+        return .init(response: responsePublisher.eraseToAnyPublisher(),
+                     progress: progressSubject.eraseToAnyPublisher())
     }
     
     public func upload<Response>(from source: Source,
@@ -120,7 +125,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                     self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode)
                 }
-            }
+            }.setFailureNetworkError()
         let progressSubject = PassthroughSubject<Progress, Swift.Never>()
         uploader.uploadProgress { progress in
             progressSubject.send(progress)
@@ -128,7 +133,8 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                 progressSubject.send(completion: .finished)
             }
         }
-        return .init(response: responsePublisher.eraseToAnyPublisher(), progress: progressSubject.eraseToAnyPublisher())
+        return .init(response: responsePublisher.eraseToAnyPublisher(),
+                     progress: progressSubject.eraseToAnyPublisher())
     }
 }
 

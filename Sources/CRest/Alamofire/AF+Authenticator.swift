@@ -21,9 +21,9 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
             !isValidatedCredential(self)
         }
         
-        private let isValidatedCredential: (any BearerCredential) -> Bool
+        private let isValidatedCredential: @Sendable (any BearerCredential) -> Bool
         
-        init(_ credential: any BearerCredential, isValidatedCredential: @escaping (any BearerCredential) -> Bool) {
+        init(_ credential: any BearerCredential, isValidatedCredential: @escaping @Sendable (any BearerCredential) -> Bool) {
             self.credential = credential
             self.isValidatedCredential = isValidatedCredential
         }
@@ -41,7 +41,7 @@ final class BearerAuthAuthentificatorWrapper: Authenticator {
         urlRequest.headers.add(.authorization(bearerToken: credential.access))
     }
     
-    func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
+    func refresh(_ credential: Credential, for session: Session, completion: @escaping @Sendable (Result<Credential, Error>) -> Void) {
         if let credential = try? authenticator.provider.match(credential) {
             completion(
                 .success(
@@ -113,9 +113,9 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
             !isValidatedCredential(self)
         }
         
-        private let isValidatedCredential: (any HandshakeSession) -> Bool
+        private let isValidatedCredential: @Sendable (any HandshakeSession) -> Bool
         
-        init(_ session: any HandshakeSession, isValidatedCredential: @escaping (any HandshakeSession) -> Bool) {
+        init(_ session: any HandshakeSession, isValidatedCredential: @escaping @Sendable (any HandshakeSession) -> Bool) {
             self.session = session
             self.isValidatedCredential = isValidatedCredential
         }
@@ -133,7 +133,7 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
         urlRequest.headers.add(.encryptorSession(credential))
     }
     
-    func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
+    func refresh(_ credential: Credential, for session: Session, completion: @escaping @Sendable (Result<Credential, Error>) -> Void) {
         if let credential = try? authenticator.provider.match(credential) {
             completion(
                 .success(

@@ -14,7 +14,7 @@ public typealias Parameters = Encodable & Sendable
 public typealias Transferable = Codable & Sendable
 
 /// Протокол реализующий логику парсинга дефолтное значение для `Enum`
-public protocol RawResponse: Response, RawRepresentable where RawValue: Response {
+public protocol RawResponse: Response, RawRepresentable, Sendable where RawValue: Response {
 
     /// Дефолтное значение
     static var `default`: Self { get }

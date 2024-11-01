@@ -5,7 +5,7 @@
 import Foundation
 
 /// Повторить ли запрос 
-public enum IORetry {
+public enum IORetry: Sendable {
 
     /// Не повторять попытку
     case omit

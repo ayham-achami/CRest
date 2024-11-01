@@ -7,11 +7,10 @@ import Combine
 import Foundation
 
 /// Http клиент с использованием Combine
-public protocol CombineRestIO: AnyObject {
+public protocol CombineRestIO: Sendable, AnyObject {
     
     typealias Source = URL
     typealias Destination = URL
-    typealias ProgressHandler = (Progress) -> Void
     
     /// Инициализация
     /// - Parameter configuration: Общие настройки REST клиента
@@ -23,7 +22,7 @@ public protocol CombineRestIO: AnyObject {
     ///   - response: Тип ответа
     /// - Returns: ответ на запрос
     func perform<Response>(_ request: DynamicRequest,
-                           response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response
+                           response: Response.Type) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response
     
     /// Выполняет REST http запроса
     /// - Parameters:
@@ -31,7 +30,7 @@ public protocol CombineRestIO: AnyObject {
     ///   - response: Тип ответа
     /// - Returns: `DynamicResponse` c ответом на запрос
     func dynamicPerform<Response>(_ request: DynamicRequest,
-                                  response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response
+                                  response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, NetworkError> where Response: CRest.Response
     
     /// Скачает данные и сохраняет их на диске
     /// - Parameters:
@@ -69,7 +68,7 @@ public protocol CombineRestIOSendable {
                                     parameters: Parameters?,
                                     response: Response.Type,
                                     method: Http.Method,
-                                    encoding: Http.Encoding) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters
+                                    encoding: Http.Encoding) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response, Parameters: CRest.Parameters
 }
 
 // MARK: - CombineRestIOSendable + Default
@@ -85,7 +84,7 @@ public extension CombineRestIOSendable {
     func fetch<Response, Parameters>(for request: Request,
                                      parameters: Parameters = Empty.value,
                                      response: Response.Type = Empty.self,
-                                     encoding: Http.Encoding) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+                                     encoding: Http.Encoding) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response, Parameters: CRest.Parameters {
         send(for: request, parameters: parameters, response: response, method: .get, encoding: encoding)
     }
     
@@ -99,7 +98,7 @@ public extension CombineRestIOSendable {
     func submit<Response, Parameters>(for request: Request,
                                       parameters: Parameters = Empty.value,
                                       response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response, Parameters: CRest.Parameters {
         send(for: request, parameters: parameters, response: response, method: .post, encoding: encoding)
     }
     
@@ -113,7 +112,7 @@ public extension CombineRestIOSendable {
     func update<Response, Parameters>(for request: Request,
                                       parameters: Parameters = Empty.value,
                                       response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response, Parameters: CRest.Parameters {
         send(for: request, parameters: parameters, response: response, method: .put, encoding: encoding)
     }
     
@@ -127,7 +126,7 @@ public extension CombineRestIOSendable {
     func change<Response, Parameters>(for request: Request,
                                       parameters: Parameters = Empty.value,
                                       response: Response.Type = Empty.self,
-                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, Error> where Response: CRest.Response, Parameters: CRest.Parameters {
+                                      encoding: Http.Encoding = .JSON) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response, Parameters: CRest.Parameters {
         send(for: request, parameters: parameters, response: response, method: .patch, encoding: encoding)
     }
     
@@ -141,7 +140,7 @@ public extension CombineRestIOSendable {
     func delete<Response>(for request: Request,
                           parameters: Parameters = Empty.value,
                           response: Response.Type = Empty.self,
-                          encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Response, Error> where Response: CRest.Response {
+                          encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response {
         send(for: request, parameters: parameters, response: response, method: .delete, encoding: encoding)
     }
     
@@ -149,7 +148,7 @@ public extension CombineRestIOSendable {
     /// - Parameters:
     ///   - request: Запрос
     ///   - encoding: Енкоденг запроса `Http.Method`
-    func prepare(for request: Request, encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Empty, Error> {
+    func prepare(for request: Request, encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Empty, NetworkError> {
         send(for: request, parameters: Empty.value, response: Empty.self, method: .head, encoding: encoding)
     }
     
@@ -161,7 +160,7 @@ public extension CombineRestIOSendable {
     /// - Returns: Ответ сервера
     func setup<Response>(for request: Request,
                          response: Response.Type = Empty.self,
-                         encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Response, Error> where Response: CRest.Response {
+                         encoding: Http.Encoding = .URL(.default)) -> AnyPublisher<Response, NetworkError> where Response: CRest.Response {
         send(for: request, parameters: Empty.value, response: response, method: .options, encoding: encoding)
     }
 }

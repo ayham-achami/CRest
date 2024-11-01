@@ -24,9 +24,9 @@ opt_in_rules:
 included:
   - Sources
   - CRestTests
-  - Package.swift
 excluded:
   - Templates
+  - Package.swift
   - "**/*.gen.swift"
 analyzer_rules:
   - explicit_self
