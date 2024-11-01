@@ -10,42 +10,33 @@ import Foundation
 /// Имплементация RestIO с Alamofire и Combine
 public final class CombineAlamofireRestIO: CombineRestIO {
     
-    // MARK: - Lazy
-    
     /// Сессия запросов
-    private lazy var session: Session = {
-        .init(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
-              rootQueue: networkQueue,
-              requestQueue: requestsQueue,
-              serializationQueue: serializationQueue,
-              interceptor: configuration.sessionInterceptor?.afInterceptor,
-              serverTrustManager: configuration.serverTrustManager,
-              cachedResponseHandler: configuration.cachedResponseHandler)
-    }()
-    
-    /// Поток запросов
-    private lazy var networkQueue: DispatchQueue = {
-        .init(label: "RestIO.combine.networkQueue", qos: .default)
-    }()
-    
-    /// Поток запросов
-    private lazy var requestsQueue: DispatchQueue = {
-        .init(label: "RestIO.combine.requestsQueue", qos: .default, target: networkQueue)
-    }()
-    
-    /// Поток сериализации
-    private lazy var serializationQueue: DispatchQueue = {
-        .init(label: "RestIO.combine.serializationQueue", qos: .default, target: networkQueue)
-    }()
-    
-    // MARK: - Private properties
-    
+    private let session: Session
+    /// Очередь запросов
+    private let networkQueue: DispatchQueue
+    /// Очередь запросов
+    private let requestsQueue: DispatchQueue
+    /// Очередь десериализации
+    private let serializationQueue: DispatchQueue
+    /// Общие настройки REST клиента
     private let configuration: RestIOConfiguration
-    
-    // MARK: - Init
     
     public init(_ configuration: RestIOConfiguration) {
         self.configuration = configuration
+        let id = UUID().uuidString
+        let networkQueue = DispatchQueue(label: "RestIO.combine.networkQueue.\(id)", qos: .default)
+        let requestsQueue = DispatchQueue(label: "RestIO.combine.requestsQueue.\(id)", qos: .default, attributes: .concurrent, target: networkQueue)
+        let serializationQueue = DispatchQueue(label: "RestIO.combine.serializationQueue.\(id)", qos: .default, attributes: .concurrent, target: networkQueue)
+        self.session = Session(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
+                               rootQueue: networkQueue,
+                               requestQueue: requestsQueue,
+                               serializationQueue: serializationQueue,
+                               interceptor: configuration.sessionInterceptor?.afInterceptor,
+                               serverTrustManager: configuration.serverTrustManager,
+                               cachedResponseHandler: configuration.cachedResponseHandler)
+        self.networkQueue = networkQueue
+        self.requestsQueue = requestsQueue
+        self.serializationQueue = serializationQueue
     }
     
     public func perform<Response>(_ request: DynamicRequest,
