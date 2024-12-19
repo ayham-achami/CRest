@@ -2,7 +2,33 @@
 //  NetworkInformant.swift
 //
 
+import Alamofire
 import Foundation
+
+/// Логгер
+public protocol RestLogger: Sendable {
+    
+    func log(_ restLog: RestLog, with shouldSanitazedBody: Bool, from initiator: String)
+}
+
+/// Логирование сетевых ответов
+public protocol RestLog: CustomCURLStringConvertible {
+    
+    /// Метрики запроса
+    var transactionMetrics: URLSessionTaskTransactionMetrics? { get }
+    
+    /// Запрос
+    var request: URLRequest? { get }
+    
+    /// Ответ
+    var response: HTTPURLResponse? { get }
+    
+    /// Возвращаемые данные
+    var data: Data? { get }
+    
+    /// Описание ответа
+    var responseDescription: String { get }
+}
 
 /// Логирование сетевых запросов
 public protocol RequestLog: CustomCURLStringConvertible {
@@ -52,81 +78,19 @@ public protocol NetworkLogger: Sendable {
 // Объект реализующий логирование Network клиента
 public final class NetworkInformant: Sendable {
 
-    private let tag = "Network"
-    private let logger: NetworkLogger
+    private let initiator: String
+    private let logger: RestLogger
+    private let shouldSanitazedBody: Bool
 
-    public init(logger: NetworkLogger) {
+    public init(initiator: String,
+                logger: RestLogger,
+                shouldSanitazedBody: Bool) {
         self.logger = logger
-    }
-
-    public func log(request: RequestLog,
-                    _ file: StaticString = #file,
-                    _ function: StaticString = #function,
-                    _ line: Int = #line) {
-        logger.debug(with: tag, """
-        Sending request {
-            Description: \n\t\(request.requestDescription)
-            CURL: \n\t\(request.curl)
-        }
-        """, file, function, line)
-    }
-
-    public func log(response: ResponseLog,
-                    _ file: StaticString = #file,
-                    _ function: StaticString = #function,
-                    _ line: Int = #line) {
-        logger.debug(with: tag, """
-        Received response {
-            Description: \n\t\(response.responseDescription)
-            CURL: \n\t\(response.curl)
-
-        }
-        """, file, function, line)
+        self.initiator = initiator
+        self.shouldSanitazedBody = shouldSanitazedBody
     }
     
-    public func logError(response: ResponseLog,
-                         _ file: StaticString = #file,
-                         _ function: StaticString = #function,
-                         _ line: Int = #line) {
-        logger.error(with: tag, """
-        Received response {
-            Description: \n\t\(response.responseDescription)
-            CURL: \n\t\(response.curl)
-        
-        }
-        """, file, function, line)
-    }
-
-    public func cancel(request: RequestLog,
-                       _ file: StaticString = #file,
-                       _ function: StaticString = #function,
-                       _ line: Int = #line) {
-        logger.debug(with: tag, """
-        Cancel request {
-            Description: \n\t\(request.requestDescription)
-            CURL: \n\t\(request.curl)
-        }
-        """, file, function, line)
-    }
-    
-    public func log(json data: Data,
-                    _ file: StaticString = #file,
-                    _ function: StaticString = #function,
-                    _ line: Int = #line) {
-        logger.json(with: "JSONDebug", data, file, function, line)
-    }
-
-    public func log(debug message: @autoclosure () -> Any,
-                    _ file: StaticString = #file,
-                    _ function: StaticString = #function,
-                    _ line: Int = #line) {
-        logger.debug(with: "Debug", message(), file, function, line)
-    }
-
-    public func log(error message: @autoclosure () -> Any,
-                    _ file: StaticString = #file,
-                    _ function: StaticString = #function,
-                    _ line: Int = #line) {
-        logger.error(with: "Error", message(), file, function, line)
+    func log(_ restLog: RestLog) {
+        logger.log(restLog, with: shouldSanitazedBody, from: initiator)
     }
 }

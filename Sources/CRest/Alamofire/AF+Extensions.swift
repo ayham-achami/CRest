@@ -5,6 +5,14 @@
 import Alamofire
 import Foundation
 
+// MARK: - DataResponse + RestLog
+extension Alamofire.DataResponse: RestLog {
+    
+    public var transactionMetrics: URLSessionTaskTransactionMetrics? {
+        metrics?.transactionMetrics.first(where: { $0.request.url == request?.url })
+    }
+}
+
 // MARK: - DataResponse + ResponseLog
 extension Alamofire.DataResponse: ResponseLog {
 
@@ -26,6 +34,18 @@ extension Alamofire.Request: RequestLog {
 
     public var curl: String {
         cURLDescription()
+    }
+}
+
+// MARK: - DownloadResponse + RestLog
+extension Alamofire.AFDownloadResponse: RestLog {
+    
+    public var transactionMetrics: URLSessionTaskTransactionMetrics? {
+        metrics?.transactionMetrics.first(where: { $0.request.url == request?.url })
+    }
+    
+    public var data: Data? {
+        nil
     }
 }
 
