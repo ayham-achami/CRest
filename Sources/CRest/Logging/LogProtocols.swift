@@ -41,23 +41,3 @@ extension URLRequest: CustomCURLStringConvertible {
         return components.joined(separator: " \\\n\t")
     }
 }
-
-// MARK: - URLRequest + RequestLog
-extension URLRequest: RequestLog {
-
-    public var requestDescription: String {
-        debugDescription
-    }
-}
-
-// MARK: - URLResponse + ResponseLog
-extension URLResponse: ResponseLog {
-
-    public var responseDescription: String {
-        debugDescription
-    }
-
-    public var curl: String {
-        "$ curl command could not be created"
-    }
-}

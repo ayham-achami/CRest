@@ -8,37 +8,29 @@ import Foundation
 // MARK: - DataResponse + RestLog
 extension Alamofire.DataResponse: RestLog {
     
+    public var responseDescription: String {
+        debugDescription
+    }
+    
+    public var curl: String {
+        request?.curl ?? "Undefined"
+    }
+    
     public var transactionMetrics: URLSessionTaskTransactionMetrics? {
         metrics?.transactionMetrics.first(where: { $0.request.url == request?.url })
     }
 }
 
-// MARK: - DataResponse + ResponseLog
-extension Alamofire.DataResponse: ResponseLog {
-
+// MARK: - DownloadResponse + RestLog
+extension Alamofire.AFDownloadResponse: RestLog {
+    
     public var responseDescription: String {
         debugDescription
     }
-
+    
     public var curl: String {
         request?.curl ?? "Undefined"
     }
-}
-
-// MARK: - Request + RequestLog
-extension Alamofire.Request: RequestLog {
-
-    public var requestDescription: String {
-        description
-    }
-
-    public var curl: String {
-        cURLDescription()
-    }
-}
-
-// MARK: - DownloadResponse + RestLog
-extension Alamofire.AFDownloadResponse: RestLog {
     
     public var transactionMetrics: URLSessionTaskTransactionMetrics? {
         metrics?.transactionMetrics.first(where: { $0.request.url == request?.url })
@@ -46,18 +38,6 @@ extension Alamofire.AFDownloadResponse: RestLog {
     
     public var data: Data? {
         nil
-    }
-}
-
-// MARK: - DownloadResponse + ResponseLog
-extension Alamofire.AFDownloadResponse: ResponseLog {
-
-    public var responseDescription: String {
-        debugDescription
-    }
-
-    public var curl: String {
-        request?.curl ?? "Undefined"
     }
 }
 

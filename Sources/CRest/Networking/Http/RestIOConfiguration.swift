@@ -25,8 +25,8 @@ public protocol RestIOConfiguration: Sendable {
     /// Объект конфигурации, который определяет поведение и политики для сеанса URL
     var sessionConfiguration: URLSessionConfiguration? { get }
 
-    /// Объект реализующий логирование Network клиента
-    var informant: NetworkInformant { get }
+    /// Объект реализующий логирование сетевого клиента
+    var logger: RestLogger { get }
     
     /// Оценщик доверии к серверу
     var trustEvaluator: TrustEvaluator? { get }

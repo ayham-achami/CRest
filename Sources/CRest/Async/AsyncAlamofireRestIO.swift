@@ -51,7 +51,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         let response = await requester
             .serializingResponse(using: ResponseSerializerWrapper<Response>(request))
             .response
-        configuration.informant.log(response)
+        configuration.logger.log(response)
         switch response.result {
         case let .success(model):
             return .init(model, response.response)
@@ -69,7 +69,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         let downloadResponse = await downloader
             .serializingDownload(using: ResponseSerializerWrapper<Response>(request))
             .response
-        configuration.informant.log(downloadResponse)
+        configuration.logger.log(downloadResponse)
         switch downloadResponse.result {
         case .success(let model):
             return model
@@ -87,7 +87,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         let uploadResponse = await uploader
             .serializingResponse(using: ResponseSerializerWrapper<Response>(request))
             .response
-        configuration.informant.log(uploadResponse)
+        configuration.logger.log(uploadResponse)
         switch uploadResponse.result {
         case .success(let model):
             return model
