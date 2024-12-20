@@ -8,7 +8,11 @@ import Foundation
 /// Логгер
 public protocol RestLoggerProtocol: Sendable {
     
-    func log(_ restLog: RestLog, with shouldSanitazedBody: Bool, from initiator: String)
+    /// Логирование запроса на уровне дебаг
+    /// - Parameters:
+    ///   - log: Данные лога
+    ///   - configuration: Конфигурация
+    func debug(_ log: RestLog, with configuration: LoggerConfiguration)
 }
 
 /// Логирование сетевых ответов
@@ -30,22 +34,33 @@ public protocol RestLog: CustomCURLStringConvertible {
     var responseDescription: String { get }
 }
 
-// Объект реализующий логирование сетевого клиента
-public struct RestLogger: Sendable {
-
-    private let initiator: String
-    private let logger: RestLoggerProtocol
-    private let shouldSanitazedBody: Bool
-
-    public init(initiator: String,
-                logger: RestLoggerProtocol,
-                shouldSanitazedBody: Bool) {
-        self.logger = logger
+/// Конфигурация логгера
+public struct LoggerConfiguration {
+    
+    /// Инициатор логирования
+    public let initiator: String
+    /// Флаг необходимости очистить тело запроса
+    public let shouldSanitazedBody: Bool
+    
+    public init(initiator: String, shouldSanitazedBody: Bool) {
         self.initiator = initiator
         self.shouldSanitazedBody = shouldSanitazedBody
     }
+}
+
+// Объект реализующий логирование сетевого клиента
+public struct RestLogger: Sendable {
+
+    private let logger: RestLoggerProtocol
+    private let configuration: LoggerConfiguration
+
+    public init(logger: RestLoggerProtocol,
+                configuration: LoggerConfiguration) {
+        self.logger = logger
+        self.configuration = configuration
+    }
     
-    func log(_ restLog: RestLog) {
-        logger.log(restLog, with: shouldSanitazedBody, from: initiator)
+    func debug(_ log: RestLog) {
+        logger.debug(log, with: configuration)
     }
 }

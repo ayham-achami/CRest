@@ -44,7 +44,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
         let requester = IO.with(session).dataRequest(for: request)
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response in
-                self?.configuration.logger.log(response)
+                self?.configuration.logger.debug(response)
                 switch response.result {
                 case let .success(model):
                     return model
@@ -59,7 +59,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
         let requester = IO.with(session).dataRequest(for: request)
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response in
-                self?.configuration.logger.log(response)
+                self?.configuration.logger.debug(response)
                 switch response.result {
                 case let .success(model):
                     return .init(model, response.response)
@@ -75,7 +75,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
         let downloader = IO.with(session).downloadRequest(for: request, into: destination)
         let responsePublisher = downloader.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response -> Response in
-                self?.configuration.logger.log(response)
+                self?.configuration.logger.debug(response)
                 switch response.result {
                 case let .success(model):
                     return model
@@ -100,7 +100,7 @@ public final class CombineAlamofireRestIO: CombineRestIO {
         let responsePublisher = uploader
             .publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response -> Response in
-                self?.configuration.logger.log(response)
+                self?.configuration.logger.debug(response)
                 switch response.result {
                 case let .success(model):
                     return model
