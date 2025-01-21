@@ -42,17 +42,13 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     public func perform<Response>(_ request: DynamicRequest,
                                   response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
-        configuration.informant.log(request: requester)
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response in
-                self?.configuration.informant.log(response: response)
+                self?.configuration.logger.debug(response)
                 switch response.result {
                 case let .success(model):
-                    self?.configuration.informant.log(response: response)
                     return model
                 case let .failure(error):
-                    self?.configuration.informant.log(error: error)
-                    self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode, responseData: response.data)
                 }
             }.eraseToAnyPublisher()
@@ -61,16 +57,13 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     public func dynamicPerform<Response>(_ request: DynamicRequest,
                                          response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response {
         let requester = IO.with(session).dataRequest(for: request)
-        configuration.informant.log(request: requester)
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response in
+                self?.configuration.logger.debug(response)
                 switch response.result {
                 case let .success(model):
-                    self?.configuration.informant.log(response: response)
                     return .init(model, response.response)
                 case let .failure(error):
-                    self?.configuration.informant.log(error: error)
-                    self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode, responseData: response.data)
                 }
             }.eraseToAnyPublisher()
@@ -80,16 +73,13 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                                    with request: DynamicRequest,
                                    response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
         let downloader = IO.with(session).downloadRequest(for: request, into: destination)
-        configuration.informant.log(request: downloader)
         let responsePublisher = downloader.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response -> Response in
+                self?.configuration.logger.debug(response)
                 switch response.result {
                 case let .success(model):
-                    self?.configuration.informant.log(response: response)
                     return model
                 case let .failure(error):
-                    self?.configuration.informant.log(error: error)
-                    self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode)
                 }
             }
@@ -107,17 +97,14 @@ public final class CombineAlamofireRestIO: CombineRestIO {
                                  with request: DynamicRequest,
                                  response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
         let uploader = IO.with(session).uploadRequest(for: request, from: source)
-        configuration.informant.log(request: uploader)
         let responsePublisher = uploader
             .publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response -> Response in
+                self?.configuration.logger.debug(response)
                 switch response.result {
                 case let .success(model):
-                    self?.configuration.informant.log(response: response)
                     return model
                 case let .failure(error):
-                    self?.configuration.informant.log(error: error)
-                    self?.configuration.informant.logError(response: response)
                     throw error.reason(with: response.response?.statusCode)
                 }
             }
@@ -129,18 +116,6 @@ public final class CombineAlamofireRestIO: CombineRestIO {
             }
         }
         return .init(response: responsePublisher.eraseToAnyPublisher(), progress: progressSubject.eraseToAnyPublisher())
-    }
-}
-
-// MARK: - NetworkInformant + Concurrency
-private extension NetworkInformant {
-    
-    /// Логировать описание запроса
-    /// - Parameter request: Запрос
-    func log(request: Alamofire.Request) {
-        request.onURLRequestCreation { [weak self] request in
-            self?.log(request: request)
-        }
     }
 }
 #endif

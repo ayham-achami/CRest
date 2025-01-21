@@ -5,39 +5,39 @@
 import Alamofire
 import Foundation
 
-// MARK: - DataResponse + ResponseLog
-extension Alamofire.DataResponse: ResponseLog {
-
+// MARK: - DataResponse + RestLog
+extension Alamofire.DataResponse: RestLog {
+    
     public var responseDescription: String {
         debugDescription
     }
-
+    
     public var curl: String {
         request?.curl ?? "Undefined"
     }
-}
-
-// MARK: - Request + RequestLog
-extension Alamofire.Request: RequestLog {
-
-    public var requestDescription: String {
-        description
-    }
-
-    public var curl: String {
-        cURLDescription()
+    
+    public var transactionMetrics: URLSessionTaskTransactionMetrics? {
+        metrics?.transactionMetrics.first(where: { $0.request.url == request?.url })
     }
 }
 
-// MARK: - DownloadResponse + ResponseLog
-extension Alamofire.AFDownloadResponse: ResponseLog {
-
+// MARK: - DownloadResponse + RestLog
+extension Alamofire.AFDownloadResponse: RestLog {
+    
     public var responseDescription: String {
         debugDescription
     }
-
+    
     public var curl: String {
         request?.curl ?? "Undefined"
+    }
+    
+    public var transactionMetrics: URLSessionTaskTransactionMetrics? {
+        metrics?.transactionMetrics.first(where: { $0.request.url == request?.url })
+    }
+    
+    public var data: Data? {
+        nil
     }
 }
 
