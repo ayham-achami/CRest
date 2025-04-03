@@ -23,6 +23,7 @@ extension AuthenticationInterceptor: IOSessionInterceptor {}
 extension RestIOSession {
     
     static var bearerAuthentication: IOSessionInterceptor?
+    static var secondaryBearerAuthentication: IOSessionInterceptor?
     static var handshakeAuthentication: IOSessionInterceptor?
     
     /// Возвращает сессионный интерцептор
