@@ -24,6 +24,9 @@ public protocol RestIOConfiguration: Sendable {
 
     /// Объект конфигурации, который определяет поведение и политики для сеанса URL
     var sessionConfiguration: URLSessionConfiguration? { get }
+    
+    /// Хранилище для кук, используемое в REST-клиенте
+    var cookieStorage: HTTPCookieStorage? { get }
 
     /// Объект реализующий логирование сетевого клиента
     var logger: RestLogger { get }
@@ -48,6 +51,8 @@ public protocol RestIOConfiguration: Sendable {
 public extension RestIOConfiguration {
 
     var sessionConfiguration: URLSessionConfiguration? { nil }
+    
+    var cookieStorage: HTTPCookieStorage? { nil }
 
     var allHostsMustBeEvaluated: Bool { false }
     
