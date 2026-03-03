@@ -46,9 +46,9 @@ extension DynamicRequest {
     }
     
     private func wrapping(bearer: IOBearerAuthenticator) -> RequestInterceptor {
-        AuthenticationInterceptor<BearerAuthAuthentificatorWrapper>(
-            authenticator: BearerAuthAuthentificatorWrapper(bearer),
-            credential: BearerAuthAuthentificatorWrapper.CredentialWrapper(
+        AuthenticationInterceptor<BearerAuthAuthenticatorWrapper>(
+            authenticator: BearerAuthAuthenticatorWrapper(bearer),
+            credential: BearerAuthAuthenticatorWrapper.CredentialWrapper(
                 bearer.provider.credential,
                 isValidatedCredential: { [weak bearer] credential in
                     bearer?.provider.isValidated(credential: credential) ?? false

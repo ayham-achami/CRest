@@ -82,6 +82,32 @@ public enum RestIOSession {
         }
     }
     
+    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при
+    /// повторном вызове возвращается тоже объектов, что было создано до этого
+    /// - Parameter bearer: Контроля статус авторизации по Cookie
+    /// - Returns: `IOSessionInterceptor`
+    static public func interceptor(cookies: IOCookiesAuthenticator) -> IOSessionInterceptor {
+        if let cookiesAuthentication {
+            return cookiesAuthentication
+        } else {
+            let cookiesAuthentication = create(cookies: cookies)
+            Self.cookiesAuthentication = cookiesAuthentication
+            return cookiesAuthentication
+        }
+    }
+    
+    static public func interceptor(orchestrator: IOAuthOrchestrator,
+                                   bearer: IOBearerAuthenticator,
+                                   cookies: IOCookiesAuthenticator) -> IOSessionInterceptor {
+        if let authAuthentication {
+            return authAuthentication
+        } else {
+            let authAuthentication = create(orchestrator: orchestrator, bearer: bearer, cookies: cookies)
+            Self.authAuthentication = authAuthentication
+            return authAuthentication
+        }
+    }
+    
     /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при 
     /// повторном вызове возвращается тоже объектов, что было создано до этого
     /// - Parameter handshake: Авторизации на уровне рукопожатия
