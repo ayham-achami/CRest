@@ -21,7 +21,7 @@ public protocol CookiesCredential: Sendable {
 }
 
 /// Учетные данные аутентификации
-public protocol CookiesCredentialProvider {
+public protocol CookiesCredentialProvider: Sendable {
     
     /// Хранилище Cookies
     var storage: HTTPCookieStorage { get }
@@ -49,7 +49,7 @@ public protocol CookiesCredentialProvider {
 }
 
 /// Протокол контроля статус авторизации по Cookies
-public protocol IOCookiesAuthenticator: IOPathsAuthenticator {
+public protocol IOCookiesAuthenticator: Sendable, IOPathsAuthenticator {
     
     /// Провайдер Cookies
     var provider: CookiesCredentialProvider { get }
