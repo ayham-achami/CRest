@@ -4,6 +4,16 @@
 
 import Foundation
 
+/// Протокол контроля статус авторизации
+public protocol IOPathsAuthenticator: AnyObject, IOInterceptor {
+    
+    /// Пути для обновлений
+    var refreshPaths: [String] { get }
+    
+    /// Кода ошибок требующие повторной авторизации
+    var refreshStatusCodes: [Int] { get }
+}
+
 /// Авторизации по Cookies
 public protocol CookiesCredential: Sendable {
     
@@ -11,7 +21,7 @@ public protocol CookiesCredential: Sendable {
 }
 
 /// Учетные данные аутентификации
-public protocol CookiesCredentialProvider: Sendable {
+public protocol CookiesCredentialProvider {
     
     /// Хранилище Cookies
     var storage: HTTPCookieStorage { get }
@@ -27,10 +37,19 @@ public protocol CookiesCredentialProvider: Sendable {
     /// Запрос обновления учетных данных аутентификации
     /// - Returns: `BearerCredential`
     func refresh() async throws -> any CookiesCredential
+    
+    /// Проверить, совпадают ли используемые учетные данные с данными в хранилище приложения.
+    /// - Parameter credential: Учетные данные аутентификатора
+    /// - Returns: Учетные данные из хранилища приложения nil если совпадают
+    func match(_ credential: any CookiesCredential) throws -> (any CookiesCredential)?
+    
+    /// Обработать ошибку
+    /// - Parameter error: Ошибка
+    func handle(_ error: Error)
 }
 
 /// Протокол контроля статус авторизации по Cookies
-public protocol IOCookiesAuthenticator: Sendable, IOAuthenticator {
+public protocol IOCookiesAuthenticator: IOPathsAuthenticator {
     
     /// Провайдер Cookies
     var provider: CookiesCredentialProvider { get }
