@@ -27,19 +27,28 @@ struct InterceptorWrapper: RequestInterceptor {
     
     func retry(_ request: Alamofire.Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         if let urlRequest = request.request, let httpResponse = request.response {
-            let result = interceptor.retry(urlRequest, httpResponse, request.retryCount, dueTo: error)
-            switch result {
-            case .omit:
+            if is401Error(request) {
+                interceptor.handleUnauthorized(request)
                 completion(.doNotRetry)
-            case .retry:
-                completion(.retry)
-            case .drop(let error):
-                completion(.doNotRetryWithError(error))
-            case .delay(let timeInterval):
-                completion(.retryWithDelay(timeInterval))
+            } else {
+                let result = interceptor.retry(urlRequest, httpResponse, request.retryCount, dueTo: error)
+                switch result {
+                case .omit:
+                    completion(.doNotRetry)
+                case .retry:
+                    completion(.retry)
+                case .drop(let error):
+                    completion(.doNotRetryWithError(error))
+                case .delay(let timeInterval):
+                    completion(.retryWithDelay(timeInterval))
+                }
             }
         } else {
             completion(.doNotRetry)
         }
+    }
+    
+    private func is401Error(_ request: Alamofire.Request) -> Bool {
+        request.response?.statusCode == 401
     }
 }

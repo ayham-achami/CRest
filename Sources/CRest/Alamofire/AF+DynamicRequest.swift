@@ -38,6 +38,8 @@ extension DynamicRequest {
             return wrapping(bearer: authenticator)
         case let authenticator as IOHandshakeAuthenticator:
             return wrapping(encryptor: authenticator)
+        case let authenticator as IOCookiesAuthenticator:
+            return wrapping(cookies: authenticator)
         case let requestInterceptor as RequestInterceptor:
             return requestInterceptor
         default:
@@ -66,6 +68,17 @@ extension DynamicRequest {
                     encryptor?.provider.isValidated(credential: session) ?? false
                 }
             )
+        )
+    }
+    
+    private func wrapping(cookies: IOCookiesAuthenticator) -> RequestInterceptor {
+        AuthenticationInterceptor<CookiesAuthenticatorWrapper>(
+            authenticator: CookiesAuthenticatorWrapper(cookies),
+            credential: CookiesAuthenticatorWrapper.Credential(
+                cookies.provider.credential,
+                isValidatedCredential: { [weak cookies] credential in
+                    cookies?.provider.isValidated(credential: credential) ?? false
+                })
         )
     }
     

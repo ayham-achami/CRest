@@ -23,9 +23,6 @@ public protocol CookiesCredential: Sendable {
 /// Учетные данные аутентификации
 public protocol CookiesCredentialProvider: Sendable {
     
-    /// Хранилище Cookies
-    var storage: HTTPCookieStorage { get }
-    
     /// Учетные данные аутентификации
     var credential: any CookiesCredential { get }
     
@@ -43,9 +40,11 @@ public protocol CookiesCredentialProvider: Sendable {
     /// - Returns: Учетные данные из хранилища приложения nil если совпадают
     func match(_ credential: any CookiesCredential) throws -> (any CookiesCredential)?
     
-    /// Обработать ошибку
-    /// - Parameter error: Ошибка
-    func handle(_ error: Error)
+    /// Определяет, аутентифицирован ли URLRequest с помощью учетных данных
+    /// - Parameters:
+    ///   - urlRequest: URLRequest
+    ///   - credential: Учетные данные
+    func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: CookiesCredential) -> Bool
 }
 
 /// Протокол контроля статус авторизации по Cookies

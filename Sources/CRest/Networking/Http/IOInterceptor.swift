@@ -2,6 +2,7 @@
 //  IOInterceptor.swift
 //
 
+import Alamofire
 import Foundation
 
 /// Повторить ли запрос 
@@ -185,8 +186,22 @@ public extension IORequestRetrier {
     }
 }
 
+/// Протокол для обработки 401  ошибок
+public protocol IOUnauthorizedHandler: Sendable {
+    
+    /// Вызывается при получении 401 ошибки
+    /// - Parameter request: Запрос
+    func handleUnauthorized(_ request: Alamofire.Request)
+}
+
+// MARK: - IOUnauthorizedHandler + Default
+public extension IOUnauthorizedHandler {
+    
+    func handleUnauthorized(_ request: Alamofire.Request) {}
+}
+
 /// Протокол модификации запроса
-public protocol IOInterceptor: IORequestAdapter, IORequestRetrier {}
+public protocol IOInterceptor: IORequestAdapter, IORequestRetrier, IOUnauthorizedHandler {}
 
 /// Перехватчик по умолчанию
 @frozen public struct DefaultInterceptor: IOInterceptor {

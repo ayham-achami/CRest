@@ -43,8 +43,6 @@ final class CookiesAuthenticatorWrapper: Authenticator {
             authenticator.refreshStatusCodes.contains(response.statusCode),
             !authenticator.refreshPaths.contains(where: { url.lastPathComponent.contains($0) })
         else { return false }
-        
-        authenticator.provider.handle(error)
         return true
     }
     
@@ -84,6 +82,6 @@ final class CookiesAuthenticatorWrapper: Authenticator {
     }
     
     func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: CredentialWrapper) -> Bool {
-        authenticator.provider.storage.cookies == credential.cookies
+        authenticator.provider.isRequest(urlRequest, authenticatedWith: credential)
     }
 }
