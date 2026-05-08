@@ -29,19 +29,17 @@ struct InterceptorWrapper: RequestInterceptor {
         if let urlRequest = request.request, let httpResponse = request.response {
             if is401Error(request) {
                 interceptor.handleUnauthorized(request)
+            }
+            let result = interceptor.retry(urlRequest, httpResponse, request.retryCount, dueTo: error)
+            switch result {
+            case .omit:
                 completion(.doNotRetry)
-            } else {
-                let result = interceptor.retry(urlRequest, httpResponse, request.retryCount, dueTo: error)
-                switch result {
-                case .omit:
-                    completion(.doNotRetry)
-                case .retry:
-                    completion(.retry)
-                case .drop(let error):
-                    completion(.doNotRetryWithError(error))
-                case .delay(let timeInterval):
-                    completion(.retryWithDelay(timeInterval))
-                }
+            case .retry:
+                completion(.retry)
+            case .drop(let error):
+                completion(.doNotRetryWithError(error))
+            case .delay(let timeInterval):
+                completion(.retryWithDelay(timeInterval))
             }
         } else {
             completion(.doNotRetry)
