@@ -29,6 +29,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         let sessionConfiguration = configuration.sessionConfiguration ?? URLSessionConfiguration.af.default
         sessionConfiguration.httpCookieStorage = configuration.cookieStorage
         sessionConfiguration.httpShouldSetCookies = configuration.cookieStorage != nil
+        sessionConfiguration.urlCredentialStorage = configuration.credentialStorage ?? URLCredentialStorage.shared
         self.session = Session(configuration: sessionConfiguration,
                                rootQueue: networkQueue,
                                requestQueue: requestsQueue,
