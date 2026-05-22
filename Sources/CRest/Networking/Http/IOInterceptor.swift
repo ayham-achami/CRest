@@ -174,13 +174,13 @@ public protocol IORequestRetrier: Sendable {
     ///   - retryCount: Количества повторения
     ///   - error: Ошибка
     /// - Returns: `IORetry`
-    func retry(_ request: URLRequest, _ response: HTTPURLResponse, _ retryCount: Int, dueTo error: Error) -> IORetry
+    func retry(_ request: URLRequest, _ response: HTTPURLResponse?, _ retryCount: Int, dueTo error: Error) -> IORetry
 }
 
 // MARK: - IORequestRetrier + Default
 public extension IORequestRetrier {
     
-    func retry(_ request: URLRequest, _ response: HTTPURLResponse, _ retryCount: Int, dueTo error: Error) -> IORetry {
+    func retry(_ request: URLRequest, _ response: HTTPURLResponse?, _ retryCount: Int, dueTo error: Error) -> IORetry {
         .omit
     }
 }

@@ -26,8 +26,8 @@ struct InterceptorWrapper: RequestInterceptor {
     }
     
     func retry(_ request: Alamofire.Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        if let urlRequest = request.request, let httpResponse = request.response {
-            let result = interceptor.retry(urlRequest, httpResponse, request.retryCount, dueTo: error)
+        if let urlRequest = request.request {
+            let result = interceptor.retry(urlRequest, request.response, request.retryCount, dueTo: error)
             switch result {
             case .omit:
                 completion(.doNotRetry)

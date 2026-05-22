@@ -25,7 +25,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/realm/SwiftLint", from: "0.55.1"),
         .package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.2"),
-        .package(url: "https://github.com/Alamofire/Alamofire.git", exact: "5.10.1")
+        .package(url: "https://github.com/Alamofire/Alamofire.git", exact: "5.12.0")
     ],
     targets: [
         .macro(
