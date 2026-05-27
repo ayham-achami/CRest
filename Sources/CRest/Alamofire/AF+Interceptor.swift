@@ -26,11 +26,11 @@ struct InterceptorWrapper: RequestInterceptor {
     }
     
     func retry(_ request: Alamofire.Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        if let urlRequest = request.request, let httpResponse = request.response {
+        if let urlRequest = request.request {
             if is401Error(request) {
                 interceptor.handleUnauthorized(request)
             }
-            let result = interceptor.retry(urlRequest, httpResponse, request.retryCount, dueTo: error)
+            let result = interceptor.retry(urlRequest, request.response, request.retryCount, dueTo: error)
             switch result {
             case .omit:
                 completion(.doNotRetry)
