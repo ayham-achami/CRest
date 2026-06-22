@@ -36,9 +36,9 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
             !isValidatedCredential(self)
         }
         
-        private let isValidatedCredential: (any HandshakeSession) -> Bool
+        private let isValidatedCredential: @Sendable (any HandshakeSession) -> Bool
         
-        init(_ session: any HandshakeSession, isValidatedCredential: @escaping (any HandshakeSession) -> Bool) {
+        init(_ session: any HandshakeSession, isValidatedCredential: @escaping @Sendable (any HandshakeSession) -> Bool) {
             self.session = session
             self.isValidatedCredential = isValidatedCredential
         }

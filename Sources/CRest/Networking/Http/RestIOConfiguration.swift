@@ -101,15 +101,22 @@ public enum RestIOSession {
         }
     }
     
+    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при
+    /// повторном вызове возвращает тот же объект, что был создан до этого
+    /// - Parameters:
+    ///   - orchestrator: Оркестратор авторизации
+    ///   - bearer: Аутентификатор использующий BearerToken
+    ///   - cookies: Аутентификатор использующий Cookies
+    /// - Returns: `IOSessionInterceptor`
     static public func interceptor(orchestrator: IOAuthOrchestrator,
                                    bearer: IOBearerAuthenticator,
                                    cookies: IOCookiesAuthenticator) -> IOSessionInterceptor {
-        if let authAuthentication {
-            return authAuthentication
+        if let authStrategyAuthentication {
+            return authStrategyAuthentication
         } else {
-            let authAuthentication = create(orchestrator: orchestrator, bearer: bearer, cookies: cookies)
-            Self.authAuthentication = authAuthentication
-            return authAuthentication
+            let authStrategyAuthentication = create(orchestrator: orchestrator, bearer: bearer, cookies: cookies)
+            Self.authStrategyAuthentication = authStrategyAuthentication
+            return authStrategyAuthentication
         }
     }
     

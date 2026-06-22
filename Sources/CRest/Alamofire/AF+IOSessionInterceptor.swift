@@ -22,10 +22,10 @@ extension AuthenticationInterceptor: IOSessionInterceptor {}
 // MARK: - RestIOSession
 extension RestIOSession {
     
-    static var authAuthentication: IOSessionInterceptor?
     static var bearerAuthentication: IOSessionInterceptor?
     static var cookiesAuthentication: IOSessionInterceptor?
     static var handshakeAuthentication: IOSessionInterceptor?
+    static var authStrategyAuthentication: IOSessionInterceptor?
     
     /// Возвращает сессионный интерцептор
     /// - Parameters:
@@ -77,7 +77,7 @@ extension RestIOSession {
     }
     
     /// Возвращает сессионный интерцептор
-    /// - Parameter bearer: Контроля статус авторизации по Cookies
+    /// - Parameter cookies: Аутентификатор использующий Cookies
     /// - Returns: `AuthenticationInterceptor<CookiesAuthenticatorWrapper>`
     static func create(cookies: IOCookiesAuthenticator) -> IOSessionInterceptor {
         AuthenticationInterceptor<CookiesAuthenticatorWrapper>(

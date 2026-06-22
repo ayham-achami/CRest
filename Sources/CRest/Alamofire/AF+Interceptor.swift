@@ -14,7 +14,7 @@ struct InterceptorWrapper: RequestInterceptor {
         self.interceptor = interceptor
     }
     
-    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping @Sendable (Result<URLRequest, Error>) -> Void) {
         interceptor.adapt(.init(request: urlRequest)) { result in
             switch result {
             case let .success(adapted):

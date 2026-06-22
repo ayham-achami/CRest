@@ -21,9 +21,9 @@ final class BearerAuthAuthenticatorWrapper: Authenticator {
             !isValidatedCredential(self)
         }
         
-        private let isValidatedCredential: (any BearerCredential) -> Bool
+        private let isValidatedCredential: @Sendable (any BearerCredential) -> Bool
         
-        init(_ credential: any BearerCredential, isValidatedCredential: @escaping (any BearerCredential) -> Bool) {
+        init(_ credential: any BearerCredential, isValidatedCredential: @escaping @Sendable (any BearerCredential) -> Bool) {
             self.credential = credential
             self.isValidatedCredential = isValidatedCredential
         }

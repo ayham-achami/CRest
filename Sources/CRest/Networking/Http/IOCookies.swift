@@ -32,7 +32,7 @@ public protocol CookiesCredentialProvider: Sendable {
     func isValidated(credential: any CookiesCredential) -> Bool
     
     /// Запрос обновления учетных данных аутентификации
-    /// - Returns: `BearerCredential`
+    /// - Returns: `CookiesCredential`
     func refresh() async throws -> any CookiesCredential
     
     /// Проверить, совпадают ли используемые учетные данные с данными в хранилище приложения.
