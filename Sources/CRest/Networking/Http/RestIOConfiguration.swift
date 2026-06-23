@@ -27,6 +27,9 @@ public protocol RestIOConfiguration: Sendable {
     
     /// Хранилище учетных данных
     var credentialStorage: URLCredentialStorage? { get }
+    
+    /// Хранилище для кук, используемое в REST-клиенте
+    var cookieStorage: HTTPCookieStorage? { get }
 
     /// Объект реализующий логирование сетевого клиента
     var logger: RestLogger { get }
@@ -53,6 +56,8 @@ public extension RestIOConfiguration {
     var sessionConfiguration: URLSessionConfiguration? { nil }
     
     var credentialStorage: URLCredentialStorage? { nil }
+    
+    var cookieStorage: HTTPCookieStorage? { nil }
 
     var allHostsMustBeEvaluated: Bool { false }
     
@@ -79,6 +84,39 @@ public enum RestIOSession {
             let bearerAuthentication = create(bearer: bearer)
             Self.bearerAuthentication = bearerAuthentication
             return bearerAuthentication
+        }
+    }
+    
+    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при
+    /// повторном вызове возвращается тоже объектов, что было создано до этого
+    /// - Parameter bearer: Контроля статус авторизации по Cookie
+    /// - Returns: `IOSessionInterceptor`
+    static public func interceptor(cookies: IOCookiesAuthenticator) -> IOSessionInterceptor {
+        if let cookiesAuthentication {
+            return cookiesAuthentication
+        } else {
+            let cookiesAuthentication = create(cookies: cookies)
+            Self.cookiesAuthentication = cookiesAuthentication
+            return cookiesAuthentication
+        }
+    }
+    
+    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при
+    /// повторном вызове возвращает тот же объект, что был создан до этого
+    /// - Parameters:
+    ///   - orchestrator: Оркестратор авторизации
+    ///   - bearer: Аутентификатор использующий BearerToken
+    ///   - cookies: Аутентификатор использующий Cookies
+    /// - Returns: `IOSessionInterceptor`
+    static public func interceptor(orchestrator: IOAuthOrchestrator,
+                                   bearer: IOBearerAuthenticator,
+                                   cookies: IOCookiesAuthenticator) -> IOSessionInterceptor {
+        if let authStrategyAuthentication {
+            return authStrategyAuthentication
+        } else {
+            let authStrategyAuthentication = create(orchestrator: orchestrator, bearer: bearer, cookies: cookies)
+            Self.authStrategyAuthentication = authStrategyAuthentication
+            return authStrategyAuthentication
         }
     }
     

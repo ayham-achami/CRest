@@ -15,7 +15,7 @@ public protocol IOAuthenticator: AnyObject, IOInterceptor {
 }
 
 /// Авторизации по BearerToken
-public protocol BearerCredential: Equatable {
+public protocol BearerCredential: Equatable, Sendable {
     
     /// Токен
     var access: String { get }

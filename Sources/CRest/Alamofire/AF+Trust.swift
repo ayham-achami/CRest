@@ -62,7 +62,7 @@ extension RestIOConfiguration {
 }
 
 // MARK: - EvaluatorManager
-private final class EvaluatorManager: ServerTrustManager {
+private final class EvaluatorManager: ServerTrustManager, @unchecked Sendable {
     
     private let wrapper: TrustEvaluatorWrapper
     

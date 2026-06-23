@@ -38,7 +38,7 @@ extension AnyDecodable {
     
     public let base: Sendable
     
-    public init<Base>(_ base: Base?) {
+    public init<Base: Sendable>(_ base: Base?) {
         self.base = base ?? ()
     }
 }
