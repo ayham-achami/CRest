@@ -39,12 +39,6 @@ public protocol CookiesCredentialProvider: Sendable {
     /// - Parameter credential: Учетные данные аутентификатора
     /// - Returns: Учетные данные из хранилища приложения nil если совпадают
     func match(_ credential: any CookiesCredential) throws -> (any CookiesCredential)?
-    
-    /// Определяет, аутентифицирован ли URLRequest с помощью учетных данных
-    /// - Parameters:
-    ///   - urlRequest: URLRequest
-    ///   - credential: Учетные данные
-    func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: CookiesCredential) -> Bool
 }
 
 /// Протокол контроля статус авторизации по Cookies
