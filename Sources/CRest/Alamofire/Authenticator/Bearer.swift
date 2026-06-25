@@ -33,6 +33,12 @@ final class BearerAuthAuthenticatorWrapper: Authenticator {
     
     let authenticator: IOBearerAuthenticator
     
+    var credential: CredentialWrapper {
+        .init(authenticator.provider.credential) { [weak authenticator] credential in
+            authenticator?.provider.isValidated(credential: credential) ?? false
+        }
+    }
+    
     init(_ authenticator: IOBearerAuthenticator) {
         self.authenticator = authenticator
     }

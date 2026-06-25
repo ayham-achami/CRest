@@ -33,6 +33,12 @@ final class CookiesAuthenticatorWrapper: Authenticator {
     
     private let authenticator: IOCookiesAuthenticator
     
+    var credential: CredentialWrapper {
+        .init(authenticator.provider.credential) { [weak authenticator] credential in
+            authenticator?.provider.isValidated(credential: credential) ?? false
+        }
+    }
+    
     init(_ authenticator: IOCookiesAuthenticator) {
         self.authenticator = authenticator
     }
@@ -82,6 +88,7 @@ final class CookiesAuthenticatorWrapper: Authenticator {
     }
     
     func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: CredentialWrapper) -> Bool {
-        authenticator.provider.isRequest(urlRequest, authenticatedWith: credential)
+        /// Возвращается true, так как нет ручной установки Cookies
+        true
     }
 }
