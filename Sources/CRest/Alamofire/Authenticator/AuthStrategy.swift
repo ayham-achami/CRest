@@ -33,8 +33,11 @@ final class AuthStrategyAuthenticatorWrapper: Authenticator {
     func apply(_ credential: Credential, to urlRequest: inout URLRequest) {
         switch orchestrator.strategy() {
         case .bearer:
-            guard case let .token(tokenCredential) = credential else { return }
-            bearerAuthenticator.apply(tokenCredential, to: &urlRequest)
+            if case let .token(tokenCredential) = credential {
+                bearerAuthenticator.apply(tokenCredential, to: &urlRequest)
+            } else {
+                bearerAuthenticator.apply(bearerAuthenticator.credential, to: &urlRequest)
+            }
         case .cookie:
             guard case let .cookies(cookiesCredential) = credential else { return }
             cookiesAuthenticator.apply(cookiesCredential, to: &urlRequest)
@@ -65,7 +68,7 @@ final class AuthStrategyAuthenticatorWrapper: Authenticator {
     func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: Credential) -> Bool {
         switch orchestrator.strategy() {
         case .bearer:
-            guard case let .token(tokenCredential) = credential else { return true }
+            guard case let .token(tokenCredential) = credential else { return false }
             return bearerAuthenticator.isRequest(urlRequest, authenticatedWith: tokenCredential)
         case .cookie:
             guard case let .cookies(cookiesCredential) = credential else { return true }
