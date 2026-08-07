@@ -7,8 +7,8 @@ import Foundation
 /// Протокол контроля статус авторизации
 public protocol IOAuthenticator: AnyObject, IOInterceptor {
     
-    /// Запрос обновления
-    var refreshRequest: Request { get }
+    /// Пути для обновлений
+    var refreshPaths: [String] { get }
     
     /// Кода ошибок требующие повторной авторизации
     var refreshStatusCodes: [Int] { get }

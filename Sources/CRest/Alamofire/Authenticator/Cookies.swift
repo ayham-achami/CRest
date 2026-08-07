@@ -47,7 +47,7 @@ final class CookiesAuthenticatorWrapper: Authenticator {
         guard
             let url = urlRequest.url,
             authenticator.refreshStatusCodes.contains(response.statusCode),
-            !authenticator.refreshPaths.contains(where: { url.lastPathComponent.contains($0) })
+            !authenticator.refreshPaths.allSatisfy({ url.pathComponents.contains($0) })
         else { return false }
         return true
     }

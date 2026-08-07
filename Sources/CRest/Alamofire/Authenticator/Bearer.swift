@@ -80,7 +80,9 @@ final class BearerAuthAuthenticatorWrapper: Authenticator {
     }
     
     func didRequest(_ urlRequest: URLRequest, with response: HTTPURLResponse, failDueToAuthenticationError error: Error) -> Bool {
-        authenticator.refreshStatusCodes.contains(response.statusCode) && urlRequest != authenticator.refreshRequest
+        guard let url = urlRequest.url else { return false }
+        return authenticator.refreshStatusCodes.contains(response.statusCode) &&
+               !authenticator.refreshPaths.allSatisfy({ url.pathComponents.contains($0) })
     }
     
     func isRequest(_ urlRequest: URLRequest, authenticatedWith credential: Credential) -> Bool {
