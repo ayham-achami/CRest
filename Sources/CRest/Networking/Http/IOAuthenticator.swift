@@ -7,15 +7,15 @@ import Foundation
 /// Протокол контроля статус авторизации
 public protocol IOAuthenticator: AnyObject, IOInterceptor {
     
-    /// Пути для обновлений
-    var refreshPaths: [String] { get }
+    /// Запрос обновления
+    var refreshRequest: Request { get }
     
     /// Кода ошибок требующие повторной авторизации
     var refreshStatusCodes: [Int] { get }
 }
 
 /// Авторизации по BearerToken
-public protocol BearerCredential: Equatable, Sendable {
+public protocol BearerCredential: Equatable {
     
     /// Токен
     var access: String { get }

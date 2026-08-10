@@ -26,11 +26,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
         let networkQueue = DispatchQueue(label: "RestIO.concurrency.networkQueue.\(id)", qos: .default)
         let requestsQueue = DispatchQueue(label: "RestIO.concurrency.requestsQueue.\(id)", qos: .default, attributes: .concurrent, target: networkQueue)
         let serializationQueue = DispatchQueue(label: "RestIO.concurrency.serializationQueue.\(id)", qos: .default, attributes: .concurrent, target: networkQueue)
-        let sessionConfiguration = configuration.sessionConfiguration ?? URLSessionConfiguration.af.default
-        sessionConfiguration.httpCookieStorage = configuration.cookieStorage
-        sessionConfiguration.httpShouldSetCookies = configuration.cookieStorage != nil
-        sessionConfiguration.urlCredentialStorage = configuration.credentialStorage ?? URLCredentialStorage.shared
-        self.session = Session(configuration: sessionConfiguration,
+        self.session = Session(configuration: configuration.sessionConfiguration ?? URLSessionConfiguration.af.default,
                                rootQueue: networkQueue,
                                requestQueue: requestsQueue,
                                serializationQueue: serializationQueue,

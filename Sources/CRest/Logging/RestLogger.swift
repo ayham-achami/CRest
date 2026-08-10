@@ -35,7 +35,7 @@ public protocol RestLog: CustomCURLStringConvertible {
 }
 
 /// Конфигурация логгера
-public struct LoggerConfiguration: Sendable {
+public struct LoggerConfiguration {
     
     /// Инициатор логирования
     public let initiator: String

@@ -51,7 +51,7 @@ extension AnyEncodable {
     
     public let base: Sendable
     
-    public init<Base: Sendable>(_ base: Base?) {
+    public init<Base>(_ base: Base?) {
         self.base = base ?? ()
     }
 }
