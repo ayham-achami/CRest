@@ -89,20 +89,6 @@ public enum RestIOSession {
     
     /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при
     /// повторном вызове возвращается тоже объектов, что было создано до этого
-    /// - Parameter bearer: Контроля статус авторизации по BearerToken
-    /// - Returns: `IOSessionInterceptor`
-    static public func secondaryInterceptor(bearer: IOBearerAuthenticator) -> IOSessionInterceptor {
-        if let secondaryBearerAuthentication {
-            return secondaryBearerAuthentication
-        } else {
-            let secondaryBearerAuthentication = create(bearer: bearer)
-            Self.secondaryBearerAuthentication = secondaryBearerAuthentication
-            return secondaryBearerAuthentication
-        }
-    }
-    
-    /// Возвращает сессионный интерцептор, интерцептор создается один раз при вызове функции, при
-    /// повторном вызове возвращается тоже объектов, что было создано до этого
     /// - Parameter bearer: Контроля статус авторизации по Cookie
     /// - Returns: `IOSessionInterceptor`
     static public func interceptor(cookies: IOCookiesAuthenticator) -> IOSessionInterceptor {
