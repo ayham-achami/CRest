@@ -120,7 +120,11 @@ public extension Error {
     /// Временная сетевая ошибка
     var isTemporaryNetworkError: Bool {
         if let sessionFailed {
-            sessionFailed.code == NSURLErrorNotConnectedToInternet || sessionFailed.code == NSURLErrorNetworkConnectionLost
+            [
+                NSURLErrorNotConnectedToInternet,
+                NSURLErrorNetworkConnectionLost,
+                NSURLErrorTimedOut
+            ].contains(sessionFailed.code)
         } else if let networkError = self as? NetworkError {
             networkError == .notConnected || networkError == .connectionLost || networkError == .temporaryNetworkError
         } else {

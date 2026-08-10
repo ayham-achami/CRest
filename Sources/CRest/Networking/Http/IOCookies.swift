@@ -1,11 +1,11 @@
 //
-//  IOAuthenticator.swift
+//  IOCookies.swift
 //
 
 import Foundation
 
 /// Протокол контроля статус авторизации
-public protocol IOAuthenticator: AnyObject, IOInterceptor {
+public protocol IOPathsAuthenticator: AnyObject, IOInterceptor {
     
     /// Пути для обновлений
     var refreshPaths: [String] { get }
@@ -14,44 +14,36 @@ public protocol IOAuthenticator: AnyObject, IOInterceptor {
     var refreshStatusCodes: [Int] { get }
 }
 
-/// Авторизации по BearerToken
-public protocol BearerCredential: Equatable, Sendable {
+/// Авторизации по Cookies
+public protocol CookiesCredential: Sendable {
     
-    /// Токен
-    var access: String { get }
-}
-
-public extension BearerCredential {
- 
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.access == rhs.access
-    }
+    var cookies: [HTTPCookie] { get }
 }
 
 /// Учетные данные аутентификации
-public protocol BearerCredentialProvider: Sendable {
+public protocol CookiesCredentialProvider: Sendable {
     
     /// Учетные данные аутентификации
-    var credential: any BearerCredential { get }
+    var credential: any CookiesCredential { get }
     
     /// Проверить, является ли используемые учетные данные корректные
     /// - Parameter credential: Учетные данные аутентификатора
     /// - Returns: Учетные данные из хранилища приложения nil если совпадают
-    func isValidated(credential: any BearerCredential) -> Bool
+    func isValidated(credential: any CookiesCredential) -> Bool
+    
+    /// Запрос обновления учетных данных аутентификации
+    /// - Returns: `CookiesCredential`
+    func refresh() async throws -> any CookiesCredential
     
     /// Проверить, совпадают ли используемые учетные данные с данными в хранилище приложения.
     /// - Parameter credential: Учетные данные аутентификатора
     /// - Returns: Учетные данные из хранилища приложения nil если совпадают
-    func match(_ credential: any BearerCredential) throws -> (any BearerCredential)?
-    
-    /// Запрос обновления учетных данных аутентификации
-    /// - Returns: `BearerCredential`
-    func refresh() async throws -> any BearerCredential
+    func match(_ credential: any CookiesCredential) throws -> (any CookiesCredential)?
 }
 
-/// Протокол контроля статус авторизации по BearerToken
-public protocol IOBearerAuthenticator: Sendable, IOAuthenticator {
+/// Протокол контроля статус авторизации по Cookies
+public protocol IOCookiesAuthenticator: Sendable, IOPathsAuthenticator {
     
-    /// Провайдер авторизации
-    var provider: BearerCredentialProvider { get }
+    /// Провайдер Cookies
+    var provider: CookiesCredentialProvider { get }
 }
