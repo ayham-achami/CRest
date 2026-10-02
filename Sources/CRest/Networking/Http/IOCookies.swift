@@ -2,6 +2,7 @@
 //  IOCookies.swift
 //
 
+import Alamofire
 import Foundation
 
 /// Протокол контроля статус авторизации
@@ -33,7 +34,7 @@ public protocol CookiesCredentialProvider: Sendable {
     
     /// Запрос обновления учетных данных аутентификации
     /// - Returns: `CookiesCredential`
-    func refresh() async throws -> any CookiesCredential
+    func refresh(with headers: HTTPHeaders) async throws -> any CookiesCredential
     
     /// Проверить, совпадают ли используемые учетные данные с данными в хранилище приложения.
     /// - Parameter credential: Учетные данные аутентификатора

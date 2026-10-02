@@ -32,6 +32,7 @@ final class CookiesAuthenticatorWrapper: Authenticator {
     typealias Credential = CredentialWrapper
     
     private let authenticator: IOCookiesAuthenticator
+    private var headers: HTTPHeaders = .init()
     
     var credential: CredentialWrapper {
         .init(authenticator.provider.credential) { [weak authenticator] credential in
@@ -49,6 +50,7 @@ final class CookiesAuthenticatorWrapper: Authenticator {
             authenticator.refreshStatusCodes.contains(response.statusCode),
             !authenticator.refreshPaths.allSatisfy({ url.pathComponents.contains($0) })
         else { return false }
+        headers = response.headers
         return true
     }
     
@@ -56,6 +58,7 @@ final class CookiesAuthenticatorWrapper: Authenticator {
     func apply(_ credential: CredentialWrapper, to urlRequest: inout URLRequest) {}
     
     func refresh(_ credential: CredentialWrapper, for session: Session, completion: @escaping @Sendable (Result<CredentialWrapper, any Error>) -> Void) {
+        defer { headers = .init() }
         if let credential = try? authenticator.provider.match(credential) {
             completion(
                 .success(
@@ -68,12 +71,13 @@ final class CookiesAuthenticatorWrapper: Authenticator {
                 )
             )
         } else {
+            let currentHeaders = headers
             Task(priority: .high) {
                 do {
                     completion(
                         .success(
                             .init(
-                                try await authenticator.provider.refresh(),
+                                try await authenticator.provider.refresh(with: currentHeaders),
                                 isValidatedCredential: { [weak authenticator] credential in
                                     authenticator?.provider.isValidated(credential: credential) ?? false
                                 }
