@@ -56,7 +56,7 @@ final class HandshakeAuthentificatorWrapper: Authenticator {
         urlRequest.headers.add(.encryptorSession(credential))
     }
     
-    func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
+    func refresh(_ credential: Credential, for session: Session, completion: @escaping @Sendable (Result<Credential, Error>) -> Void) {
         if let credential = try? authenticator.provider.match(credential) {
             completion(
                 .success(

@@ -47,7 +47,7 @@ final class BearerAuthAuthenticatorWrapper: Authenticator {
         urlRequest.headers.add(.authorization(bearerToken: credential.access))
     }
     
-    func refresh(_ credential: Credential, for session: Session, completion: @escaping (Result<Credential, Error>) -> Void) {
+    func refresh(_ credential: Credential, for session: Session, completion: @escaping @Sendable (Result<Credential, any Error>) -> Void) {
         if let credential = try? authenticator.provider.match(credential) {
             completion(
                 .success(
