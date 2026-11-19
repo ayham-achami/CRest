@@ -4,6 +4,12 @@
 
 import Foundation
 
+public enum DownloadsSerializationStrategy {
+    
+    case chunkedBody(chunkSize: Int, expectedSize: UInt64)
+    case singleBody
+}
+
 /// Динамический http запрос
 @frozen public struct DynamicRequest {
 
@@ -35,6 +41,8 @@ import Foundation
     public let emptyResponseCodes: Set<Int>
     /// http методы с которыми разрешено пустой ответ
     public let emptyRequestMethods: Set<Http.Method>
+    
+    public let downloadsSerializationStrategy: DownloadsSerializationStrategy
 
     /// Билдер
     public final class Builder {
@@ -53,6 +61,7 @@ import Foundation
         private var interceptors: [IOInterceptor] = [DefaultInterceptor()]
         private var emptyResponseCodes: Set<Int> = [204]
         private var emptyRequestMethods: Set<Http.Method> = [.head]
+        private var downloadsSerializationStrategy: DownloadsSerializationStrategy = .singleBody
         
         /// Инициализация
         public init() {}
@@ -74,6 +83,7 @@ import Foundation
             self.interceptors = request.interceptors
             self.emptyResponseCodes = request.emptyResponseCodes
             self.emptyRequestMethods = request.emptyRequestMethods
+            self.downloadsSerializationStrategy = request.downloadsSerializationStrategy
         }
         
         /// Инициализация
@@ -194,6 +204,11 @@ import Foundation
             return self
         }
         
+        public func with(downloadsSerializationStrategy: DownloadsSerializationStrategy) -> Self {
+            self.downloadsSerializationStrategy = downloadsSerializationStrategy
+            return self
+        }
+        
         /// Создает запрос
         public func build() throws -> DynamicRequest {
             guard
@@ -212,7 +227,8 @@ import Foundation
                          interceptors: interceptors,
                          sessionInterceptor: sessionInterceptor,
                          emptyResponseCodes: emptyResponseCodes,
-                         emptyRequestMethods: emptyRequestMethods)
+                         emptyRequestMethods: emptyRequestMethods,
+                         downloadsSerializationStrategy: downloadsSerializationStrategy)
         }
     }
 }

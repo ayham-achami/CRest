@@ -97,6 +97,12 @@ public protocol IODownloadResponseSerializer: HTTPBodyController, IOErrorSeriali
                       _ decoder: JSONDecoder,
                       _ request: URLRequest?,
                       _ response: HTTPURLResponse?) throws -> T where T: Response
+    
+    func serialize(_ fileURL: URL,
+                   _ expectedSize: UInt64,
+                   _ chunkSize: Int,
+                   _ request: URLRequest?,
+                   _ response: HTTPURLResponse?) throws
 }
 
 // MARK: - IODownloadResponseSerializer + Default
@@ -112,6 +118,12 @@ public extension IODownloadResponseSerializer where Self: IOSerializer {
                       _ response: HTTPURLResponse?) throws -> T where T: Response {
         try serialize(try Data(contentsOf: fileURL), decoder, request, response)
     }
+    
+    func serialize(_ fileURL: URL,
+                   _ expectedSize: UInt64,
+                   _ chunkSize: Int,
+                   _ request: URLRequest?,
+                   _ response: HTTPURLResponse?) throws {}
 }
 
 /// Протокол сериализации ответа

@@ -139,6 +139,18 @@ public extension IORequestAdapter {
     }
 }
 
+public struct BodyStream {
+    
+    public let stream: InputStream
+    public let length: UInt64
+    
+    public init(stream: InputStream,
+                length: UInt64) {
+        self.stream = stream
+        self.length = length
+    }
+}
+
 /// Протокол адаптации запроса MultiPart
 public protocol IORequestMultipartAdapter: Sendable {
     
@@ -151,6 +163,13 @@ public protocol IORequestMultipartAdapter: Sendable {
     /// - Parameter url: Часть тела запроса по ссылки
     /// - Parameter completion: Обработчик завершения
     func adapt(_ url: URL, completion: @Sendable @escaping (Result<URL, Error>) -> Void)
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - url: <#url description#>
+    ///   - chunkSize: <#chunkSize description#>
+    ///   - completion: <#completion description#>
+    func adapt(_ url: URL, chunkSize: UInt64, completion: @Sendable @escaping (Result<BodyStream, Error>) -> Void)
 }
 
 // MARK: - IORequestMultipartAdapter + Default
@@ -162,6 +181,10 @@ public extension IORequestMultipartAdapter {
     
     func adapt(_ url: URL, completion: @Sendable @escaping (Result<URL, Error>) -> Void) {
         completion(.success(url))
+    }
+    
+    func adapt(_ url: URL, chunkSize: UInt64, completion: @Sendable @escaping (Result<BodyStream, Error>) -> Void) {
+        completion(.success(BodyStream(stream: .init(data: Data()), length: 0)))
     }
 }
 

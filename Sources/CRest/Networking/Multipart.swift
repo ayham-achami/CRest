@@ -3,6 +3,8 @@
 //
 
 import Foundation
+import UniformTypeIdentifiers
+import MobileCoreServices
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -68,6 +70,50 @@ public protocol MultipartParameter: Sendable {}
     public init(_ url: URL, _ name: String) {
         self.url = url
         self.name = name
+    }
+}
+
+public struct ChunkedStreamMultipartParameter: MultipartParameter {
+    
+    public enum StreamError: Error {
+        
+        case streamNotFound
+    }
+    
+    public let url: URL
+    public let name: String
+    public let chunkSize: UInt64
+
+    var bodyStream: BodyStream?
+    
+    public var fileName: String {
+        url.lastPathComponent
+    }
+    
+    public var mimeType: String {
+        mimeType(forPathExtension: url.pathExtension)
+    }
+    
+    public init(url: URL,
+                name: String,
+                chunkSize: UInt64 = 65_536) {
+        self.url = url
+        self.name = name
+        self.chunkSize = chunkSize
+    }
+    
+    private func mimeType(forPathExtension pathExtension: String) -> String {
+        if #available(iOS 14, macOS 11, tvOS 14, watchOS 7, *) {
+            return UTType(filenameExtension: pathExtension)?.preferredMIMEType ?? "application/octet-stream"
+        } else {
+            if
+                let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue(),
+                let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue() {
+                return contentType as String
+            }
+            
+            return "application/octet-stream"
+        }
     }
 }
 
@@ -160,6 +206,8 @@ extension IORequestMultipartAdapter {
             #endif
             case let parameter as StreamMultipartParameter:
                 adapt(parameter, with: continuation)
+            case let parameter as ChunkedStreamMultipartParameter:
+                adapt(parameter, with: continuation)
             default:
                 preconditionFailure("Not supported MultipartParameters type")
             }
@@ -199,6 +247,19 @@ private extension IORequestMultipartAdapter {
             switch result {
             case .success(let url):
                 continuation.resume(returning: StreamMultipartParameter(url, parameter.name))
+            case .failure(let error):
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+    
+    func adapt(_ parameter: ChunkedStreamMultipartParameter, with continuation: CheckedContinuation<MultipartParameter, Error>) {
+        adapt(parameter.url, chunkSize: parameter.chunkSize) { result in
+            var mutable = parameter
+            switch result {
+            case .success(let stream):
+                mutable.bodyStream = stream
+                continuation.resume(returning: mutable)
             case .failure(let error):
                 continuation.resume(throwing: error)
             }
