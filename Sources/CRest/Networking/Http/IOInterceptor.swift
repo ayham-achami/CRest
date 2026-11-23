@@ -139,11 +139,19 @@ public extension IORequestAdapter {
     }
 }
 
+/// Подготовленный поток multipart-части с точной длиной передаваемых данных.
+/// Для повторной адаптации запроса нужно создать новый поток.
 public struct BodyStream {
     
+    /// Поток открывает, читает и закрывает multipart-кодировщик.
     public let stream: InputStream
+    /// Количество байтов в потоке после адаптации, включая служебные данные формата.
     public let length: UInt64
     
+    /// Создаёт тело части без чтения потока.
+    /// - Parameters:
+    ///   - stream: Подготовленный, ещё не открытый поток.
+    ///   - length: Точная длина данных, которые вернёт поток.
     public init(stream: InputStream,
                 length: UInt64) {
         self.stream = stream
@@ -164,11 +172,12 @@ public protocol IORequestMultipartAdapter: Sendable {
     /// - Parameter completion: Обработчик завершения
     func adapt(_ url: URL, completion: @Sendable @escaping (Result<URL, Error>) -> Void)
     
-    /// <#Description#>
+    /// Подготавливает поток файла для multipart-передачи по записям.
+    /// Реализация по умолчанию возвращает ошибку неподдерживаемой операции.
     /// - Parameters:
-    ///   - url: <#url description#>
-    ///   - chunkSize: <#chunkSize description#>
-    ///   - completion: <#completion description#>
+    ///   - url: Локальный файл, доступный для чтения до завершения кодирования multipart.
+    ///   - chunkSize: Размер исходных данных записи в байтах; допустимые значения определяет адаптер.
+    ///   - completion: Вызывается один раз с новым потоком и его точной длиной либо с ошибкой.
     func adapt(_ url: URL, chunkSize: UInt64, completion: @Sendable @escaping (Result<BodyStream, Error>) -> Void)
 }
 
@@ -184,7 +193,7 @@ public extension IORequestMultipartAdapter {
     }
     
     func adapt(_ url: URL, chunkSize: UInt64, completion: @Sendable @escaping (Result<BodyStream, Error>) -> Void) {
-        completion(.success(BodyStream(stream: .init(data: Data()), length: 0)))
+        completion(.failure(NetworkError.io("Chunked multipart adaptation is not supported")))
     }
 }
 

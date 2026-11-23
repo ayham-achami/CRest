@@ -146,11 +146,11 @@ extension DynamicRequest {
 // MARK: - DynamicRequest + Alamofire + Multipart
 extension DynamicRequest {
     
-    func encode(into data: MultipartFormData) {
-        guard let parameters = parameters as? MultipartParameters else { return }
-        // swiftlint:disable:next closure_body_length
-        parameters.forEach {
-            switch $0 {
+    func multipartFormData() throws -> MultipartFormData {
+        let data = MultipartFormData()
+        guard let parameters = parameters as? MultipartParameters else { return data }
+        for parameter in parameters {
+            switch parameter {
             case let parameter as DataMultipartParameter:
                 data.append(parameter.data, withName: parameter.name)
                 
@@ -166,20 +166,20 @@ extension DynamicRequest {
                 data.append(parameter.url, withName: parameter.name)
                 
             case let parameter as ChunkedStreamMultipartParameter:
-                if let bodyStream = parameter.bodyStream {
-                    data.append(bodyStream.stream,
-                                withLength: bodyStream.length,
-                                name: parameter.name,
-                                fileName: parameter.fileName,
-                                mimeType: parameter.mimeType)
-                } else {
-                    data.append(parameter.url, withName: parameter.name)
+                guard let bodyStream = parameter.bodyStream else {
+                    throw ChunkedStreamMultipartParameter.StreamError.streamNotFound
                 }
+                data.append(bodyStream.stream,
+                            withLength: bodyStream.length,
+                            name: parameter.name,
+                            fileName: parameter.fileName,
+                            mimeType: parameter.mimeType)
                 
             default:
                 preconditionFailure("Not supported MultipartParameters type")
             }
         }
+        return data
     }
 }
 

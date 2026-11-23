@@ -4,9 +4,13 @@
 
 import Foundation
 
+/// Стратегия файловой обработки скачанного ответа типа `Empty`.
 public enum DownloadsSerializationStrategy {
     
+    /// Обработка по записям: `chunkSize` — размер исходных данных записи в байтах,
+    /// `expectedSize` — ожидаемый полный размер исходных данных до преобразования в формат передачи.
     case chunkedBody(chunkSize: Int, expectedSize: UInt64)
+    /// Обработка файла прежней перегрузкой сериализатора без параметров записей.
     case singleBody
 }
 
@@ -41,7 +45,7 @@ public enum DownloadsSerializationStrategy {
     public let emptyResponseCodes: Set<Int>
     /// http методы с которыми разрешено пустой ответ
     public let emptyRequestMethods: Set<Http.Method>
-    
+    /// Способ обработки скачанного файла для ответа типа `Empty`.
     public let downloadsSerializationStrategy: DownloadsSerializationStrategy
 
     /// Билдер
@@ -204,6 +208,7 @@ public enum DownloadsSerializationStrategy {
             return self
         }
         
+        /// Задаёт способ обработки скачанного файла; по умолчанию используется `.singleBody`.
         public func with(downloadsSerializationStrategy: DownloadsSerializationStrategy) -> Self {
             self.downloadsSerializationStrategy = downloadsSerializationStrategy
             return self

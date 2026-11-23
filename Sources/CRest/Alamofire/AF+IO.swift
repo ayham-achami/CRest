@@ -27,7 +27,8 @@ struct IO {
     /// Возвращает запрос загрузки байтов для заданного запроса
     /// - Parameter request: Динамический запрос
     /// - Returns: `DataRequest`
-    func dataRequest(for request: DynamicRequest) -> DataRequest {
+    /// - Throws: `ChunkedStreamMultipartParameter.StreamError.streamNotFound`, если поток не подготовлен.
+    func dataRequest(for request: DynamicRequest) throws -> DataRequest {
         switch request.encoding {
         case let .URL(configuration):
             return session.request(request.url,
@@ -48,7 +49,7 @@ struct IO {
             .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         case .multipart:
-            return session.upload(multipartFormData: request.encode(into:),
+            return session.upload(multipartFormData: try request.multipartFormData(),
                                   to: request.url,
                                   method: request.afMethod,
                                   headers: request.afHeders,
@@ -96,7 +97,8 @@ struct IO {
     ///   - request: Динамический запрос
     ///   - source: Ссылка на источник данных
     /// - Returns: `UploadRequest`
-    func uploadRequest(for request: DynamicRequest, from source: URL) -> UploadRequest {
+    /// - Throws: `ChunkedStreamMultipartParameter.StreamError.streamNotFound`, если поток не подготовлен.
+    func uploadRequest(for request: DynamicRequest, from source: URL) throws -> UploadRequest {
         switch request.encoding {
         case .URL, .JSON:
             return session.upload(source,
@@ -107,7 +109,7 @@ struct IO {
             .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         case .multipart:
-            return session.upload(multipartFormData: request.encode(into:),
+            return session.upload(multipartFormData: try request.multipartFormData(),
                                   to: request.url,
                                   method: request.afMethod,
                                   headers: request.afHeders,

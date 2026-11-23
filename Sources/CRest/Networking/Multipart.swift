@@ -3,8 +3,8 @@
 //
 
 import Foundation
-import UniformTypeIdentifiers
 import MobileCoreServices
+import UniformTypeIdentifiers
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -73,27 +73,41 @@ public protocol MultipartParameter: Sendable {}
     }
 }
 
+/// Файловая multipart-часть, для которой адаптер должен подготовить поток по записям.
+/// Если поток не подготовлен, запрос отклоняется до отправки.
 public struct ChunkedStreamMultipartParameter: MultipartParameter {
     
+    /// Ошибка подготовки потока multipart-части.
     public enum StreamError: Error {
         
+        /// Адаптер не предоставил поток для кодирования multipart.
         case streamNotFound
     }
     
+    /// Локальный файл, который адаптер использует как источник данных.
     public let url: URL
+    /// Имя поля multipart.
     public let name: String
+    /// Размер исходных данных записи в байтах; допустимые значения определяет адаптер.
     public let chunkSize: UInt64
 
     var bodyStream: BodyStream?
     
+    /// Имя файла в multipart-части.
     public var fileName: String {
         url.lastPathComponent
     }
     
+    /// MIME-тип по расширению файла либо `application/octet-stream`.
     public var mimeType: String {
         mimeType(forPathExtension: url.pathExtension)
     }
     
+    /// Создаёт параметр без открытия файла и подготовки потока.
+    /// - Parameters:
+    ///   - url: Локальный файл, доступный до завершения кодирования multipart.
+    ///   - name: Имя поля multipart.
+    ///   - chunkSize: Размер исходных данных записи в байтах.
     public init(url: URL,
                 name: String,
                 chunkSize: UInt64 = 65_536) {
