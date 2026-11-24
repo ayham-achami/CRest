@@ -32,18 +32,6 @@ dependencies: [
 
 ___
 
-## Обработка файлов по записям
-
-Для `ChunkedStreamMultipartParameter` адаптер должен реализовать `adapt(_:chunkSize:completion:)`
-и вернуть `BodyStream`: ещё не открытый поток с точной длиной данных после адаптации.
-Multipart-кодировщик открывает и закрывает поток; повторная адаптация требует нового потока.
-Если поток не подготовлен, запрос завершается с `ChunkedStreamMultipartParameter.StreamError.streamNotFound`
-до отправки; исходный файл вместо потока не подставляется.
-
-Для `.chunkedBody(chunkSize:expectedSize:)` сериализатор должен реализовать файловый
-`serialize(_:_:_:_:_:)`, проверить размер исходных данных и сохранить результат по исходному URL.
-Обе новые реализации по умолчанию возвращают ошибку `NetworkError.io`.
-
 ## Компоненты
 
 - [📁 Sources](#📁-Sources)
@@ -79,6 +67,8 @@ Multipart-кодировщик открывает и закрывает пото
       - [📝 TrustEvaluating](#trustevaluating)
       - [📝 DynamicHeaders](#dynamicheaders)
       - [📝 DynamicRequest](#dynamicrequest)
+      - [📝 IOInterceptor](#iointerceptor)
+      - [📝 IOSerializer](#ioserializer)
       - [📝 DynamicResponse](#dynamicresponse)
       - [📝 Request+EndPoint](#endpoint)
       - [📝 RestIOConfiguration](#restiioconfiguration)
@@ -185,6 +175,12 @@ ___
 
 Содержит мультипартпараметр, содержащий любые данные
 
+`ChunkedStreamMultipartParameter` задаёт файловую multipart-часть для обработки по записям.
+Адаптер подготавливает `BodyStream`: ещё не открытый поток с точной длиной данных после адаптации.
+Multipart-кодировщик открывает и закрывает поток; повторная адаптация требует нового потока.
+Если поток не подготовлен, запрос завершается с `ChunkedStreamMultipartParameter.StreamError.streamNotFound`
+до отправки; исходный файл вместо потока не подставляется.
+
 > ### 📁 Http
 
 #### Http
@@ -210,6 +206,23 @@ ___
 #### DynamicRequest
 
 Содержит динамический HTTP-запрос
+
+`DownloadsSerializationStrategy.chunkedBody(chunkSize:expectedSize:)` выбирает обработку скачанного файла
+по записям. `chunkSize` задаёт ожидаемый размер исходных данных записи, а `expectedSize` — всего файла,
+в байтах до преобразования в формат передачи.
+
+#### IOInterceptor
+
+`IORequestMultipartAdapter` подготавливает multipart-части перед отправкой.
+Для `ChunkedStreamMultipartParameter` нужно реализовать `adapt(_:chunkSize:completion:)`
+и вернуть `BodyStream`. Реализация по умолчанию возвращает ошибку `NetworkError.io`.
+
+#### IOSerializer
+
+`IODownloadResponseSerializer` обрабатывает скачанный файл.
+Для стратегии `.chunkedBody(chunkSize:expectedSize:)` нужно реализовать файловый
+`serialize(_:_:_:_:_:)`, проверить размер исходных данных и сохранить результат по исходному URL.
+Реализация по умолчанию бросает ошибку `NetworkError.io`.
 
 #### DynamicResponse
 
