@@ -51,7 +51,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
     
     public func dynamicPerform<Response>(_ request: DynamicRequest,
                                          response: Response.Type) async throws -> DynamicResponse<Response> where Response: CRest.Response {
-        let requester = IO.with(session).dataRequest(for: request)
+        let requester = try IO.with(session).dataRequest(for: request)
         let response = await requester
             .serializingResponse(using: ResponseSerializerWrapper<Response>(request))
             .response
@@ -86,7 +86,7 @@ public final class AsyncAlamofireRestIO: AsyncRestIO {
                                  with request: DynamicRequest,
                                  response: Response.Type,
                                  progress: ProgressHandler?) async throws -> Response where Response: CRest.Response {
-        let uploader = IO.with(session).uploadRequest(for: request, from: source)
+        let uploader = try IO.with(session).uploadRequest(for: request, from: source)
         invoke(progress, from: uploader.uploadProgress())
         let uploadResponse = await uploader
             .serializingResponse(using: ResponseSerializerWrapper<Response>(request))

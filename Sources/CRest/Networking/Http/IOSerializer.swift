@@ -97,6 +97,23 @@ public protocol IODownloadResponseSerializer: HTTPBodyController, IOErrorSeriali
                       _ decoder: JSONDecoder,
                       _ request: URLRequest?,
                       _ response: HTTPURLResponse?) throws -> T where T: Response
+    
+    /// Обрабатывает скачанный файл по записям и проверяет ожидаемый размер исходных данных.
+    /// Реализация по умолчанию бросает ошибку неподдерживаемой операции.
+    /// - Important: Сигнатура реализации должна точно совпадать с требованием протокола,
+    ///   иначе будет вызвана реализация по умолчанию.
+    /// - Parameters:
+    ///   - fileURL: Локальный файл с полным телом ответа; результат обработки сохраняется по этому же URL.
+    ///   - chunkSize: Ожидаемый размер исходных данных записи в байтах.
+    ///   - expectedSize: Ожидаемый размер исходных данных до преобразования в формат передачи, в байтах.
+    ///   - request: Фактически выполненный запрос.
+    ///   - response: Ответ сервера.
+    /// - Throws: Ошибка неподдерживаемого формата, проверки данных или файловой операции.
+    func serialize(_ fileURL: URL,
+                   _ chunkSize: Int,
+                   _ expectedSize: UInt64,
+                   _ request: URLRequest?,
+                   _ response: HTTPURLResponse?) throws
 }
 
 // MARK: - IODownloadResponseSerializer + Default
@@ -111,6 +128,14 @@ public extension IODownloadResponseSerializer where Self: IOSerializer {
                       _ request: URLRequest?,
                       _ response: HTTPURLResponse?) throws -> T where T: Response {
         try serialize(try Data(contentsOf: fileURL), decoder, request, response)
+    }
+    
+    func serialize(_ fileURL: URL,
+                   _ chunkSize: Int,
+                   _ expectedSize: UInt64,
+                   _ request: URLRequest?,
+                   _ response: HTTPURLResponse?) throws {
+        throw NetworkError.io("Chunked download serialization is not supported")
     }
 }
 

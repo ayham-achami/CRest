@@ -6,30 +6,15 @@ import CRest
 import Foundation
 import protocol Alamofire.EmptyResponse
 
-struct Logger: NetworkLogger {
-    
-    func debug(with tag: String, _ message: @autoclosure () -> Any, _ file: StaticString, _ function: StaticString, _ line: Int) {
-        print(tag, file, function, line, message())
-    }
-    
-    func error(with tag: String, _ message: @autoclosure () -> Any, _ file: StaticString, _ function: StaticString, _ line: Int) {
-        print(tag, file, function, line, message())
-    }
-    
-    func json(with tag: String, _ data: Data, _ file: StaticString, _ function: StaticString, _ line: Int) {
-        guard
-            let object = try? JSONSerialization.jsonObject(with: data, options: []),
-            let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted])
-        else { print(tag, file, function, line, "JsonError"); return }
-        let prettyPrintedString = String(decoding: data, as: UTF8.self)
-        print(tag, file, function, line, prettyPrintedString)
-    }
+struct Logger: RestLoggerProtocol {
+
+    func debug(_ log: RestLog, with configuration: LoggerConfiguration) {}
 }
 
 struct RestConfiguration: RestIOConfiguration {
     
     let allHostsMustBeEvaluated: Bool = false
-    let informant = NetworkInformant(logger: Logger())
+    let logger = RestLogger(logger: Logger(), configuration: .init(initiator: "Tests", shouldSanitazedBody: true))
 }
 
 extension EndPoint {

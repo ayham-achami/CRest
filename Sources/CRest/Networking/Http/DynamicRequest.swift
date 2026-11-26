@@ -4,6 +4,16 @@
 
 import Foundation
 
+/// Стратегия файловой обработки скачанного ответа типа `Empty`.
+public enum DownloadsSerializationStrategy: Sendable {
+    
+    /// Обработка по записям: `chunkSize` — размер исходных данных записи в байтах,
+    /// `expectedSize` — ожидаемый полный размер исходных данных до преобразования в формат передачи.
+    case chunkedBody(chunkSize: Int, expectedSize: UInt64)
+    /// Обработка файла прежней перегрузкой сериализатора без параметров записей.
+    case singleBody
+}
+
 /// Динамический http запрос
 @frozen public struct DynamicRequest {
 
@@ -35,6 +45,8 @@ import Foundation
     public let emptyResponseCodes: Set<Int>
     /// http методы с которыми разрешено пустой ответ
     public let emptyRequestMethods: Set<Http.Method>
+    /// Способ обработки скачанного файла для ответа типа `Empty`.
+    public let downloadsSerializationStrategy: DownloadsSerializationStrategy
 
     /// Билдер
     public final class Builder {
@@ -53,6 +65,7 @@ import Foundation
         private var interceptors: [IOInterceptor] = [DefaultInterceptor()]
         private var emptyResponseCodes: Set<Int> = [204]
         private var emptyRequestMethods: Set<Http.Method> = [.head]
+        private var downloadsSerializationStrategy: DownloadsSerializationStrategy = .singleBody
         
         /// Инициализация
         public init() {}
@@ -74,6 +87,7 @@ import Foundation
             self.interceptors = request.interceptors
             self.emptyResponseCodes = request.emptyResponseCodes
             self.emptyRequestMethods = request.emptyRequestMethods
+            self.downloadsSerializationStrategy = request.downloadsSerializationStrategy
         }
         
         /// Инициализация
@@ -194,6 +208,12 @@ import Foundation
             return self
         }
         
+        /// Задаёт способ обработки скачанного файла; по умолчанию используется `.singleBody`.
+        public func with(downloadsSerializationStrategy: DownloadsSerializationStrategy) -> Self {
+            self.downloadsSerializationStrategy = downloadsSerializationStrategy
+            return self
+        }
+        
         /// Создает запрос
         public func build() throws -> DynamicRequest {
             guard
@@ -212,7 +232,8 @@ import Foundation
                          interceptors: interceptors,
                          sessionInterceptor: sessionInterceptor,
                          emptyResponseCodes: emptyResponseCodes,
-                         emptyRequestMethods: emptyRequestMethods)
+                         emptyRequestMethods: emptyRequestMethods,
+                         downloadsSerializationStrategy: downloadsSerializationStrategy)
         }
     }
 }

@@ -13,12 +13,14 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
     
     let emptyResponseCodes: Set<Int>
     let emptyRequestMethods: Set<HTTPMethod>
+    let downloadsSerializationStrategy: DownloadsSerializationStrategy
     
     init(_ request: DynamicRequest) {
         self.decoder = request.decoder
         self.serializer = request.serializer
         self.emptyResponseCodes = request.emptyResponseCodes
         self.emptyRequestMethods = request.afEmptyRequestMethods
+        self.downloadsSerializationStrategy = request.downloadsSerializationStrategy
     }
     
     func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> Response {
@@ -47,11 +49,22 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
                 emptyResponseAllowed(forRequest: request, response: response)
             else { throw AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength) }
             if let fileURL {
-                try serializer.serialize(fileURL, request, response)
+                switch downloadsSerializationStrategy {
+                case .chunkedBody(let chunkSize, let expectedSize):
+                    try serializer.serialize(fileURL,
+                                             chunkSize,
+                                             expectedSize,
+                                             request,
+                                             response)
+                case .singleBody:
+                    try serializer.serialize(fileURL, request, response)
+                }
                 return empty
             } else {
                 return empty
             }
+        } else if case .chunkedBody = downloadsSerializationStrategy {
+            throw NetworkError.io("Chunked download serialization requires an Empty response")
         } else if let fileURL {
             return try serializer.serialize(fileURL, decoder, request, response)
         } else {

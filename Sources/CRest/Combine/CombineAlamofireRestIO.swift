@@ -41,7 +41,12 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     
     public func perform<Response>(_ request: DynamicRequest,
                                   response: Response.Type) -> AnyPublisher<Response, Error> where Response: CRest.Response {
-        let requester = IO.with(session).dataRequest(for: request)
+        let requester: DataRequest
+        do {
+            requester = try IO.with(session).dataRequest(for: request)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response in
                 self?.configuration.logger.debug(response)
@@ -56,7 +61,12 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     
     public func dynamicPerform<Response>(_ request: DynamicRequest,
                                          response: Response.Type) -> AnyPublisher<DynamicResponse<Response>, Error> where Response: CRest.Response {
-        let requester = IO.with(session).dataRequest(for: request)
+        let requester: DataRequest
+        do {
+            requester = try IO.with(session).dataRequest(for: request)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
         return requester.publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response in
                 self?.configuration.logger.debug(response)
@@ -96,7 +106,13 @@ public final class CombineAlamofireRestIO: CombineRestIO {
     public func upload<Response>(from source: Source,
                                  with request: DynamicRequest,
                                  response: Response.Type) -> ProgressPublisher<Response> where Response: CRest.Response {
-        let uploader = IO.with(session).uploadRequest(for: request, from: source)
+        let uploader: UploadRequest
+        do {
+            uploader = try IO.with(session).uploadRequest(for: request, from: source)
+        } catch {
+            return .init(response: Fail(error: error).eraseToAnyPublisher(),
+                         progress: Combine.Empty().eraseToAnyPublisher())
+        }
         let responsePublisher = uploader
             .publishResponse(using: ResponseSerializerWrapper<Response>(request))
             .tryMap { [weak self] response -> Response in

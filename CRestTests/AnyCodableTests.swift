@@ -3,10 +3,12 @@
 //
 
 @testable import CRest
-import XCTest
+import Foundation
+import Testing
 
-class AnyCodableTests: XCTestCase {
+struct AnyCodableTests {
     
+    @Test("Декодирует значения разных типов из JSON")
     func testJSONDecoding() throws {
         let json = Data("""
         {
@@ -27,14 +29,16 @@ class AnyCodableTests: XCTestCase {
         let decoder = JSONDecoder()
         let response = try decoder.decode(AnyResponse.self, from: json)
 
-        XCTAssertEqual(response["boolean", Bool.self]!, true)
-        XCTAssertEqual(response["integer", Int.self]!, 42)
-        XCTAssertEqual(response["double", Double.self]!, 3.141592653589793, accuracy: 0.001)
-        XCTAssertEqual(response["string", String.self]!, "string")
-        XCTAssertEqual(response["array", [Int].self]!, [1, 2, 3])
-        XCTAssertEqual(response["nested", [String: String].self]!, ["a": "alpha", "b": "bravo", "c": "charlie"])
+        #expect(response["boolean", Bool.self] == true)
+        #expect(response["integer", Int.self] == 42)
+        let double = try #require(response["double", Double.self])
+        #expect(abs(double - 3.141592653589793) < 0.001)
+        #expect(response["string", String.self] == "string")
+        #expect(response["array", [Int].self] == [1, 2, 3])
+        #expect(response["nested", [String: String].self] == ["a": "alpha", "b": "bravo", "c": "charlie"])
     }
 
+    @Test("Кодирует вложенные параметры в JSON")
     func testJSONEncoding() throws {
         
         struct Some: Parameters {
@@ -64,18 +68,18 @@ class AnyCodableTests: XCTestCase {
         let data = try JSONEncoder().encode(Focus(anyFocus: .init(Some())))
         
         let response = try JSONDecoder().decode(AnyResponse.self, from: data)
-        XCTAssertEqual(response["intFocus", Int.self], 0)
-        XCTAssertEqual(response["boolFocus", Bool.self], true)
-        XCTAssertEqual(response["stringFocus", String.self], "String")
+        #expect(response["intFocus", Int.self] == 0)
+        #expect(response["boolFocus", Bool.self] == true)
+        #expect(response["stringFocus", String.self] == "String")
         
-        let anyFocus = AnyResponse(response["anyFocus", [String: Any].self])
-        XCTAssertEqual(anyFocus["intSome", Int.self], 0)
-        XCTAssertEqual(anyFocus["boolSome", Bool.self], true)
-        XCTAssertEqual(anyFocus["stringSome", String.self], "String")
+        let anyFocus = AnyResponse(response["anyFocus", [String: any Sendable].self])
+        #expect(anyFocus["intSome", Int.self] == 0)
+        #expect(anyFocus["boolSome", Bool.self] == true)
+        #expect(anyFocus["stringSome", String.self] == "String")
         
-        let nested = AnyResponse(anyFocus["nestedSome", [String: Any].self])
-        XCTAssertEqual(nested["intNested", Int.self], 0)
-        XCTAssertEqual(nested["boolNested", Bool.self], false)
-        XCTAssertEqual(nested["stringNested", String.self], "Nested String")
+        let nested = AnyResponse(anyFocus["nestedSome", [String: any Sendable].self])
+        #expect(nested["intNested", Int.self] == 0)
+        #expect(nested["boolNested", Bool.self] == false)
+        #expect(nested["stringNested", String.self] == "Nested String")
     }
 }

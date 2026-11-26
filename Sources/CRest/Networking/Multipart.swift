@@ -3,6 +3,12 @@
 //
 
 import Foundation
+import UniformTypeIdentifiers
+#if canImport(MobileCoreServices)
+import MobileCoreServices
+#elseif canImport(CoreServices)
+import CoreServices
+#endif
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -68,6 +74,66 @@ public protocol MultipartParameter: Sendable {}
     public init(_ url: URL, _ name: String) {
         self.url = url
         self.name = name
+    }
+}
+
+/// Файловая multipart-часть, для которой адаптер должен подготовить поток по записям.
+/// Автоматическая адаптация выполняется в `ConcurrencyRestIO.upload` при наличии multipart-адаптера.
+/// Для `perform`, `dynamicPerform` и Combine запрос нужно заранее подготовить через `ConcurrencyRestIO.adapt(_:)`.
+/// Если поток не подготовлен, запрос отклоняется до отправки.
+public struct ChunkedStreamMultipartParameter: MultipartParameter {
+    
+    /// Ошибка подготовки потока multipart-части.
+    public enum StreamError: Error {
+        
+        /// Адаптер не предоставил поток для кодирования multipart.
+        case streamNotFound
+    }
+    
+    /// Локальный файл, который адаптер использует как источник данных.
+    public let url: URL
+    /// Имя поля multipart.
+    public let name: String
+    /// Размер исходных данных записи в байтах; допустимые значения определяет адаптер.
+    public let chunkSize: Int
+
+    var bodyStream: BodyStream?
+    
+    /// Имя файла в multipart-части.
+    public var fileName: String {
+        url.lastPathComponent
+    }
+    
+    /// MIME-тип по расширению файла либо `application/octet-stream`.
+    public var mimeType: String {
+        mimeType(forPathExtension: url.pathExtension)
+    }
+    
+    /// Создаёт параметр без открытия файла и подготовки потока.
+    /// - Parameters:
+    ///   - url: Локальный файл, доступный до завершения кодирования multipart.
+    ///   - name: Имя поля multipart.
+    ///   - chunkSize: Размер исходных данных записи в байтах.
+    public init(_ url: URL,
+                _ name: String,
+                chunkSize: Int = 65_536) {
+        self.url = url
+        self.name = name
+        self.chunkSize = chunkSize
+    }
+    
+    private func mimeType(forPathExtension pathExtension: String) -> String {
+        if #available(iOS 14, macOS 11, tvOS 14, watchOS 7, *) {
+            return UTType(filenameExtension: pathExtension)?.preferredMIMEType ?? "application/octet-stream"
+        } else {
+            if
+                let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue(),
+                let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue() {
+                return contentType as String
+            }
+            
+            return "application/octet-stream"
+        }
     }
 }
 
@@ -160,6 +226,8 @@ extension IORequestMultipartAdapter {
             #endif
             case let parameter as StreamMultipartParameter:
                 adapt(parameter, with: continuation)
+            case let parameter as ChunkedStreamMultipartParameter:
+                adapt(parameter, with: continuation)
             default:
                 preconditionFailure("Not supported MultipartParameters type")
             }
@@ -199,6 +267,19 @@ private extension IORequestMultipartAdapter {
             switch result {
             case .success(let url):
                 continuation.resume(returning: StreamMultipartParameter(url, parameter.name))
+            case .failure(let error):
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+    
+    func adapt(_ parameter: ChunkedStreamMultipartParameter, with continuation: CheckedContinuation<MultipartParameter, Error>) {
+        adapt(parameter.url, chunkSize: parameter.chunkSize) { result in
+            var mutable = parameter
+            switch result {
+            case .success(let stream):
+                mutable.bodyStream = stream
+                continuation.resume(returning: mutable)
             case .failure(let error):
                 continuation.resume(throwing: error)
             }
