@@ -51,6 +51,7 @@ struct IO {
         case .multipart:
             return session.upload(multipartFormData: try request.multipartFormData(),
                                   to: request.url,
+                                  usingThreshold: request.multipartEncodingThreshold,
                                   method: request.afMethod,
                                   headers: request.afHeders,
                                   interceptor: request.afInterceptor)
@@ -111,12 +112,24 @@ struct IO {
         case .multipart:
             return session.upload(multipartFormData: try request.multipartFormData(),
                                   to: request.url,
+                                  usingThreshold: request.multipartEncodingThreshold,
                                   method: request.afMethod,
                                   headers: request.afHeders,
                                   interceptor: request.afInterceptor)
             .cacheResponse(with: request.cacheBehavior)
             .validate(request.validate)
         }
+    }
+}
+
+private extension DynamicRequest {
+
+    var multipartEncodingThreshold: UInt64 {
+        guard let parameters = parameters as? MultipartParameters,
+              parameters.contains(where: { $0 is ChunkedStreamMultipartParameter }) else {
+            return MultipartFormData.encodingMemoryThreshold
+        }
+        return 0
     }
 }
 

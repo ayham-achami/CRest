@@ -140,8 +140,10 @@ public extension IORequestAdapter {
 }
 
 /// Подготовленный поток multipart-части с точной длиной передаваемых данных.
-/// Для повторной адаптации запроса нужно создать новый поток.
-public struct BodyStream {
+/// При досрочном завершении до `length` байт поток обязан сообщить об ошибке через `streamError`.
+/// - Warning: Поток предназначен для одной отправки. После передачи кодировщику другие владельцы
+///   не должны обращаться к нему; для следующей отправки нужен новый поток.
+public struct BodyStream: @unchecked Sendable {
     
     /// Поток открывает, читает и закрывает multipart-кодировщик.
     public let stream: InputStream
@@ -178,7 +180,7 @@ public protocol IORequestMultipartAdapter: Sendable {
     ///   - url: Локальный файл, доступный для чтения до завершения кодирования multipart.
     ///   - chunkSize: Размер исходных данных записи в байтах; допустимые значения определяет адаптер.
     ///   - completion: Вызывается один раз с новым потоком и его точной длиной либо с ошибкой.
-    func adapt(_ url: URL, chunkSize: UInt64, completion: @Sendable @escaping (Result<BodyStream, Error>) -> Void)
+    func adapt(_ url: URL, chunkSize: Int, completion: @Sendable @escaping (Result<BodyStream, Error>) -> Void)
 }
 
 // MARK: - IORequestMultipartAdapter + Default
@@ -192,7 +194,7 @@ public extension IORequestMultipartAdapter {
         completion(.success(url))
     }
     
-    func adapt(_ url: URL, chunkSize: UInt64, completion: @Sendable @escaping (Result<BodyStream, Error>) -> Void) {
+    func adapt(_ url: URL, chunkSize: Int, completion: @Sendable @escaping (Result<BodyStream, Error>) -> Void) {
         completion(.failure(NetworkError.io("Chunked multipart adaptation is not supported")))
     }
 }

@@ -52,8 +52,8 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
                 switch downloadsSerializationStrategy {
                 case .chunkedBody(let chunkSize, let expectedSize):
                     try serializer.serialize(fileURL,
-                                             expectedSize,
                                              chunkSize,
+                                             expectedSize,
                                              request,
                                              response)
                 case .singleBody:
@@ -63,6 +63,8 @@ struct ResponseSerializerWrapper<Response>: ResponseSerializer where Response: C
             } else {
                 return empty
             }
+        } else if case .chunkedBody = downloadsSerializationStrategy {
+            throw NetworkError.io("Chunked download serialization requires an Empty response")
         } else if let fileURL {
             return try serializer.serialize(fileURL, decoder, request, response)
         } else {

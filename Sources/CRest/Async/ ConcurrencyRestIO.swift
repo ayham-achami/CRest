@@ -109,15 +109,24 @@ extension ConcurrencyRestIO {
     }
     
     public func adapt(_ request: MultipartRequest) async throws -> DynamicRequest {
-        try await withThrowingTaskGroup(of: MultipartParameter.self) { taskGroup in
-            try await request.parameters
-                .reduce(into: taskGroup) { group, parameter in
-                    group.addTask { try await request.adapter.adapt(parameter) }
-                }.reduce(into: MultipartParameters()) { result, parameter in
-                    result.append(parameter)
-                }.touch { parameters in
-                    try request.builder.with(parameters: parameters).build()
+        let adapter = request.adapter
+        return try await withThrowingTaskGroup(of: (index: Int, parameter: MultipartParameter).self) { group in
+            for (index, parameter) in request.parameters.enumerated() {
+                group.addTask {
+                    (index, try await adapter.adapt(parameter))
                 }
+            }
+
+            var adapted: [(index: Int, parameter: MultipartParameter)] = []
+            for try await result in group {
+                adapted.append(result)
+            }
+
+            var parameters = MultipartParameters()
+            for result in adapted.sorted(by: { $0.index < $1.index }) {
+                parameters.append(result.parameter)
+            }
+            return try request.builder.with(parameters: parameters).build()
         }
     }
 }

@@ -3,13 +3,13 @@
 //
 
 @testable import CRest
-import XCTest
+import Testing
 
-final class DynamicRequestTests: XCTestCase {
+struct DynamicRequestTests {
     
-    func testBuildEmpty() {
-        do {
-            let request = try DynamicRequest.Builder()
+    @Test("Создаёт запрос с заданными настройками")
+    func testBuildEmpty() throws {
+        let request = try DynamicRequest.Builder()
                 .with(url: "http://path.to/resorce")
                 .with(cacheBehavior: .default)
                 .with(emptyRequestMethods: .init(Http.Method.allCases))
@@ -19,25 +19,18 @@ final class DynamicRequestTests: XCTestCase {
                 .with(validate: false)
                 .build()
             
-            XCTAssertEqual(request.url, "http://path.to/resorce")
-            guard
-                case .default = request.cacheBehavior
-            else {
-                XCTFail("Request cacheBehavior not default")
-                return
-            }
-            XCTAssertEqual(request.emptyRequestMethods, .init(Http.Method.allCases))
-            XCTAssertEqual(request.emptyResponseCodes, .init(200...204))
-            XCTAssertEqual(request.method, .get)
-            guard
-                case .JSON = request.encoding
-            else {
-                XCTFail("Request encoding not JSON")
-                return
-            }
-            XCTAssertFalse(request.validate)
-        } catch {
-            XCTFail("Request build error: \(error)")
+        #expect(request.url == "http://path.to/resorce")
+        guard case .default = request.cacheBehavior else {
+            Issue.record("Request cacheBehavior not default")
+            return
         }
+        #expect(request.emptyRequestMethods == .init(Http.Method.allCases))
+        #expect(request.emptyResponseCodes == .init(200...204))
+        #expect(request.method == .get)
+        guard case .JSON = request.encoding else {
+            Issue.record("Request encoding not JSON")
+            return
+        }
+        #expect(!request.validate)
     }
 }

@@ -5,7 +5,7 @@
 import Foundation
 
 /// Стратегия файловой обработки скачанного ответа типа `Empty`.
-public enum DownloadsSerializationStrategy {
+public enum DownloadsSerializationStrategy: Sendable {
     
     /// Обработка по записям: `chunkSize` — размер исходных данных записи в байтах,
     /// `expectedSize` — ожидаемый полный размер исходных данных до преобразования в формат передачи.

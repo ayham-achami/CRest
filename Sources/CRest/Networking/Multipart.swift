@@ -3,8 +3,12 @@
 //
 
 import Foundation
-import MobileCoreServices
 import UniformTypeIdentifiers
+#if canImport(MobileCoreServices)
+import MobileCoreServices
+#elseif canImport(CoreServices)
+import CoreServices
+#endif
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -74,6 +78,8 @@ public protocol MultipartParameter: Sendable {}
 }
 
 /// Файловая multipart-часть, для которой адаптер должен подготовить поток по записям.
+/// Автоматическая адаптация выполняется в `ConcurrencyRestIO.upload` при наличии multipart-адаптера.
+/// Для `perform`, `dynamicPerform` и Combine запрос нужно заранее подготовить через `ConcurrencyRestIO.adapt(_:)`.
 /// Если поток не подготовлен, запрос отклоняется до отправки.
 public struct ChunkedStreamMultipartParameter: MultipartParameter {
     
@@ -89,7 +95,7 @@ public struct ChunkedStreamMultipartParameter: MultipartParameter {
     /// Имя поля multipart.
     public let name: String
     /// Размер исходных данных записи в байтах; допустимые значения определяет адаптер.
-    public let chunkSize: UInt64
+    public let chunkSize: Int
 
     var bodyStream: BodyStream?
     
@@ -108,9 +114,9 @@ public struct ChunkedStreamMultipartParameter: MultipartParameter {
     ///   - url: Локальный файл, доступный до завершения кодирования multipart.
     ///   - name: Имя поля multipart.
     ///   - chunkSize: Размер исходных данных записи в байтах.
-    public init(url: URL,
-                name: String,
-                chunkSize: UInt64 = 65_536) {
+    public init(_ url: URL,
+                _ name: String,
+                chunkSize: Int = 65_536) {
         self.url = url
         self.name = name
         self.chunkSize = chunkSize

@@ -3,7 +3,8 @@
 //
 
 @testable import CRest
-import XCTest
+import Foundation
+import Testing
 
 // MARK: - Request
 extension Request {
@@ -30,14 +31,15 @@ extension Request {
     }
 }
 
-class RequestTests: XCTestCase {
+struct RequestTests {
 
+    @Test("Создаёт корректные URL запросов")
     func testURLEncoding() {
-        XCTAssertNotNil(URL(string: Request.get.rawValue))
-        XCTAssertNotNil(URL(string: Request.query.rawValue))
-        XCTAssertNotNil(URL(string: Request.queryValue.rawValue))
-        XCTAssertNotNil(URL(string: Request.queryValueArray.rawValue))
-        XCTAssertNotNil(URL(string: Request.queryValueArrayBool.rawValue))
-        XCTAssertNotNil(URL(string: Request.queryValueArrayBoolSpace.rawValue))
+        #expect(URL(string: Request.get.rawValue) != nil)
+        #expect(URL(string: Request.query.rawValue) != nil)
+        #expect(URL(string: Request.queryValue.rawValue) != nil)
+        #expect(URL(string: Request.queryValueArray.rawValue) != nil)
+        #expect(URL(string: Request.queryValueArrayBool.rawValue) != nil)
+        #expect(URL(string: Request.queryValueArrayBoolSpace.rawValue) != nil)
     }
 }
